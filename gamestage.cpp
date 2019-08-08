@@ -19,14 +19,14 @@ void GameStage::draw() {
 
 void GameStage::AddActor(Actor* actor)
 {
-	if (mUpdatingActors)
+	/*if (mUpdatingActors)
 	{
 		mPendingActors.emplace_back(actor);
 	}
 	else
 	{
 		mActors.emplace_back(actor);
-	}
+	}*/
 }
 
 void GameStage::RemoveActor(Actor* actor)

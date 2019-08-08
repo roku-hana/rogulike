@@ -10,7 +10,7 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 		for (size_t j = 0; j < maprl[i].size(); ++j)
 			maprl[i][j].mapData = 1;
 
-	dng->mapDivCount = dng->divCountMin + (size_t)GetRand((int)dng->divCountRand); //マップの区分け数 (部屋の個数) 0~nまでの部屋ID
+	dng->mapDivCount = dng->divCountMin + (size_t)GetRand((int)dng->divCountRand) + 1; //マップの区分け数 (部屋の個数) 0~nまでの部屋ID
 	if (dng->mapDivCount > 7) return -1;
 
 	dng->mapDiv[0][0] = (maprl.size() - 1); //マップの区分け初期サイズX終点 (マップの大きさX軸)
@@ -100,9 +100,15 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 		dng->mapRoom[i][1] += m;
 		dng->mapRoom[i][3] += m;
 
-		for (size_t j = dng->mapRoom[i][2]; j < dng->mapRoom[i][0]; ++j)
-			for (size_t k = dng->mapRoom[i][3]; k < dng->mapRoom[i][1]; ++k)
+		for (size_t j = dng->mapRoom[i][2]; j < dng->mapRoom[i][0]; ++j) {
+			for (size_t k = dng->mapRoom[i][3]; k < dng->mapRoom[i][1]; ++k) {
 				maprl[j][k].mapData = 0;
+				//if(i == 0) 
+			}
+		}
+
+		//スタート、ゴール位置設定
+		//次回ここからはじめる
 	}
 
 
@@ -157,6 +163,8 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 		}
 
 	}
+
+
 	return 0;
 }
 
