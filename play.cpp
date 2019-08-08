@@ -13,6 +13,8 @@ Play::Play(Game* pManager, SceneManager* sManager) :
 
 void Play::update() {
 	SoundBox::playBgm(1);
+	gamestage->update();
+	gamestage->ProcessInput();
 	if (gameManager->input->isPushStart(0) == 1) {
 		gameManager->gameScene = new Pause(gameManager, sceneManager);
 		delete this;

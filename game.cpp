@@ -18,7 +18,7 @@ GameScene::GameScene(Game* pManager, SceneManager* sManager) :
 Game::Game(SceneManager* pManager, InputManager* iManager) :
 	Scene(pManager),
 	input(iManager) {
-	gameStage = new GameStage();
+	gameStage = new GameStage(input);
 	gameScene = new Play(this, sceneManager);
 }
 

@@ -6,6 +6,7 @@
 
 class GameStage;
 class Component;
+class InputManager;
 
 class Actor {
 public:
@@ -21,16 +22,19 @@ public:
 	virtual void updateActor();
 	const Vector2& GetPosition() const { return mPosition; }
 	void SetPosition(const Vector2& pos) { mPosition = pos; }
+	float GetScale() const { return mScale; }
+	void SetScale(float scale) { mScale = scale; }
 	State GetState() const { return mState; }
 	void SetState(State state) { mState = state; }
-	void ProcessInput(const uint8_t* keyState);
-	virtual void ActorInput(const uint8_t* keyState);
+	void ProcessInput(InputManager*);
+	virtual void ActorInput(InputManager*);
 	GameStage* GetGameStage() { return mGameStage; }
 	void AddComponent(Component*);
 	void RemoveComponent(Component*);
 private:
 	State mState;
 	Vector2 mPosition;
+	float mScale;
 	std::vector<Component*> mComponents;
 	GameStage* mGameStage;
 };

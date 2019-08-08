@@ -5,7 +5,6 @@
 using namespace std;
 
 class TestPlayer;
-class InputManager;
 
 enum MAP_KIND{
 	WALL,
@@ -16,9 +15,9 @@ enum MAP_KIND{
 
 class StageTest {
 public:
-	StageTest(InputManager*);
+	StageTest();
 	~StageTest();
-	void draw();
+	void draw(int x, int y);
 	void update();
 	//vector<std::vector<int>>* getMapData() { return &mapData; }
 private:
