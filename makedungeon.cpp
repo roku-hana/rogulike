@@ -15,7 +15,7 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 			maprl[i][j].mapData = 1;
 
 	dng->mapDivCount = dng->divCountMin + (size_t)GetRand((int)dng->divCountRand) + 1; //マップの区分け数 (部屋の個数) 0~nまでの部屋ID
-	if (dng->mapDivCount > 7) return -1;
+	if (dng->mapDivCount > dng->divCountMin + dng->divCountRand) return -1;
 
 	dng->mapDiv[0][0] = (maprl.size() - 1); //マップの区分け初期サイズX終点 (マップの大きさX軸)
 	dng->mapDiv[0][1] = (maprl.front().size() - 1); //マップの区分け初期サイズY終点 (マップの大きさY軸)
@@ -69,7 +69,7 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 		dng->mapDiv[i][abs(count - 1)] = dng->mapDiv[divAfter][abs(count - 1)]; //軸の右端(iR)の座標(divAfterR)
 		dng->mapDiv[i][abs(count - 1) + 2] = dng->mapDiv[divAfter][abs(count - 1) + 2]; //軸の左端(iL)の座標(divAfterL)
 	}
-
+	
 	/*部屋を生成する処理*/
 	for (size_t i = 0; i < dng->mapDivCount; ++i) {//区分け
 		dng->mapRoomPlayer[i] = 0;//プレイヤー侵入初期化
@@ -77,7 +77,8 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 		dng->mapRoom[i][3] = dng->mapDiv[i][3]; //区分けY始点をマップY始点へ代入
 
 		//X座標の部屋の長さを指定
-		dng->mapRoom[i][0] = dng->mapDiv[i][2] + dng->divCountRand + (size_t)GetRand((int)dng->roomLengthRandX);
+		//dng->mapRoom[i][0] = dng->mapDiv[i][2] + dng->divCountRand + (size_t)GetRand((int)dng->roomLengthRandX);
+		dng->mapRoom[i][0] = dng->mapDiv[i][2] + dng->roomLengthMinX + (size_t)GetRand((int)dng->roomLengthRandX);
 		if (dng->mapDiv[i][0] - dng->mapDiv[i][2] < dng->mapRoom[i][0] - dng->mapRoom[i][2] + 5) {
 			dng->mapRoom[i][0] = dng->mapDiv[i][0] - 4;
 			if (dng->mapDiv[i][0] - dng->mapDiv[i][2] < dng->mapRoom[i][0] - dng->mapRoom[i][2] + 5) {
@@ -110,7 +111,6 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 			}
 		}
 	}
-
 
 	/*通路を生成する処理*/
 	/*通路は２部屋間の細い道のことを指す。
@@ -178,14 +178,16 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 }
 
 MapData::MapData()
-	:maprl(MAPX_RLk, vector<RogueLikeMap>(MAPY_RLk, 0)) {
-	if (rogueLikeMapMake(&dng, maprl)) MSG("ダンジョン生成失敗");
+	:maprl(MAPY_RLk, vector<RogueLikeMap>(MAPX_RLk, 0)),
+	transparentMap(MAPY_RLk, vector<int>(MAPX_RLk, 0)){
+	//ダンジョン生成
+	while (rogueLikeMapMake(&dng, maprl));
 
 	if (floor == 0) {
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-miti.png", 1, 1, 1, 32, 32, &floor);
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-yama2.png", 1, 1, 1, 32, 32, &wall);
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-umi.png", 1, 1, 1, 32, 32, &goal);
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-mori.png", 1, 1, 1, 32, 32, &start);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-miti.png", 1, 1, 1, 40, 40, &floor);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-yama2.png", 1, 1, 1, 40, 40, &wall);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-umi.png", 1, 1, 1, 40, 40, &goal);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-mori.png", 1, 1, 1, 40, 40, &start);
 	}
 	sx = dng.startx;
 	sy = dng.starty;
@@ -194,22 +196,36 @@ MapData::MapData()
 }
 
 void MapData::draw(int x, int y) {
-	//後で、マジックナンバーを定数に変える
-	size_t minx = x / 32 - 3;
-	size_t miny = y / 32 - 3;
-	size_t maxx = x / 32 + 3;
-	size_t maxy = y / 32 + 3;
+	size_t minx = x / CHIPSIZE - 8;
+	size_t miny = y / CHIPSIZE - 6;
+	size_t maxx = x / CHIPSIZE + 8;
+	size_t maxy = y / CHIPSIZE + 6;
 	for (size_t i = miny; i < maxy; ++i) {
 		for (size_t j = minx; j < maxx; ++j) {
 			size_t kind = maprl[i][j].GetMapData();
+			int posy = i - miny;
+			int posx = j - minx;
 			switch (kind) {
-			case WALL: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE + 160, wall, TRUE); break;
-			case PATH: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE+ 160, floor, TRUE); break;
-			case START: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE + 160, start, TRUE); break;
-			case GOAL: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE + 160, goal, TRUE); break;
+			case WALL: DrawGraph(posx * CHIPSIZE, posy * CHIPSIZE, wall, TRUE); break;
+			case PATH: DrawGraph(posx * CHIPSIZE, posy * CHIPSIZE, floor, TRUE); break;
+			case START: DrawGraph(posx * CHIPSIZE, posy * CHIPSIZE, start, TRUE); break;
+			case GOAL: DrawGraph(posx * CHIPSIZE, posy * CHIPSIZE, goal, TRUE); break;
 		}
 		}
 	}
+}
+
+void MapData::DrawTransparentMaze(int x, int y) {
+	//プレイヤーがすでに通った場所をチェックする
+	transparentMap[y][x] = 10;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+	for (size_t y = 0; y < MAPY_RLk; y++) {
+		for (size_t x = 0; x < MAPX_RLk; x++) {
+			if (transparentMap[y][x] == 10) DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(0, 0, 255), TRUE);
+		}
+	}
+	DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(0, 0, 255), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 int MapData::floor;
