@@ -168,25 +168,29 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 	int div;
 	if (dng->mapDivCount > 0) div = dng->mapDivCount - 1;
 	else div = dng->mapDivCount;
-	int sx = GetRandomNum(dng->mapRoom[0][2], dng->mapRoom[0][0]-1);
-	int sy = GetRandomNum(dng->mapRoom[0][3], dng->mapRoom[0][1]-1);
-	int gx = GetRandomNum(dng->mapRoom[div][2], dng->mapRoom[div][0]-1);
-	int gy = GetRandomNum(dng->mapRoom[div][3], dng->mapRoom[div][1]-1);
-	maprl[sx][sy] = 2;
-	maprl[gx][gy] = 3;
-
+	dng->starty = GetRandomNum(dng->mapRoom[0][2], dng->mapRoom[0][0] - 1);
+	dng->startx = GetRandomNum(dng->mapRoom[0][3], dng->mapRoom[0][1] - 1);
+	dng->goaly = GetRandomNum(dng->mapRoom[div][2], dng->mapRoom[div][0] - 1);
+	dng->goalx = GetRandomNum(dng->mapRoom[div][3], dng->mapRoom[div][1] - 1);
+	maprl[dng->starty][dng->startx] = 2;
+	maprl[dng->goaly][dng->goalx] = 3;
 	return 0;
 }
 
-MapData::MapData() 
-:maprl(MAPX_RLk, vector<RogueLikeMap>(MAPY_RLk, 0)) {
+MapData::MapData()
+	:maprl(MAPX_RLk, vector<RogueLikeMap>(MAPY_RLk, 0)) {
 	if (rogueLikeMapMake(&dng, maprl)) MSG("É_ÉìÉWÉáÉìê∂ê¨é∏îs");
 
 	if (floor == 0) {
 		LoadDivGraph("Images\\640x480\\pipo-map001_at-miti.png", 1, 1, 1, 32, 32, &floor);
 		LoadDivGraph("Images\\640x480\\pipo-map001_at-yama2.png", 1, 1, 1, 32, 32, &wall);
 		LoadDivGraph("Images\\640x480\\pipo-map001_at-umi.png", 1, 1, 1, 32, 32, &goal);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-mori.png", 1, 1, 1, 32, 32, &start);
 	}
+	sx = dng.startx;
+	sy = dng.starty;
+	gx = dng.goalx;
+	gy = dng.goaly;
 }
 
 void MapData::draw(int x, int y) {
@@ -197,13 +201,12 @@ void MapData::draw(int x, int y) {
 	size_t maxy = y / 32 + 3;
 	for (size_t i = miny; i < maxy; ++i) {
 		for (size_t j = minx; j < maxx; ++j) {
-			int kind = maprl[i][j];
+			size_t kind = maprl[i][j].GetMapData();
 			switch (kind) {
-			case WALL: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 + 160, wall, TRUE); break;
-			case ROOM: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 + 160, floor, TRUE); break;
-			case PATH: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 + 160, floor, TRUE); break;
-			case START: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 * 160, floor, TRUE); break;
-			case GOAL: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 + 160, goal, TRUE); break;
+			case WALL: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE + 160, wall, TRUE); break;
+			case PATH: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE+ 160, floor, TRUE); break;
+			case START: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE + 160, start, TRUE); break;
+			case GOAL: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE + 160, goal, TRUE); break;
 		}
 		}
 	}
@@ -212,3 +215,4 @@ void MapData::draw(int x, int y) {
 int MapData::floor;
 int MapData::wall;
 int MapData::goal;
+int MapData::start;

@@ -170,7 +170,6 @@
     <ClCompile Include="scenemanager.cpp" />
     <ClCompile Include="soundbox.cpp" />
     <ClCompile Include="spritecomponent.cpp" />
-    <ClCompile Include="stagetest.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="vector.cpp" />
   </ItemGroup>
@@ -190,7 +189,6 @@
     <ClInclude Include="scenemanager.h" />
     <ClInclude Include="soundbox.h" />
     <ClInclude Include="spritecomponent.h" />
-    <ClInclude Include="stagetest.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="vector.h" />
   </ItemGroup>

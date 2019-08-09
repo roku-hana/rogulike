@@ -6,12 +6,12 @@ using namespace std;
 
 class TestPlayer;
 
-enum MAP_KIND{
+/*enum MAP_KIND{
 	WALL,
 	ROOM,
 	PATH,
 	GOAL,
-};
+};*/
 
 class StageTest {
 public:

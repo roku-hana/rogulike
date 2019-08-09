@@ -15,6 +15,8 @@ public:
 	void ActorInput(InputManager*) override;
 	int GetScrollX() { return scrollx; }
 	int GetScrollY() { return scrolly; }
+	void SetScrollX(int sx) { scrollx = sx; }
+	void SetScrollY(int sy) { scrolly = sy; }
 private:
 	int scrollx, scrolly;
 	int gh[12];

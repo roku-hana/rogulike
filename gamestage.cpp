@@ -7,6 +7,9 @@
 GameStage::GameStage(InputManager* temp):input(temp) {
 	mp = new MapData();
 	player = new Player(this);
+	player->SetScrollX(mp->GetStartX() * 32);
+	player->SetScrollY(mp->GetStartY() * 32);
+
 }
 
 GameStage::~GameStage() {
@@ -46,8 +49,6 @@ void GameStage::update() {
 void GameStage::draw() {
 	mp->draw(player->GetScrollX(), player->GetScrollY());
 
-	//stage->draw(player->GetScrollX(), player->GetScrollY());
-
 	for (auto sprite : mSprites)
 	{
 		sprite->Draw();
@@ -56,14 +57,14 @@ void GameStage::draw() {
 
 void GameStage::AddActor(Actor* actor)
 {
-	/*if (mUpdatingActors)
+	if (mUpdatingActors)
 	{
 		mPendingActors.emplace_back(actor);
 	}
 	else
 	{
 		mActors.emplace_back(actor);
-	}*/
+	}
 }
 
 void GameStage::RemoveActor(Actor* actor)

@@ -12,9 +12,8 @@ enum :int {
 };
 
 enum MAP_KIND {
-	WALL,
-	ROOM,
 	PATH,
+	WALL,
 	START,
 	GOAL,
 };
@@ -38,6 +37,11 @@ struct DungeonMap_RL
 	size_t mapRoad[8][4]{}; //マップの道 [部屋ID(前)][繋がる先の部屋ID(後) , (0.X座標 , 1.Y座標) , (前)側の通路の位置 , (後)側の通路の位置]
 	size_t mapRoomPlayer[8]{};
 
+	size_t startx;
+	size_t starty;
+	size_t goalx;
+	size_t goaly;
+
 };
 
 //サンプル
@@ -58,12 +62,16 @@ public:
 
 	//書き換え可能なマップ
 	size_t mapData = 1;
+
+	size_t GetMapData() { return mapData; }
 };
 
 class MapData {
 public:
 	MapData();
 	void draw(int x, int y);
+	int GetStartX() { return sx; }
+	int GetStartY() { return sy; }
 private:
 	/*マップ系データ*/
 	const size_t MAPX_RLk = 50; //マップ縦サイズ
@@ -73,5 +81,9 @@ private:
 	static int wall;
 	static int floor;
 	static int goal;
+	static int start;  //後で消す
+	int sx, sy;
+	int gx, gy;
+	const int CHIPSIZE = 32;
 };
 #endif
