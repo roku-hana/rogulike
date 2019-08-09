@@ -1,19 +1,17 @@
 #include"gamestage.h"
-//#include"makedungeon.h"
+#include"makedungeon.h"
 #include"spritecomponent.h"
 #include"player.h"
 #include"stagetest.h"
 
 GameStage::GameStage(InputManager* temp):input(temp) {
-	//mp = new MapData();
+	mp = new MapData();
 	player = new Player(this);
-	stage = new StageTest();
 }
 
 GameStage::~GameStage() {
-	//delete mp;
 	delete player;
-	delete stage;
+	delete mp;
 }
 
 void GameStage::update() {
@@ -46,9 +44,9 @@ void GameStage::update() {
 }
 
 void GameStage::draw() {
-	//mp->draw();
-	//‰¼
-	stage->draw(player->GetScrollX(), player->GetScrollY());
+	mp->draw(player->GetScrollX(), player->GetScrollY());
+
+	//stage->draw(player->GetScrollX(), player->GetScrollY());
 
 	for (auto sprite : mSprites)
 	{
@@ -104,7 +102,6 @@ void GameStage::AddSprite(SpriteComponent* sprite)
 
 void GameStage::RemoveSprite(SpriteComponent* sprite)
 {
-	// (We can't swap because it ruins ordering)
 	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
 	mSprites.erase(iter);
 }

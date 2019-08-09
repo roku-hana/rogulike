@@ -4,7 +4,7 @@
 #include<vector>
 #include<string>
 
-//class MapData;
+class MapData;
 class Player;
 class StageTest;
 class InputManager;
@@ -24,10 +24,9 @@ private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
 	bool mUpdatingActors;
-	//MapData* mp;
+	MapData* mp;
 	std::vector<class SpriteComponent*> mSprites;
 	Player* player;
-	StageTest* stage;
 	InputManager* input;
 };
 

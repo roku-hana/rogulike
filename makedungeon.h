@@ -11,6 +11,14 @@ enum :int {
 	RL_COUNT_Y
 };
 
+enum MAP_KIND {
+	WALL,
+	ROOM,
+	PATH,
+	START,
+	GOAL,
+};
+
 struct DungeonMap_RL
 {
 
@@ -55,12 +63,15 @@ public:
 class MapData {
 public:
 	MapData();
-	void draw();
+	void draw(int x, int y);
 private:
 	/*マップ系データ*/
 	const size_t MAPX_RLk = 50; //マップ縦サイズ
 	const size_t MAPY_RLk = 50;   //マップ横サイズ
 	DungeonMap_RL dng; //ダンジョン
 	vector<vector<RogueLikeMap>> maprl;
+	static int wall;
+	static int floor;
+	static int goal;
 };
 #endif

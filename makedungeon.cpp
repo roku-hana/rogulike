@@ -181,12 +181,34 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 MapData::MapData() 
 :maprl(MAPX_RLk, vector<RogueLikeMap>(MAPY_RLk, 0)) {
 	if (rogueLikeMapMake(&dng, maprl)) MSG("ダンジョン生成失敗");
+
+	if (floor == 0) {
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-miti.png", 1, 1, 1, 32, 32, &floor);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-yama2.png", 1, 1, 1, 32, 32, &wall);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-umi.png", 1, 1, 1, 32, 32, &goal);
+	}
 }
 
-void MapData::draw() {
-	for (size_t i = 0; i < MAPX_RLk; ++i) {
-		for (size_t j = 0; j < MAPY_RLk; ++j) {
-			DrawFormatString(i * 10 + 5, j * 10 + 5, GetColor(0, 0, 0), "%d", maprl[i][j]);
+void MapData::draw(int x, int y) {
+	//後で、マジックナンバーを定数に変える
+	size_t minx = x / 32 - 3;
+	size_t miny = y / 32 - 3;
+	size_t maxx = x / 32 + 3;
+	size_t maxy = y / 32 + 3;
+	for (size_t i = miny; i < maxy; ++i) {
+		for (size_t j = minx; j < maxx; ++j) {
+			int kind = maprl[i][j];
+			switch (kind) {
+			case WALL: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 + 160, wall, TRUE); break;
+			case ROOM: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 + 160, floor, TRUE); break;
+			case PATH: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 + 160, floor, TRUE); break;
+			case START: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 * 160, floor, TRUE); break;
+			case GOAL: DrawGraph((j - minx) * 32 + 224, (i - miny) * 32 + 160, goal, TRUE); break;
+		}
 		}
 	}
 }
+
+int MapData::floor;
+int MapData::wall;
+int MapData::goal;

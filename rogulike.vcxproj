@@ -162,6 +162,7 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="inputcomponent.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="makedungeon.cpp" />
     <ClCompile Include="movecomponent.cpp" />
     <ClCompile Include="pause.cpp" />
     <ClCompile Include="play.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="gamestage.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="inputcomponent.h" />
+    <ClInclude Include="makedungeon.h" />
     <ClInclude Include="movecomponent.h" />
     <ClInclude Include="pause.h" />
     <ClInclude Include="play.h" />
