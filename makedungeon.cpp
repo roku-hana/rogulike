@@ -1,6 +1,10 @@
 #include "makedungeon.h"
 #include<DxLib.h>
 
+int GetRandomNum(int a, int b) {
+	return GetRand(b - a) + a;
+}
+
 /*ローグライク生成関数*/
 template <typename T>
 int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
@@ -103,12 +107,8 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 		for (size_t j = dng->mapRoom[i][2]; j < dng->mapRoom[i][0]; ++j) {
 			for (size_t k = dng->mapRoom[i][3]; k < dng->mapRoom[i][1]; ++k) {
 				maprl[j][k].mapData = 0;
-				//if(i == 0) 
 			}
 		}
-
-		//スタート、ゴール位置設定
-		//次回ここからはじめる
 	}
 
 
@@ -164,6 +164,16 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 
 	}
 
+	//スタート、ゴール位置設定
+	int div;
+	if (dng->mapDivCount > 0) div = dng->mapDivCount - 1;
+	else div = dng->mapDivCount;
+	int sx = GetRandomNum(dng->mapRoom[0][2], dng->mapRoom[0][0]-1);
+	int sy = GetRandomNum(dng->mapRoom[0][3], dng->mapRoom[0][1]-1);
+	int gx = GetRandomNum(dng->mapRoom[div][2], dng->mapRoom[div][0]-1);
+	int gy = GetRandomNum(dng->mapRoom[div][3], dng->mapRoom[div][1]-1);
+	maprl[sx][sy] = 2;
+	maprl[gx][gy] = 3;
 
 	return 0;
 }
