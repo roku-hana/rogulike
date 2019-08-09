@@ -160,15 +160,16 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamestage.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="inputcomponent.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="makedungeon.cpp" />
+    <ClCompile Include="movecomponent.cpp" />
     <ClCompile Include="pause.cpp" />
     <ClCompile Include="play.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="scenemanager.cpp" />
     <ClCompile Include="soundbox.cpp" />
+    <ClCompile Include="spritecomponent.cpp" />
     <ClCompile Include="stagetest.cpp" />
-    <ClCompile Include="testplayer.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="vector.cpp" />
   </ItemGroup>
@@ -179,14 +180,15 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="gamestage.h" />
     <ClInclude Include="input.h" />
-    <ClInclude Include="makedungeon.h" />
+    <ClInclude Include="inputcomponent.h" />
+    <ClInclude Include="movecomponent.h" />
     <ClInclude Include="pause.h" />
     <ClInclude Include="play.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="scenemanager.h" />
     <ClInclude Include="soundbox.h" />
+    <ClInclude Include="spritecomponent.h" />
     <ClInclude Include="stagetest.h" />
-    <ClInclude Include="testplayer.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="vector.h" />
   </ItemGroup>

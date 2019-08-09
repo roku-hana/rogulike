@@ -2,6 +2,7 @@
 #define __COMPONENT_H__
 
 class Actor;
+class InputManager;
 
 class Component {
 public:
@@ -10,7 +11,7 @@ public:
 	virtual ~Component();
 	virtual void update();
 	int getUpdateOrder() const {return mUpdateOrder; }
-	virtual void ProcessInput(const uint8_t* keyState) {}
+	virtual void ProcessInput(InputManager* temp) {}
 protected:
 	Actor* mOwner;
 	int mUpdateOrder;

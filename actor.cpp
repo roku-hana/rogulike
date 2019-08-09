@@ -2,6 +2,7 @@
 #include "gamestage.h"
 #include "component.h"
 #include <algorithm>
+#include"input.h"
 
 Actor::Actor(GameStage* gamestage)
 	:mState(ACTIVE)
@@ -42,20 +43,20 @@ void Actor::updateActor()
 }
 
 //Œã‚Åˆø”‚ð•Ï‚¦‚é
-void Actor::ProcessInput(const uint8_t* keyState)
+void Actor::ProcessInput(InputManager* input)
 {
 	if (mState == ACTIVE)
 	{
 		for (auto comp : mComponents)
 		{
-			comp->ProcessInput(keyState);
+			comp->ProcessInput(input);
 		}
 
-		ActorInput(keyState);
+		ActorInput(input);
 	}
 }
 
-void Actor::ActorInput(const uint8_t* keyState)
+void Actor::ActorInput(InputManager* input)
 {
 }
 
