@@ -5,6 +5,8 @@
 #include"spritecomponent.h"
 #include"makedungeon.h"
 
+//tewicontrolファイルを見て、長押し移動を実装する
+
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
 	if (-1 == LoadDivGraph("Images\\cat.png", 12, 3, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
 	SpriteComponent* sc = new SpriteComponent(this, 150);
