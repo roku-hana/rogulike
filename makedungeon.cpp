@@ -201,15 +201,16 @@ void MapData::draw(int x, int y) {
 	size_t miny = y / CHIPSIZE - DRAW_CHIPNUM_Y >= 0 ? y / CHIPSIZE - DRAW_CHIPNUM_Y : 0;
 	size_t maxx = x / CHIPSIZE + DRAW_CHIPNUM_X <= MAPX_RLk ? x / CHIPSIZE + DRAW_CHIPNUM_X : MAPX_RLk;
 	size_t maxy = y / CHIPSIZE + DRAW_CHIPNUM_Y <= MAPY_RLk ? y / CHIPSIZE + DRAW_CHIPNUM_Y : MAPY_RLk;
-	//size_t minx = x / CHIPSIZE - DRAW_CHIPNUM_X;
-	//size_t miny = y / CHIPSIZE - DRAW_CHIPNUM_Y;
-	//size_t maxx = x / CHIPSIZE + DRAW_CHIPNUM_X;
-	//size_t maxy = y / CHIPSIZE + DRAW_CHIPNUM_Y;
+	size_t addx = 0, addy = 0;
+	if (minx == 0) addx = x / CHIPSIZE - DRAW_CHIPNUM_X;
+	if (miny == 0) addy = y / CHIPSIZE - DRAW_CHIPNUM_Y;
+	if (maxx == MAPX_RLk) addx = x / CHIPSIZE + DRAW_CHIPNUM_X;
+	if (maxy == MAPY_RLk) addy = y / CHIPSIZE + DRAW_CHIPNUM_Y;
 	for (size_t i = miny; i < maxy; ++i) {
 		for (size_t j = minx; j < maxx; ++j) {
 			size_t kind = maprl[i][j].mapData;
-			int posy = i - miny;
-			int posx = j - minx;
+			int posy = i - miny - addy;
+			int posx = j - minx - addx;
 			switch (kind) {
 			case WALL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, wall, TRUE); break;
 			case PATH: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, floor, TRUE); break;
@@ -218,7 +219,9 @@ void MapData::draw(int x, int y) {
 		}
 		}
 	}
-
+	DrawFormatString(200, 100, GetColor(255, 0, 0), "miny:%d, minx:%d", miny, minx);
+	DrawFormatString(200, 200, GetColor(255, 0, 0), "maxy:%d, maxx:%d", maxy, maxx);
+	DrawFormatString(200, 10, GetColor(255, 0, 0), "py:%d, px:%d", y, x);
 }
 
 void MapData::DrawTransparentMaze(int x, int y) {
