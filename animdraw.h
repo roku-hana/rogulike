@@ -29,9 +29,9 @@ public:
 	//apidはアニメパターンの番号、つまりメンバ変数aplistのインデックスを表している
 	int SetImage(unsigned int apid, int ghandle);  //グラフィックハンドルをセットする
 	int SetGap(unsigned int apid, int gap);  //表示間隔(animagp)をセットする
-	void DrawAnimation(int apid, int x, int y, bool ismoving);  //アニメーション表示
-	void DrawTurnAnimation(int apid, int x, int y, Direction dir);  //アニメーション左右反転
-	void DrawRotaAnimation(int apid, int x, int y, float rad);  //アニメーション回転表示
+	void DrawAnimation(int apid, int x, int y, int count);  //アニメーション表示
+	void DrawTurnAnimation(int apid, int x, int y, int count, Direction dir);  //アニメーション左右反転
+	void DrawRotaAnimation(int apid, int x, int y, int count, float rad);  //アニメーション回転表示
 };
 
 #endif

@@ -28,6 +28,7 @@ private:
 	std::vector<class SpriteComponent*> mSprites;
 	Player* player;
 	InputManager* input;
+	int animcounter;
 };
 
 #endif

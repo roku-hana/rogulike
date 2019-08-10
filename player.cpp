@@ -2,17 +2,19 @@
 #include"error.h"
 #include<DxLib.h>
 #include"input.h"
-#include"spritecomponent.h"
+#include"playersprite.h"
 #include"makedungeon.h"
+#include"animdraw.h"
 
 //tewicontrolファイルを見て、長押し移動を実装する
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
 	if (-1 == LoadDivGraph("Images\\cat.png", 12, 3, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
-	SpriteComponent* sc = new SpriteComponent(this, 150);
+	SpriteComponent* sc = new PlayerSprite(this, 150);
 	sc->SetImage(gh);
 	
 	SetPosition(Vector2(320, 224));
+	dir = DOWN;
 }
 
 Player::~Player() {
@@ -24,10 +26,22 @@ void Player::updateActor() {
 }
 
 void Player::ActorInput(InputManager* input) {
-	if (input->isPushRight() && !RightWall()) scrollx += CHIPSIZE;
-	if (input->isPushLeft() && !LeftWall()) scrollx -= CHIPSIZE;
-	if (input->isPushUp() && !UpWall()) scrolly -= CHIPSIZE;
-	if (input->isPushDown() && !DownWall()) scrolly += CHIPSIZE;
+	if (input->isPushRight() && !RightWall()) {
+		scrollx += CHIPSIZE; 
+		dir = RIGHT;
+	}
+	if (input->isPushLeft() && !LeftWall()) {
+		scrollx -= CHIPSIZE;
+		dir = LEFT;
+	}
+	if (input->isPushUp() && !UpWall()) {
+		scrolly -= CHIPSIZE;
+		dir = UP;
+	}
+	if (input->isPushDown() && !DownWall()) {
+		scrolly += CHIPSIZE;
+		dir = DOWN;
+	}
 }
 
 bool Player::RightWall() {

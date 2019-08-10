@@ -17,6 +17,8 @@ GameStage::~GameStage() {
 }
 
 void GameStage::update() {
+	animcounter++;
+
 	mUpdatingActors = true;
 	for (auto actor : mActors)
 	{
@@ -52,7 +54,7 @@ void GameStage::draw() {
 
 	for (auto sprite : mSprites)
 	{
-		sprite->Draw();
+		sprite->Draw(animcounter, player->GetDir());
 	}
 }
 

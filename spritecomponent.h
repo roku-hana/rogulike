@@ -3,13 +3,15 @@
 
 #include"component.h"
 
+enum Direction;
+
 class SpriteComponent : public Component
 {
 public:
 	SpriteComponent(class Actor* owner, int drawOrder = 100);
 	~SpriteComponent();
 
-	virtual void Draw();
+	virtual void Draw(int count, Direction dir);
 	virtual void SetImage(int* image);
 
 	int GetDrawOrder() const { return mDrawOrder; }

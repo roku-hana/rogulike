@@ -2,6 +2,7 @@
 #include "actor.h"
 #include "gamestage.h"
 #include<DxLib.h>
+#include"animdraw.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	:Component(owner)
@@ -18,7 +19,7 @@ SpriteComponent::~SpriteComponent()
 	mOwner->GetGameStage()->RemoveSprite(this);
 }
 
-void SpriteComponent::Draw()
+void SpriteComponent::Draw(int count, Direction dir)
 {
 	if (mImage)
 	{
