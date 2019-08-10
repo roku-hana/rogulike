@@ -197,10 +197,14 @@ MapData::MapData()
 }
 
 void MapData::draw(int x, int y) {
-	size_t minx = x / CHIPSIZE - DRAW_CHIPNUM_X;
-	size_t miny = y / CHIPSIZE - DRAW_CHIPNUM_Y;
-	size_t maxx = x / CHIPSIZE + DRAW_CHIPNUM_X;
-	size_t maxy = y / CHIPSIZE + DRAW_CHIPNUM_Y;
+	size_t minx = x / CHIPSIZE - DRAW_CHIPNUM_X >= 0 ? x / CHIPSIZE - DRAW_CHIPNUM_X : 0;
+	size_t miny = y / CHIPSIZE - DRAW_CHIPNUM_Y >= 0 ? y / CHIPSIZE - DRAW_CHIPNUM_Y : 0;
+	size_t maxx = x / CHIPSIZE + DRAW_CHIPNUM_X <= MAPX_RLk ? x / CHIPSIZE + DRAW_CHIPNUM_X : MAPX_RLk;
+	size_t maxy = y / CHIPSIZE + DRAW_CHIPNUM_Y <= MAPY_RLk ? y / CHIPSIZE + DRAW_CHIPNUM_Y : MAPY_RLk;
+	//size_t minx = x / CHIPSIZE - DRAW_CHIPNUM_X;
+	//size_t miny = y / CHIPSIZE - DRAW_CHIPNUM_Y;
+	//size_t maxx = x / CHIPSIZE + DRAW_CHIPNUM_X;
+	//size_t maxy = y / CHIPSIZE + DRAW_CHIPNUM_Y;
 	for (size_t i = miny; i < maxy; ++i) {
 		for (size_t j = minx; j < maxx; ++j) {
 			size_t kind = maprl[i][j].mapData;

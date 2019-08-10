@@ -22,36 +22,36 @@ void Player::updateActor() {
 }
 
 void Player::ActorInput(InputManager* input) {
-	if (input->isPushRight() && !RightWall()) scrollx += 32;
-	if (input->isPushLeft() && !LeftWall()) scrollx -= 32;
-	if (input->isPushUp() && !UpWall()) scrolly -= 32;
-	if (input->isPushDown() && !DownWall()) scrolly += 32;
+	if (input->isPushRight() && !RightWall()) scrollx += CHIPSIZE;
+	if (input->isPushLeft() && !LeftWall()) scrollx -= CHIPSIZE;
+	if (input->isPushUp() && !UpWall()) scrolly -= CHIPSIZE;
+	if (input->isPushDown() && !DownWall()) scrolly += CHIPSIZE;
 }
 
 bool Player::RightWall() {
-	int px = scrollx / 32;
-	int py = scrolly / 32;
+	int px = scrollx / CHIPSIZE;
+	int py = scrolly / CHIPSIZE;
 	if (mapdata[py][px + 1].mapData == 1) return true;
 	return false;
 }
 
 bool Player::LeftWall() {
-	int px = scrollx / 32;
-	int py = scrolly / 32;
+	int px = scrollx / CHIPSIZE;
+	int py = scrolly / CHIPSIZE;
 	if (mapdata[py][px - 1].mapData == 1) return true;
 	return false;
 }
 
 bool Player::UpWall() {
-	int px = scrollx / 32;
-	int py = scrolly / 32;
+	int px = scrollx / CHIPSIZE;
+	int py = scrolly / CHIPSIZE;
 	if (mapdata[py - 1][px].mapData == 1) return true;
 	return false;
 }
 
 bool Player::DownWall() {
-	int px = scrollx / 32;
-	int py = scrolly / 32;
+	int px = scrollx / CHIPSIZE;
+	int py = scrolly / CHIPSIZE;
 	if (mapdata[py + 1][px].mapData == 1) return true;
 	return false;
 }

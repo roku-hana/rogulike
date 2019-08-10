@@ -18,6 +18,12 @@ enum MAP_KIND {
 	GOAL,
 };
 
+const int CHIPSIZE = 32;
+const int DRAW_STARTPOS_X = 160;
+const int DRAW_STARTPOS_Y = 96;
+const int DRAW_CHIPNUM_X = 5;
+const int DRAW_CHIPNUM_Y = 4;
+
 struct DungeonMap_RL
 {
 
@@ -28,8 +34,8 @@ struct DungeonMap_RL
 	//生成される部屋のサイズ
 	size_t roomLengthMinX = 10; //部屋のX座標の最小サイズ
 	size_t roomLengthMinY = 8; //部屋のY座標の最小サイズ
-	size_t roomLengthRandX = 2; //部屋のX座標のサイズ加算
-	size_t roomLengthRandY = 2; //部屋のY座標のサイズ加算
+	size_t roomLengthRandX = 5; //部屋のX座標のサイズ加算
+	size_t roomLengthRandY = 5; //部屋のY座標のサイズ加算
 
 	size_t mapDivCount{}; //マップの区分け数 (部屋の個数) 0~nまでの部屋ID
 
@@ -90,10 +96,5 @@ private:
 	static int start;  //後で消す
 	int sx, sy;
 	int gx, gy;
-	const int CHIPSIZE = 32;
-	const int DRAW_STARTPOS_X = 160;
-	const int DRAW_STARTPOS_Y = 96;
-	const int DRAW_CHIPNUM_X = 5;
-	const int DRAW_CHIPNUM_Y = 4;
 };
 #endif
