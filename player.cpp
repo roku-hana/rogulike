@@ -22,10 +22,10 @@ void Player::updateActor() {
 }
 
 void Player::ActorInput(InputManager* input) {
-	if (input->isPushRight() && !RightWall()) scrollx += CHIPSIZE;
-	if (input->isPushLeft() && !LeftWall()) scrollx -= CHIPSIZE;
-	if (input->isPushUp() && !UpWall()) scrolly -= CHIPSIZE;
-	if (input->isPushDown() && !DownWall()) scrolly += CHIPSIZE;
+	if ((input->isPushRight() || RightMove(input)) && !RightWall()) scrollx += CHIPSIZE;
+	if ((input->isPushLeft() || LeftMove(input)) && !LeftWall()) scrollx -= CHIPSIZE;
+	if ((input->isPushUp() || UpMove(input)) && !UpWall()) scrolly -= CHIPSIZE;
+	if ((input->isPushDown() || DownMove(input)) && !DownWall()) scrolly += CHIPSIZE;
 }
 
 bool Player::RightWall() {
@@ -53,5 +53,41 @@ bool Player::DownWall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
 	if (mapdata[py + 1][px].mapData == 1) return true;
+	return false;
+}
+
+bool Player::RightMove(InputManager* input) {
+	static int time = 0;
+	if (input->isPushRight(0)) time++;
+	else time = 0;
+
+	if (time % 360 == 0) return true;
+	return false;
+}
+
+bool Player::LeftMove(InputManager* input) {
+	static int time = 0;
+	if (input->isPushLeft(0)) time++;
+	else time = 0;
+
+	if (time % 360 == 0) return true;
+	return false;
+}
+
+bool Player::UpMove(InputManager* input) {
+	static int time = 0;
+	if (input->isPushUp(0)) time++;
+	else time = 0;
+
+	if (time % 360 == 0) return true;
+	return false;
+}
+
+bool Player::DownMove(InputManager* input) {
+	static int time = 0;
+	if (input->isPushDown(0)) time++;
+	else time = 0;
+
+	if (time % 360 == 0) return true;
 	return false;
 }
