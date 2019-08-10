@@ -203,7 +203,7 @@ void MapData::draw(int x, int y) {
 	size_t maxy = y / CHIPSIZE + DRAW_CHIPNUM_Y;
 	for (size_t i = miny; i < maxy; ++i) {
 		for (size_t j = minx; j < maxx; ++j) {
-			size_t kind = maprl[i][j].GetMapData();
+			size_t kind = maprl[i][j].mapData;
 			int posy = i - miny;
 			int posx = j - minx;
 			switch (kind) {
@@ -230,11 +230,15 @@ void MapData::DrawTransparentMaze(int x, int y) {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void MapData::DrawWall() {
+void MapData::DrawTempMap() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 	for (size_t y = 0; y < MAPY_RLk; y++) {
 		for (size_t x = 0; x < MAPX_RLk; x++) {
-			if(maprl[y][x].GetMapData() == 1) DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(255, 255, 0), TRUE);
+			size_t kind = maprl[y][x].mapData;
+			switch (kind) {
+			case WALL: DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(255, 255, 0), TRUE); break;
+			case GOAL: DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(255, 0, 0), TRUE); break;
+			}
 		}
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);

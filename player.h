@@ -24,9 +24,9 @@ private:
 	int scrollx, scrolly;
 	int gh[12];
 	//Ç±ÇÃílÇÕå„Ç≈ïœçXÇ∑ÇÈ
-	const int MAX_SCROLLX = 1280;
-	const int MAX_SCROLLy = 512;
-	const int MIN_SCROLL = 96;
+	//const int MAX_SCROLLX = 1280;
+	//const int MAX_SCROLLy = 512;
+	//const int MIN_SCROLL = 96;
 	const vector<vector<RogueLikeMap>> mapdata;
 	bool RightWall();
 	bool LeftWall();

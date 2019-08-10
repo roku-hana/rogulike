@@ -72,7 +72,7 @@ public:
 	MapData();
 	void draw(int x, int y);
 	void DrawTransparentMaze(int x, int y);
-	void DrawWall();
+	void DrawTempMap();
 	int GetStartX() { return sx; }
 	int GetStartY() { return sy; }
 	vector<vector<RogueLikeMap>>& GetMap() { return maprl; }

@@ -48,7 +48,7 @@ void GameStage::update() {
 void GameStage::draw() {
 	mp->draw(player->GetScrollX(), player->GetScrollY());
 	mp->DrawTransparentMaze(player->GetScrollX() / 32, player->GetScrollY() / 32);
-	mp->DrawWall();
+	mp->DrawTempMap();
 
 	for (auto sprite : mSprites)
 	{
