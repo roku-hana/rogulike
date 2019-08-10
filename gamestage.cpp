@@ -6,10 +6,9 @@
 
 GameStage::GameStage(InputManager* temp):input(temp) {
 	mp = new MapData();
-	player = new Player(this);
+	player = new Player(this, mp->GetMap());
 	player->SetScrollX(mp->GetStartX() * 32);
 	player->SetScrollY(mp->GetStartY() * 32);
-
 }
 
 GameStage::~GameStage() {

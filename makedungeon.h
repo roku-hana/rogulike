@@ -63,7 +63,6 @@ public:
 	//書き換え可能なマップ
 	size_t mapData = 1;
 
-	size_t GetMapData() { return mapData; }
 };
 
 class MapData {
@@ -72,6 +71,7 @@ public:
 	void draw(int x, int y);
 	int GetStartX() { return sx; }
 	int GetStartY() { return sy; }
+	vector<vector<RogueLikeMap>>& GetMap() { return maprl; }
 private:
 	/*マップ系データ*/
 	const size_t MAPX_RLk = 50; //マップ縦サイズ

@@ -201,7 +201,7 @@ void MapData::draw(int x, int y) {
 	size_t maxy = y / 32 + 3;
 	for (size_t i = miny; i < maxy; ++i) {
 		for (size_t j = minx; j < maxx; ++j) {
-			size_t kind = maprl[i][j].GetMapData();
+			size_t kind = maprl[i][j].mapData;
 			switch (kind) {
 			case WALL: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE + 160, wall, TRUE); break;
 			case PATH: DrawGraph((j - minx) * CHIPSIZE + 224, (i - miny) * CHIPSIZE+ 160, floor, TRUE); break;

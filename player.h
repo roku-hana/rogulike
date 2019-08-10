@@ -2,13 +2,16 @@
 #define __PLAYER_H__
 
 #include"Actor.h"
+#include<vector>
+using namespace std;
 
 class GameStage;
 class InputManager;
+class RogueLikeMap;
 
 class Player : public Actor{
 public:
-	Player(GameStage* game);
+	Player(GameStage* game, vector<vector<RogueLikeMap>>& map);
 	~Player();
 
 	void updateActor() override;
@@ -24,6 +27,11 @@ private:
 	const int MAX_SCROLLX = 1280;
 	const int MAX_SCROLLy = 512;
 	const int MIN_SCROLL = 96;
+	const vector<vector<RogueLikeMap>> mapdata;
+	bool RightWall();
+	bool LeftWall();
+	bool UpWall();
+	bool DownWall();
 };
 
 #endif
