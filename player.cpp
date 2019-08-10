@@ -9,7 +9,7 @@ Player::Player(GameStage* game) :Actor(game){
 	SpriteComponent* sc = new SpriteComponent(this, 150);
 	sc->SetImage(gh);
 	
-	SetPosition(Vector2(320, 256));
+	SetPosition(Vector2(320, 224));
 }
 
 Player::~Player() {
@@ -22,8 +22,8 @@ void Player::updateActor() {
 
 void Player::ActorInput(InputManager* input) {
 	//Œã‚Å•Ç‚Å‚¤‚²‚¯‚È‚¢‚æ‚¤‚É•ÏX‚·‚é
-	if (input->isPushRight() && scrollx < MAX_SCROLLX) scrollx += 40;
-	if (input->isPushLeft() && scrollx > MIN_SCROLLX) scrollx -= 40;
-	if (input->isPushUp() && scrolly > MIN_SCROLLY) scrolly -= 40;
-	if (input->isPushDown() && scrolly < MAX_SCROLLY) scrolly += 40;
+	if (input->isPushRight()) scrollx += 32;
+	if (input->isPushLeft()) scrollx -= 32;
+	if (input->isPushUp()) scrolly -= 32;
+	if (input->isPushDown()) scrolly += 32;
 }

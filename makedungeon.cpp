@@ -183,11 +183,12 @@ MapData::MapData()
 	//É_ÉìÉWÉáÉìê∂ê¨
 	while (rogueLikeMapMake(&dng, maprl));
 
+	//å„Ç≈âÊëúç∑Çµë÷Ç¶ÇÈ
 	if (floor == 0) {
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-miti.png", 1, 1, 1, 40, 40, &floor);
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-yama2.png", 1, 1, 1, 40, 40, &wall);
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-umi.png", 1, 1, 1, 40, 40, &goal);
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-mori.png", 1, 1, 1, 40, 40, &start);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-miti.png", 1, 1, 1, 32, 32, &floor);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-yama2.png", 1, 1, 1, 32, 32, &wall);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-umi.png", 1, 1, 1, 32, 32, &goal);
+		LoadDivGraph("Images\\640x480\\pipo-map001_at-mori.png", 1, 1, 1, 32, 32, &start);
 	}
 	sx = dng.startx;
 	sy = dng.starty;
@@ -196,23 +197,24 @@ MapData::MapData()
 }
 
 void MapData::draw(int x, int y) {
-	size_t minx = x / CHIPSIZE - 8;
-	size_t miny = y / CHIPSIZE - 6;
-	size_t maxx = x / CHIPSIZE + 8;
-	size_t maxy = y / CHIPSIZE + 6;
+	size_t minx = x / CHIPSIZE - DRAW_CHIPNUM_X;
+	size_t miny = y / CHIPSIZE - DRAW_CHIPNUM_Y;
+	size_t maxx = x / CHIPSIZE + DRAW_CHIPNUM_X;
+	size_t maxy = y / CHIPSIZE + DRAW_CHIPNUM_Y;
 	for (size_t i = miny; i < maxy; ++i) {
 		for (size_t j = minx; j < maxx; ++j) {
 			size_t kind = maprl[i][j].GetMapData();
 			int posy = i - miny;
 			int posx = j - minx;
 			switch (kind) {
-			case WALL: DrawGraph(posx * CHIPSIZE, posy * CHIPSIZE, wall, TRUE); break;
-			case PATH: DrawGraph(posx * CHIPSIZE, posy * CHIPSIZE, floor, TRUE); break;
-			case START: DrawGraph(posx * CHIPSIZE, posy * CHIPSIZE, start, TRUE); break;
-			case GOAL: DrawGraph(posx * CHIPSIZE, posy * CHIPSIZE, goal, TRUE); break;
+			case WALL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, wall, TRUE); break;
+			case PATH: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, floor, TRUE); break;
+			case START: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, start, TRUE); break;
+			case GOAL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, goal, TRUE); break;
 		}
 		}
 	}
+
 }
 
 void MapData::DrawTransparentMaze(int x, int y) {
@@ -225,6 +227,16 @@ void MapData::DrawTransparentMaze(int x, int y) {
 		}
 	}
 	DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(0, 0, 255), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void MapData::DrawWall() {
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+	for (size_t y = 0; y < MAPY_RLk; y++) {
+		for (size_t x = 0; x < MAPX_RLk; x++) {
+			if(maprl[y][x].GetMapData() == 1) DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(255, 255, 0), TRUE);
+		}
+	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 

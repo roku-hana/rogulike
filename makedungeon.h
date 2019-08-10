@@ -73,6 +73,7 @@ public:
 	MapData();
 	void draw(int x, int y);
 	void DrawTransparentMaze(int x, int y);
+	void DrawWall();
 	int GetStartX() { return sx; }
 	int GetStartY() { return sy; }
 private:
@@ -89,6 +90,10 @@ private:
 	static int start;  //å„Ç≈è¡Ç∑
 	int sx, sy;
 	int gx, gy;
-	const int CHIPSIZE = 40;
+	const int CHIPSIZE = 32;
+	const int DRAW_STARTPOS_X = 160;
+	const int DRAW_STARTPOS_Y = 96;
+	const int DRAW_CHIPNUM_X = 5;
+	const int DRAW_CHIPNUM_Y = 4;
 };
 #endif

@@ -21,10 +21,10 @@ private:
 	int scrollx, scrolly;
 	int gh[12];
 	//Ç±ÇÃílÇÕå„Ç≈ïœçXÇ∑ÇÈ
-	const int MAX_SCROLLX = 2240;
-	const int MAX_SCROLLY = 1680;
-	const int MIN_SCROLLX = 320;
-	const int MIN_SCROLLY = 240;
+	//const int MAX_SCROLLX = 2240;
+	//const int MAX_SCROLLY = 1680;
+	//const int MIN_SCROLLX = 320;
+	//const int MIN_SCROLLY = 240;
 };
 
 #endif
