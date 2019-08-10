@@ -10,7 +10,7 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 	SpriteComponent* sc = new SpriteComponent(this, 150);
 	sc->SetImage(gh);
 	
-	SetPosition(Vector2(320, 256));
+	SetPosition(Vector2(320, 224));
 }
 
 Player::~Player() {
