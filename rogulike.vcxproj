@@ -163,7 +163,6 @@
     <ClCompile Include="inputcomponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="makedungeon.cpp" />
-    <ClCompile Include="mazedig.cpp" />
     <ClCompile Include="movecomponent.cpp" />
     <ClCompile Include="pause.cpp" />
     <ClCompile Include="play.cpp" />

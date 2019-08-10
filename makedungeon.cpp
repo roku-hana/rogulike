@@ -182,6 +182,7 @@ MapData::MapData()
 	transparentMap(MAPY_RLk, vector<int>(MAPX_RLk, 0)){
 	//ƒ_ƒ“ƒWƒ‡ƒ“¶¬
 	while (rogueLikeMapMake(&dng, maprl));
+	mazeMake(maprl, 1, 0);
 
 	//Œã‚Å‰æ‘œ·‚µ‘Ö‚¦‚é
 	if (floor == 0) {
