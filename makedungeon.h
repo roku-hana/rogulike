@@ -86,8 +86,8 @@ public:
 private:
 	/*マップ系データ*/
 	//マップの縦サイズと横サイズが同じでないとエラーになる
-	const size_t MAPX_RLk = 64; //マップ縦サイズ
-	const size_t MAPY_RLk = 48;   //マップ横サイズ
+	const size_t MAPX_RLk = 63; //マップ縦サイズ
+	const size_t MAPY_RLk = 47;   //マップ横サイズ
 	DungeonMap_RL dng; //ダンジョン
 	vector<vector<RogueLikeMap>> maprl;
 	vector<vector<int>> transparentMap;
@@ -99,81 +99,4 @@ private:
 	int gx, gy;
 };
 
-//穴掘り法
-
-//穴掘り
-void mazeDig(vector<vector<RogueLikeMap>>& map_, size_t x_, size_t y_, const size_t id_wall_, const size_t id_empty_)
-{
-	int32_t dx, dy;
-	size_t random = size_t(rand()), counter = 0;
-	while (counter < 4) {
-		switch ((random + counter) & 3)
-		{
-		case 0:dx = 0; dy = -2; break;
-		case 1:dx = -2; dy = 0; break;
-		case 2:dx = 0; dy = 2; break;
-		case 3:dx = 2; dy = 0; break;
-		default:dx = 0; dy = 0; break;
-		}
-		if (x_ + dx <= 0 || y_ + dy <= 0 || x_ + dx >= map_.size() - 1 || y_ + dy >= map_.data()->size() - 1 || map_[x_ + dx][y_ + dy].mapData== id_empty_) {
-			++counter;
-		}
-		else if (map_[x_ + dx][y_ + dy].mapData == id_wall_) {
-			map_[x_ + (dx >> 1)][y_ + (dy >> 1)] = id_empty_;
-			map_[x_ + dx][y_ + dy] = id_empty_;
-			x_ += dx;
-			y_ += dy;
-			counter = 0;
-			random = size_t(rand());
-		}
-	}
-	return;
-}
-
-//迷路生成
-const size_t mazeMakeLoop(vector<vector<RogueLikeMap>>& map_, const size_t id_wall_, const size_t id_empty_, std::unique_ptr<size_t[]>& select_x, std::unique_ptr<size_t[]>& select_y)
-{
-	size_t ii = 0;
-	const size_t i_max = map_.size() - 1;
-	const size_t j_max = map_.data()->size() - 1;
-
-	for (size_t i = 1; i < i_max; i += 2)
-		for (size_t j = 1; j < j_max; j += 2) {
-			if (map_[i][j].mapData != id_empty_) continue;
-			if ((i >= 2 && map_[i - 2][j].mapData == id_wall_) || (j >= 2 && map_[i][j - 2].mapData == id_wall_)) {
-				select_x[ii] = i;
-				select_y[ii] = j;
-				++ii;
-			}
-			else if ((j == map_.data()->size() - 2) && (i == map_.size() - 2)) break;
-			else if ((i + 2 < map_.size() && map_[i + 2][j].mapData == id_wall_) || (j + 2 < map_.data()->size() && map_[i][j + 2].mapData == id_wall_)) {
-				select_x[ii] = i;
-				select_y[ii] = j;
-				++ii;
-			}
-		}
-	return ii;
-}
-void mazeMake(vector<vector<RogueLikeMap>>& map_, const size_t id_wall_, const size_t id_empty_)
-{
-	if (map_.size() <= 2 || map_.data()->size() <= 2) return;
-	if ((map_.size() & 1) == 0 || (map_.data()->size() & 1) == 0) return;
-
-	map_[1][1] = id_empty_;
-
-	size_t a, ii;
-	std::unique_ptr<size_t[]> select_x(new size_t[map_.size() * map_.data()->size()]);
-	std::unique_ptr<size_t[]> select_y(new size_t[map_.size() * map_.data()->size()]);
-
-	//座標を選ぶ
-	while (true)
-	{
-		ii = mazeMakeLoop(map_, id_wall_, id_empty_, select_x, select_y);
-		if (ii == 0) break;
-		srand((unsigned int)time(nullptr));
-		a = size_t(rand()) % ii;
-		mazeDig(map_, select_x[a], select_y[a], id_wall_, id_empty_);
-	}
-	return;
-}
 #endif
