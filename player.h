@@ -25,12 +25,16 @@ public:
 private:
 	int scrollx, scrolly;
 	int gh[12];
+	int count;
 	const vector<vector<RogueLikeMap>> mapdata;
 	bool RightWall();
 	bool LeftWall();
 	bool UpWall();
 	bool DownWall();
+	void Move();
+	bool CanMove();
 	Direction dir;
+	bool ismoving;
 };
 
 #endif

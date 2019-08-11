@@ -199,13 +199,13 @@ MapData::MapData()
 void MapData::draw(int x, int y) {
 	size_t minx = x / CHIPSIZE - DRAW_CHIPNUM_X >= 0 ? x / CHIPSIZE - DRAW_CHIPNUM_X : 0;
 	size_t miny = y / CHIPSIZE - DRAW_CHIPNUM_Y >= 0 ? y / CHIPSIZE - DRAW_CHIPNUM_Y : 0;
-	size_t maxx = x / CHIPSIZE + DRAW_CHIPNUM_X <= MAPX_RLk ? x / CHIPSIZE + DRAW_CHIPNUM_X : MAPX_RLk;
-	size_t maxy = y / CHIPSIZE + DRAW_CHIPNUM_Y <= MAPY_RLk ? y / CHIPSIZE + DRAW_CHIPNUM_Y : MAPY_RLk;
+	size_t maxx = (size_t) x / CHIPSIZE + DRAW_CHIPNUM_X <= MAPX_RLk ? x / CHIPSIZE + DRAW_CHIPNUM_X : MAPX_RLk;
+	size_t maxy = (size_t) y / CHIPSIZE + DRAW_CHIPNUM_Y <= MAPY_RLk ? y / CHIPSIZE + DRAW_CHIPNUM_Y : MAPY_RLk;
 	size_t addx = 0, addy = 0;
 	if (minx == 0) addx = x / CHIPSIZE - DRAW_CHIPNUM_X;
 	if (miny == 0) addy = y / CHIPSIZE - DRAW_CHIPNUM_Y;
-	if (maxx == MAPX_RLk) addx = x / CHIPSIZE + DRAW_CHIPNUM_X;
-	if (maxy == MAPY_RLk) addy = y / CHIPSIZE + DRAW_CHIPNUM_Y;
+	if (maxx == MAPX_RLk) addx = -1 * (x / CHIPSIZE - MAPX_RLk + DRAW_CHIPNUM_X);
+	if (maxy == MAPY_RLk) addy = -1 * (y / CHIPSIZE - MAPY_RLk + DRAW_CHIPNUM_Y);
 	for (size_t i = miny; i < maxy; ++i) {
 		for (size_t j = minx; j < maxx; ++j) {
 			size_t kind = maprl[i][j].mapData;

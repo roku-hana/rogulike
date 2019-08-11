@@ -15,6 +15,8 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 	
 	SetPosition(Vector2(320, 224));
 	dir = DOWN;
+	count = 0; 
+	ismoving = false;
 }
 
 Player::~Player() {
@@ -22,25 +24,33 @@ Player::~Player() {
 }
 
 void Player::updateActor() {
-	
+	Move();
 }
 
 void Player::ActorInput(InputManager* input) {
-	if (input->isPushRight() && !RightWall()) {
-		scrollx += CHIPSIZE; 
+	if (input->isPushRight(0)) {
 		dir = RIGHT;
+		if (count == 0) count = GetNowCount();
+		ismoving = true;
 	}
-	if (input->isPushLeft() && !LeftWall()) {
-		scrollx -= CHIPSIZE;
+	else if (input->isPushLeft(0)) {
 		dir = LEFT;
+		if (count == 0) count = GetNowCount();
+		ismoving = true;
 	}
-	if (input->isPushUp() && !UpWall()) {
-		scrolly -= CHIPSIZE;
+	else if (input->isPushUp(0)) {
 		dir = UP;
+		if (count == 0) count = GetNowCount();
+		ismoving = true;
 	}
-	if (input->isPushDown() && !DownWall()) {
-		scrolly += CHIPSIZE;
+	else if (input->isPushDown(0)) {
 		dir = DOWN;
+		if (count == 0) count = GetNowCount();
+		ismoving = true;
+	}
+	else {
+		count = 0;
+		ismoving = false;
 	}
 }
 
@@ -69,5 +79,24 @@ bool Player::DownWall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
 	if (mapdata[py + 1][px].mapData == 1) return true;
+	return false;
+}
+
+void Player::Move() {
+	if (ismoving) {
+		if (CanMove()) {
+			switch (dir) {
+			case UP: if (!UpWall()) scrolly -= CHIPSIZE; break;
+			case DOWN: if (!DownWall()) scrolly += CHIPSIZE; break;
+			case RIGHT: if (!RightWall()) scrollx += CHIPSIZE; break;
+			case LEFT: if (!LeftWall()) scrollx -= CHIPSIZE; break;
+			default: break;
+			}
+		}
+	}
+}
+
+bool Player::CanMove() {
+	if (GetNowCount() - count <= 30 || GetNowCount() - count >= 300) return true;
 	return false;
 }

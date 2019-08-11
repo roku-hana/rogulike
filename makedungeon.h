@@ -28,18 +28,17 @@ struct DungeonMap_RL
 {
 
 	//生成される部屋の数 (正確に言うと生成される区域の数)
-	size_t divCountMin = 3; //マップの区分け最小数
+	size_t divCountMin = 4; //マップの区分け最小数
 	size_t divCountRand = 4; //マップの区分け数加算
 
 	//生成される部屋のサイズ
-	size_t roomLengthMinX = 10; //部屋のX座標の最小サイズ
-	size_t roomLengthMinY = 8; //部屋のY座標の最小サイズ
+	size_t roomLengthMinX = 8; //部屋のX座標の最小サイズ
+	size_t roomLengthMinY = 7; //部屋のY座標の最小サイズ
 	size_t roomLengthRandX = 5; //部屋のX座標のサイズ加算
 	size_t roomLengthRandY = 5; //部屋のY座標のサイズ加算
 
 	size_t mapDivCount{}; //マップの区分け数 (部屋の個数) 0~nまでの部屋ID
 
-	//8 = divCountMin + divCountRand として、動的確保すれば、ダンジョンのサイズを好きに変えられるかもしれない?
 	size_t mapDiv[8][4]{}; //マップの区域 [部屋ID][X終点 , Y終点 , X始点 , Y始点]
 	size_t mapRoom[8][4]{}; //マップの部屋 [部屋ID][X終点 , Y終点 , X始点 , Y始点]
 	size_t mapRoad[8][4]{}; //マップの道 [部屋ID(前)][繋がる先の部屋ID(後) , (0.X座標 , 1.Y座標) , (前)側の通路の位置 , (後)側の通路の位置]
@@ -85,8 +84,8 @@ public:
 private:
 	/*マップ系データ*/
 	//マップの縦サイズと横サイズが同じでないとエラーになる
-	const size_t MAPX_RLk = 64; //マップ縦サイズ
-	const size_t MAPY_RLk = 48;   //マップ横サイズ
+	const size_t MAPX_RLk = 63; //マップ縦サイズ
+	const size_t MAPY_RLk = 47;   //マップ横サイズ
 	DungeonMap_RL dng; //ダンジョン
 	vector<vector<RogueLikeMap>> maprl;
 	vector<vector<int>> transparentMap;
