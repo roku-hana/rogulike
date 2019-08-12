@@ -9,7 +9,7 @@
 //tewicontrolファイルを見て、長押し移動を実装する
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
-	if (-1 == LoadDivGraph("Images\\cat.png", 12, 3, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
+	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 40, 32, gh)) MSG("プレイヤー画像読み込みエラー");
 	SpriteComponent* sc = new PlayerSprite(this, 150);
 	sc->SetImage(gh);
 	
@@ -29,22 +29,30 @@ void Player::updateActor() {
 
 void Player::ActorInput(InputManager* input) {
 	if (input->isPushRight(0)) {
-		dir = RIGHT;
+		if (input->isPushUp(0))dir = UP_RIGHT;
+		else if (input->isPushDown(0)) dir = DOWN_RIGHT;
+		else dir = RIGHT;
 		if (count == 0) count = GetNowCount();
 		ismoving = true;
 	}
 	else if (input->isPushLeft(0)) {
-		dir = LEFT;
+		if (input->isPushUp(0)) dir = UP_LEFT;
+		else if (input->isPushDown(0)) dir = DOWN_LEFT;
+		else dir = LEFT;
 		if (count == 0) count = GetNowCount();
 		ismoving = true;
 	}
 	else if (input->isPushUp(0)) {
-		dir = UP;
+		if (input->isPushRight(0)) dir = UP_RIGHT;
+		else if (input->isPushLeft(0)) dir = UP_LEFT;
+		else dir = UP;
 		if (count == 0) count = GetNowCount();
 		ismoving = true;
 	}
 	else if (input->isPushDown(0)) {
-		dir = DOWN;
+		if (input->isPushRight(0)) dir = DOWN_RIGHT;
+		else if (input->isPushLeft(0)) dir = DOWN_LEFT;
+		else dir = DOWN;
 		if (count == 0) count = GetNowCount();
 		ismoving = true;
 	}
@@ -82,6 +90,34 @@ bool Player::DownWall() {
 	return false;
 }
 
+bool Player::Up_Right_Wall() {
+	int px = scrollx / CHIPSIZE;
+	int py = scrolly / CHIPSIZE;
+	if (mapdata[py - 1][px + 1].mapData == 1) return true;
+	return false;
+}
+
+bool Player::Up_Left_Wall() {
+	int px = scrollx / CHIPSIZE;
+	int py = scrolly / CHIPSIZE;
+	if (mapdata[py - 1][px - 1].mapData == 1) return true;
+	return false;
+}
+
+bool Player::Down_Right_Wall() {
+	int px = scrollx / CHIPSIZE;
+	int py = scrolly / CHIPSIZE;
+	if (mapdata[py + 1][px + 1].mapData == 1) return true;
+	return false;
+}
+
+bool Player::Down_Left_Wall() {
+	int px = scrollx / CHIPSIZE;
+	int py = scrolly / CHIPSIZE;
+	if (mapdata[py + 1][px - 1].mapData == 1) return true;
+	return false;
+}
+
 void Player::Move() {
 	if (ismoving) {
 		if (CanMove()) {
@@ -90,6 +126,10 @@ void Player::Move() {
 			case DOWN: if (!DownWall()) scrolly += CHIPSIZE; break;
 			case RIGHT: if (!RightWall()) scrollx += CHIPSIZE; break;
 			case LEFT: if (!LeftWall()) scrollx -= CHIPSIZE; break;
+			case UP_RIGHT: if (!Up_Right_Wall()) { scrollx += CHIPSIZE; scrolly -= CHIPSIZE; } break;
+			case UP_LEFT: if (!Up_Left_Wall()) { scrollx -= CHIPSIZE; scrolly -= CHIPSIZE; } break;
+			case DOWN_RIGHT: if (!Down_Right_Wall()) { scrollx += CHIPSIZE; scrolly += CHIPSIZE; } break;
+			case DOWN_LEFT: if (!Down_Left_Wall()) {scrollx -= CHIPSIZE; scrolly += CHIPSIZE; } break;
 			default: break;
 			}
 		}

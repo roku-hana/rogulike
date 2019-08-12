@@ -24,13 +24,17 @@ public:
 	Direction GetDir() { return dir; }
 private:
 	int scrollx, scrolly;
-	int gh[12];
+	int gh[24];
 	int count;
 	const vector<vector<RogueLikeMap>> mapdata;
 	bool RightWall();
 	bool LeftWall();
 	bool UpWall();
 	bool DownWall();
+	bool Up_Right_Wall();
+	bool Up_Left_Wall();
+	bool Down_Right_Wall();
+	bool Down_Left_Wall();
 	void Move();
 	bool CanMove();
 	Direction dir;
