@@ -7,8 +7,8 @@
 GameStage::GameStage(InputManager* temp):input(temp) {
 	mp = new MapData();
 	player = new Player(this, mp->GetMap());
-	player->SetScrollX(mp->GetStartX() * 32);
-	player->SetScrollY(mp->GetStartY() * 32);
+	player->SetScrollX(mp->GetStartX() * CHIPSIZE);
+	player->SetScrollY(mp->GetStartY() * CHIPSIZE);
 }
 
 GameStage::~GameStage() {
@@ -50,7 +50,7 @@ void GameStage::update() {
 void GameStage::draw() {
 	mp->draw(player->GetScrollX(), player->GetScrollY());
 	mp->DrawTransparentMaze(player->GetScrollX() / 32, player->GetScrollY() / 32);
-	mp->DrawTempMap();
+	//mp->DrawTempMap();
 
 	for (auto sprite : mSprites)
 	{

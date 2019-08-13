@@ -7,7 +7,7 @@
 
 Play::Play(Game* pManager, SceneManager* sManager) :
 	GameScene(pManager, sManager) {
-	back = LoadGraph("Images\\play.png");
+	//back = LoadGraph("Images\\play.png");
 	gamestage = pManager->getGameStage();
 }
 
@@ -22,8 +22,8 @@ void Play::update() {
 }
 
 void Play::draw() {
-	DrawGraph(0, 0, back, TRUE);
-	DrawString(0, 50, "Start or Xキー:PAUSE画面に移動", GetColor(0, 0, 0));
+	//DrawGraph(0, 0, back, TRUE);
+	DrawString(0, 50, "Start or Xキー:PAUSE画面に移動", GetColor(255, 255, 255));
 	gamestage->draw();
 	
 }

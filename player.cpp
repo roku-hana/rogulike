@@ -9,7 +9,7 @@
 //tewicontrolファイルを見て、長押し移動を実装する
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
-	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 40, 32, gh)) MSG("プレイヤー画像読み込みエラー");
+	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
 	SpriteComponent* sc = new PlayerSprite(this, 150);
 	sc->SetImage(gh);
 	

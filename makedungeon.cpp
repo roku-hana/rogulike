@@ -1,8 +1,11 @@
 #include "makedungeon.h"
 #include<DxLib.h>
+#include<queue>
 
 int GetRandomNum(int a, int b) {
+
 	return GetRand(b - a) + a;
+
 }
 
 /*ローグライク生成関数*/
@@ -72,7 +75,7 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 	
 	/*部屋を生成する処理*/
 	for (size_t i = 0; i < dng->mapDivCount; ++i) {//区分け
-		dng->mapRoomPlayer[i] = 0;//プレイヤー侵入初期化
+		//dng->mapRoomPlayer[i] = 0;//プレイヤー侵入初期化
 		dng->mapRoom[i][2] = dng->mapDiv[i][2]; //区分けX始点をマップX始点へ代入
 		dng->mapRoom[i][3] = dng->mapDiv[i][3]; //区分けY始点をマップY始点へ代入
 
@@ -107,7 +110,8 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 
 		for (size_t j = dng->mapRoom[i][2]; j < dng->mapRoom[i][0]; ++j) {
 			for (size_t k = dng->mapRoom[i][3]; k < dng->mapRoom[i][1]; ++k) {
-				maprl[j][k].mapData = 0;
+				maprl[j][k].mapData = i + 20;
+				dng->count[i]++;
 			}
 		}
 	}
@@ -164,43 +168,37 @@ int rogueLikeMapMake(DungeonMap_RL* const dng, T& maprl)
 
 	}
 
-	//スタート、ゴール位置設定
-	int div;
-	if (dng->mapDivCount > 0) div = dng->mapDivCount - 1;
-	else div = dng->mapDivCount;
-	dng->starty = GetRandomNum(dng->mapRoom[0][2], dng->mapRoom[0][0] - 1);
-	dng->startx = GetRandomNum(dng->mapRoom[0][3], dng->mapRoom[0][1] - 1);
-	dng->goaly = GetRandomNum(dng->mapRoom[div][2], dng->mapRoom[div][0] - 1);
-	dng->goalx = GetRandomNum(dng->mapRoom[div][3], dng->mapRoom[div][1] - 1);
-	maprl[dng->starty][dng->startx] = 2;
-	maprl[dng->goaly][dng->goalx] = 3;
 	return 0;
 }
 
 MapData::MapData()
 	:maprl(MAPY_RLk, vector<RogueLikeMap>(MAPX_RLk, 0)),
 	transparentMap(MAPY_RLk, vector<int>(MAPX_RLk, 0)){
-	//ダンジョン生成
-	while (rogueLikeMapMake(&dng, maprl));
 
-	//後で画像差し替える
-	if (floor == 0) {
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-miti.png", 1, 1, 1, 32, 32, &floor);
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-yama2.png", 1, 1, 1, 32, 32, &wall);
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-umi.png", 1, 1, 1, 32, 32, &goal);
-		LoadDivGraph("Images\\640x480\\pipo-map001_at-mori.png", 1, 1, 1, 32, 32, &start);
+	sx = sy = gx = gy = 0;
+
+	minDestination = -1;
+	while (minDestination == -1) {
+		//ダンジョン生成
+		while (rogueLikeMapMake(&dng, maprl));
+		Decide_Start_Goal_Pos();
+		//スタートからゴールまでつながっているかチェックして、最短距離を記録しておく
+		minDestination = BreadthFirstSearch();
 	}
-	sx = dng.startx;
-	sy = dng.starty;
-	gx = dng.goalx;
-	gy = dng.goaly;
+	for (size_t y = 0; y < MAPY_RLk; y++) {
+		for (size_t x = 0; x < MAPX_RLk; x++) {
+			transparentMap[y][x] = maprl[y][x].mapData;
+		}
+	}
+
+	if (mapchip[0] == 0) LoadDivGraph("Images\\mapchip.png", 3, 3, 1, 32, 32, mapchip);
 }
 
 void MapData::draw(int x, int y) {
 	size_t minx = x / CHIPSIZE - DRAW_CHIPNUM_X >= 0 ? x / CHIPSIZE - DRAW_CHIPNUM_X : 0;
 	size_t miny = y / CHIPSIZE - DRAW_CHIPNUM_Y >= 0 ? y / CHIPSIZE - DRAW_CHIPNUM_Y : 0;
-	size_t maxx = (size_t) x / CHIPSIZE + DRAW_CHIPNUM_X <= MAPX_RLk ? x / CHIPSIZE + DRAW_CHIPNUM_X : MAPX_RLk;
-	size_t maxy = (size_t) y / CHIPSIZE + DRAW_CHIPNUM_Y <= MAPY_RLk ? y / CHIPSIZE + DRAW_CHIPNUM_Y : MAPY_RLk;
+	size_t maxx = (size_t)x / CHIPSIZE + DRAW_CHIPNUM_X < MAPX_RLk ? x / CHIPSIZE + DRAW_CHIPNUM_X : MAPX_RLk - 1;
+	size_t maxy = (size_t)y / CHIPSIZE + DRAW_CHIPNUM_Y < MAPY_RLk ? y / CHIPSIZE + DRAW_CHIPNUM_Y : MAPY_RLk - 1;
 	size_t addx = 0, addy = 0;
 	if (minx == 0) addx = x / CHIPSIZE - DRAW_CHIPNUM_X;
 	if (miny == 0) addy = y / CHIPSIZE - DRAW_CHIPNUM_Y;
@@ -211,29 +209,38 @@ void MapData::draw(int x, int y) {
 			size_t kind = maprl[i][j].mapData;
 			int posy = i - miny - addy;
 			int posx = j - minx - addx;
-			switch (kind) {
-			case WALL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, wall, TRUE); break;
-			case PATH: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, floor, TRUE); break;
-			case START: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, start, TRUE); break;
-			case GOAL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, goal, TRUE); break;
-		}
+			//部屋の描画
+			if (kind >= 20) DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[1], TRUE);
+			else {
+				switch (kind) {
+				case WALL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[0], TRUE); break;
+				case PATH:
+				case START:
+					DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[1], TRUE); break;
+				case GOAL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[2], TRUE); break;
+				}
+			}
 		}
 	}
-	DrawFormatString(200, 100, GetColor(255, 0, 0), "miny:%d, minx:%d", miny, minx);
-	DrawFormatString(200, 200, GetColor(255, 0, 0), "maxy:%d, maxx:%d", maxy, maxx);
-	DrawFormatString(200, 10, GetColor(255, 0, 0), "py:%d, px:%d", y, x);
+	//DrawFormatString(200, 100, GetColor(255, 0, 0), "miny:%d, minx:%d", miny, minx);
+	//DrawFormatString(200, 200, GetColor(255, 0, 0), "maxy:%d, maxx:%d", maxy, maxx);
+	//DrawFormatString(200, 10, GetColor(255, 0, 0), "py:%d, px:%d", y, x);
+	//DrawFormatString(500, 10, GetColor(255, 0, 0), "sx:%d, sy:%d", sx, sy);
 }
 
 void MapData::DrawTransparentMaze(int x, int y) {
 	//プレイヤーがすでに通った場所をチェックする
-	transparentMap[y][x] = 10;
+	int room = -1;
+	if (transparentMap[y][x] >= 20) room = transparentMap[y][x];
+	else transparentMap[y][x] = 10;
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 	for (size_t y = 0; y < MAPY_RLk; y++) {
 		for (size_t x = 0; x < MAPX_RLk; x++) {
-			if (transparentMap[y][x] == 10) DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(0, 0, 255), TRUE);
+			if (transparentMap[y][x] == 10 || transparentMap[y][x] == -1) DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(0, 0, 255), TRUE);
+			if (transparentMap[y][x] == room) transparentMap[y][x] = -1;
 		}
 	}
-	DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(0, 0, 255), TRUE);
+	DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(255, 255, 0), TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -243,15 +250,105 @@ void MapData::DrawTempMap() {
 		for (size_t x = 0; x < MAPX_RLk; x++) {
 			size_t kind = maprl[y][x].mapData;
 			switch (kind) {
-			case WALL: DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(255, 255, 0), TRUE); break;
-			case GOAL: DrawBox(x * 10, y * 10, x * 10 + 10, y * 10 + 10, GetColor(255, 0, 0), TRUE); break;
+			case WALL: DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(255, 255, 0), TRUE); break;
+			case START:DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(0, 0, 0), TRUE); break;
+			case GOAL: DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(255, 0, 0), TRUE); break;
 			}
 		}
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-int MapData::floor;
-int MapData::wall;
-int MapData::goal;
-int MapData::start;
+//ここから下、幅探索
+
+typedef pair<int, int> point_t;
+
+point_t operator+(const point_t& lhs, const point_t& rhs)
+{
+	point_t p = { lhs.first + rhs.first, lhs.second + rhs.second };
+	return p;
+}
+
+bool operator==(const point_t& lhs, const point_t& rhs)
+{
+	return (lhs.first == rhs.first) && (lhs.second == rhs.second);
+}
+
+bool is_in_field(int col, int row, const point_t& point)
+{
+	const int c = point.second;
+	const int r = point.first;
+	return (0 <= c && c < col) && (0 <= r && r < row);
+}
+
+int MapData::BreadthFirstSearch() {
+	// 2. 各マスの訪問履歴(memo)を作成する
+   //    memoにはスタートからそのマスまでの歩数を格納する(初期値は0)
+	vector<vector<int>> memo;
+	for (size_t i = 0; i < MAPY_RLk; ++i) {
+		vector<int> v(MAPX_RLk, 0);
+		memo.push_back(v);
+	}
+
+	// 移動方向(上下左右)
+	const point_t points[] = {
+		{ -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 },
+	};
+
+	// 3. スタートのマスをキューに格納する
+	const point_t s(sy, sx);
+	const point_t g(gy, gx);
+	queue<point_t> q;
+	q.push(s);
+
+	// 11. 4から10をキューが空になるまで繰り返す
+	while (!q.empty()) {
+		// 4. キューの先頭から一マス取得する
+		point_t cur = q.front(); q.pop();
+
+		// 5. 取り出したマスがゴールなら終了
+		if (cur == g) {
+			return memo[cur.first][cur.second];
+		}
+
+		for (const auto& point : points) {
+			// 6. 手順4で取り出したマス(cur)から上下左右の何れかに移動する
+			point_t next = cur + point;
+			// 7. 移動先のマス(next)が迷路外でないことを確認する(迷路外の場合は手順6に戻る)
+			if (is_in_field(MAPX_RLk, MAPY_RLk, next)) {
+				const int s = maprl[next.first][next.second].mapData;
+				// 8. 移動先のマス(next)が道またはゴールであることを確認する(道でもゴールでもない場合は手順6に戻る)
+				if (s == 0 || s == 3 || s >= 20) {
+					// 9. 移動先のマス(next)が未訪問であることを確認する(訪問済みの場合は手順6に戻る)
+					if (memo[next.first][next.second] == 0) {
+						// 10. 移動先のマス(next)をキューに格納し、訪問履歴を更新する
+						q.push(next);
+						memo[next.first][next.second] = memo[cur.first][cur.second] + 1;
+					}
+				}
+			}
+		}
+	}
+	return -1;
+}
+
+void MapData::Decide_Start_Goal_Pos() {
+	while (sx == gx && sy == gy) {
+		int s_divcount = GetRand(dng.mapDivCount - 1);
+		while (dng.count[s_divcount] == 1) s_divcount = GetRand(dng.mapDivCount - 1);
+		int temp_sy = GetRandomNum(dng.mapRoom[s_divcount][2], dng.mapRoom[s_divcount][0]);
+		int temp_sx = GetRandomNum(dng.mapRoom[s_divcount][3], dng.mapRoom[s_divcount][1]);
+		int g_divcount = GetRand(dng.mapDivCount - 1);
+		while (dng.count[g_divcount] == 1) g_divcount = GetRand(dng.mapDivCount - 1);
+		int temp_gy = GetRandomNum(dng.mapRoom[g_divcount][2], dng.mapRoom[g_divcount][0]);
+		int temp_gx = GetRandomNum(dng.mapRoom[g_divcount][3], dng.mapRoom[g_divcount][1]);
+		sx = temp_sx;
+		sy = temp_sy;
+		gx = temp_gx;
+		gy = temp_gy;
+	}
+	maprl[sy][sx] = 2;
+	maprl[gy][gx] = 3;
+}
+
+int MapData::mapchip[3];
