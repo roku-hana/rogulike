@@ -176,6 +176,7 @@ MapData::MapData()
 	transparentMap(MAPY_RLk, vector<int>(MAPX_RLk, 0)){
 
 	sx = sy = gx = gy = 0;
+	stageNum++;
 
 	minDestination = -1;
 	while (minDestination == -1) {
@@ -224,8 +225,9 @@ void MapData::draw(int x, int y) {
 	}
 	//DrawFormatString(200, 100, GetColor(255, 0, 0), "miny:%d, minx:%d", miny, minx);
 	//DrawFormatString(200, 200, GetColor(255, 0, 0), "maxy:%d, maxx:%d", maxy, maxx);
-	//DrawFormatString(200, 10, GetColor(255, 0, 0), "py:%d, px:%d", y, x);
+	//DrawFormatString(200, 10, GetColor(255, 0, 0), "py:%d, px:%d", y / CHIPSIZE, x / CHIPSIZE);
 	//DrawFormatString(500, 10, GetColor(255, 0, 0), "sx:%d, sy:%d", sx, sy);
+	//DrawFormatString(500, 30, GetColor(255, 0, 0), "gy:%d, gx:%d", gy, gx);
 }
 
 void MapData::DrawTransparentMaze(int x, int y) {
@@ -352,3 +354,4 @@ void MapData::Decide_Start_Goal_Pos() {
 }
 
 int MapData::mapchip[3];
+int MapData::stageNum;

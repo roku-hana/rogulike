@@ -78,6 +78,9 @@ public:
 	void DrawTempMap();
 	int GetStartX() { return sx; }
 	int GetStartY() { return sy; }
+	int GetGoalX() { return gx; }
+	int GetGoalY() { return gy; }
+	int GetStageNum() { return stageNum; }
 	vector<vector<RogueLikeMap>>& GetMap() { return maprl; }
 private:
 	/*マップ系データ*/
@@ -87,6 +90,8 @@ private:
 	static int mapchip[3];
 	int sx, sy;
 	int gx, gy;
+	//int stageNum;
+	static int stageNum;
 	int minDestination;    //startからgoalまでの最短距離
 	int BreadthFirstSearch();
 	void Decide_Start_Goal_Pos();

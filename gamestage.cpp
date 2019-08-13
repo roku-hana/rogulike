@@ -2,13 +2,13 @@
 #include"makedungeon.h"
 #include"spritecomponent.h"
 #include"player.h"
-#include"stagetest.h"
 
 GameStage::GameStage(InputManager* temp):input(temp) {
 	mp = new MapData();
 	player = new Player(this, mp->GetMap());
 	player->SetScrollX(mp->GetStartX() * CHIPSIZE);
 	player->SetScrollY(mp->GetStartY() * CHIPSIZE);
+	nextStage = 0;
 }
 
 GameStage::~GameStage() {
@@ -18,6 +18,8 @@ GameStage::~GameStage() {
 
 void GameStage::update() {
 	animcounter++;
+	if (player->GetScrollX() / CHIPSIZE == mp->GetGoalX() && player->GetScrollY() / CHIPSIZE == mp->GetGoalY()) nextStage = mp->GetStageNum() + 1;
+	else nextStage = 0;
 
 	mUpdatingActors = true;
 	for (auto actor : mActors)
@@ -49,7 +51,7 @@ void GameStage::update() {
 
 void GameStage::draw() {
 	mp->draw(player->GetScrollX(), player->GetScrollY());
-	mp->DrawTransparentMaze(player->GetScrollX() / 32, player->GetScrollY() / 32);
+	mp->DrawTransparentMaze(player->GetScrollX() / CHIPSIZE, player->GetScrollY() / CHIPSIZE);
 	//mp->DrawTempMap();
 
 	for (auto sprite : mSprites)

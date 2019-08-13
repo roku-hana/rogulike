@@ -20,6 +20,8 @@ public:
 	void AddSprite(class SpriteComponent* sprite);
 	void RemoveSprite(class SpriteComponent* sprite);
 	void ProcessInput();
+	int NextStage() { return nextStage; }
+	MapData* GetMapData() { return mp; }
 private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
@@ -29,6 +31,7 @@ private:
 	Player* player;
 	InputManager* input;
 	int animcounter;
+	int nextStage;
 };
 
 #endif
