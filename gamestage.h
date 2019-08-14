@@ -28,6 +28,7 @@ public:
 	MapData* GetMapData() { return mp; }
 	Player* GetPlayer() { return player; }
 	std::vector<Chick*>& GetChicks() { return mChicks; }
+	void SetChickGraphic(int gh) { chickGh = gh; }
 private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
@@ -40,6 +41,7 @@ private:
 	int nextStage;
 	std::vector<Chick*> mChicks;
 	Collision* colManager;
+	int chickGh;
 };
 
 #endif

@@ -16,6 +16,7 @@ Chick::Chick(GameStage* game, int x, int y, int* px, int* py) : Actor(game), px(
 	if (gh[0] == 0) {
 		if (-1 == LoadDivGraph("Images\\Chick1.png", 24, 6, 4, 24, 20, gh)) MSG("プレイヤー画像読み込みエラー");
 	}
+	game->SetChickGraphic(gh[0]);
 
 	SpriteComponent* sc = new CharacterSprite(this, 50);
 	sc->SetImage(gh);
@@ -29,6 +30,7 @@ Chick::Chick(GameStage* game, int x, int y, int* px, int* py) : Actor(game), px(
 
 	SetPosition(Vector2(-10, -10));
 	dir = DOWN;
+	player = false;
 }
 
 Chick::~Chick() {
@@ -36,15 +38,18 @@ Chick::~Chick() {
 };
 
 void Chick::updateActor() {
-	
+	//プレイヤーが獲得したひよこの数描画
+	DrawGraph(0, 5, gh[0], TRUE);
+	DrawFormatString(20, 5, GetColor(255, 255, 255), "×%d", GetGameStage()->GetPlayer()->GetChickNum());
+
 	int cx = indexX - *px / CHIPSIZE;
 	int cy = indexY - *py / CHIPSIZE;
 	if (!moveflag) {
 		if (isDraw(cx, cy)) SetPosition(Vector2(DRAW_PLAYER_X + cx * CHIPSIZE, DRAW_PLAYER_Y + cy * CHIPSIZE));
 		else SetPosition(Vector2(-20, -20));
 	}
-
-	if (moveflag) {
+	else {
+		if (!player) { GetGameStage()->GetPlayer()->AddChickNum(); player = true; }
 		dir = GetGameStage()->GetPlayer()->GetDirection();
 	}
 }

@@ -20,10 +20,13 @@ public:
 	int* GetScrollY() { return &scrolly; }
 	void SetScrollX(int sx) { scrollx = sx; }
 	void SetScrollY(int sy) { scrolly = sy; }
+	void AddChickNum() { chickNum++; }
+	int GetChickNum() { return chickNum; }
 private:
 	int scrollx, scrolly;
 	int gh[24];
 	int count;
+	static int chickNum;
 	const vector<vector<RogueLikeMap>> mapdata;
 	bool RightWall();
 	bool LeftWall();

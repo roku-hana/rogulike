@@ -33,7 +33,7 @@ void Play::update() {
 
 void Play::draw() {
 	//DrawGraph(0, 0, back, TRUE);
-	DrawString(0, 50, "Start or Xキー:PAUSE画面に移動", GetColor(255, 255, 255));
+	//DrawString(0, 50, "Start or Xキー:PAUSE画面に移動", GetColor(255, 255, 255));
 	gamestage->draw();
 	
 }

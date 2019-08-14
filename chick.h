@@ -16,6 +16,7 @@ private:
 	const int* px;
 	const int* py;
 	int indexX, indexY;
+	bool player;
 	bool isDraw(int cx, int cy);
 };
 

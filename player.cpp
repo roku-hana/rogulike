@@ -17,6 +17,7 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 	moveflag = false;
 	scrollx = 0;
 	scrolly = 0;
+	chickNum = 0;
 }
 
 Player::~Player() {
@@ -140,3 +141,5 @@ bool Player::CanMove() {
 	if (GetNowCount() - count <= 30 || GetNowCount() - count >= 300) return true;
 	return false;
 }
+
+int Player::chickNum;
