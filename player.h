@@ -8,7 +8,6 @@ using namespace std;
 class GameStage;
 class InputManager;
 class RogueLikeMap;
-enum Direction;
 
 class Player : public Actor{
 public:
@@ -17,11 +16,10 @@ public:
 
 	void updateActor() override;
 	void ActorInput(InputManager*) override;
-	int GetScrollX() { return scrollx; }
-	int GetScrollY() { return scrolly; }
+	int* GetScrollX() { return &scrollx; }
+	int* GetScrollY() { return &scrolly; }
 	void SetScrollX(int sx) { scrollx = sx; }
 	void SetScrollY(int sy) { scrolly = sy; }
-	Direction GetDir() { return dir; }
 private:
 	int scrollx, scrolly;
 	int gh[24];
@@ -37,7 +35,6 @@ private:
 	bool Down_Left_Wall();
 	void Move();
 	bool CanMove();
-	Direction dir;
 	bool ismoving;
 };
 

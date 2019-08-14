@@ -80,6 +80,9 @@ public:
 	int GetStartY() { return sy; }
 	int GetGoalX() { return gx; }
 	int GetGoalY() { return gy; }
+	int GetChickX(int i) { return cx[i]; }
+	int GetChickY(int i) { return cy[i]; }
+	int GetChickNum() { return chickNum; }
 	int GetStageNum() { return stageNum; }
 	vector<vector<RogueLikeMap>>& GetMap() { return maprl; }
 private:
@@ -88,12 +91,14 @@ private:
 	vector<vector<RogueLikeMap>> maprl;
 	vector<vector<int>> transparentMap;
 	static int mapchip[3];
-	int sx, sy;
-	int gx, gy;
+	int sx, sy;		//スタートの位置
+	int gx, gy;		//ゴールの位置
+	vector<int> cx, cy;		//ひよこの位置
+	int chickNum;	//ひよこの数
 	//int stageNum;
 	static int stageNum;
 	int minDestination;    //startからgoalまでの最短距離
 	int BreadthFirstSearch();
-	void Decide_Start_Goal_Pos();
+	void Decide_Pos();
 };
 #endif

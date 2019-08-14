@@ -2,21 +2,21 @@
 #include"error.h"
 #include<DxLib.h>
 #include"input.h"
-#include"playersprite.h"
+#include"charactersprite.h"
 #include"makedungeon.h"
-#include"animdraw.h"
 
-//tewicontrolファイルを見て、長押し移動を実装する
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
 	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
-	SpriteComponent* sc = new PlayerSprite(this, 150);
+	SpriteComponent* sc = new CharacterSprite(this, 100);
 	sc->SetImage(gh);
 	
 	SetPosition(Vector2(320, 224));
 	dir = DOWN;
 	count = 0; 
 	ismoving = false;
+	scrollx = 0;
+	scrolly = 0;
 }
 
 Player::~Player() {

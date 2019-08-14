@@ -157,6 +157,9 @@
   <ItemGroup>
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="animdraw.cpp" />
+    <ClCompile Include="boar.cpp" />
+    <ClCompile Include="charactersprite.cpp" />
+    <ClCompile Include="chick.cpp" />
     <ClCompile Include="component.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamestage.cpp" />
@@ -178,6 +181,9 @@
   <ItemGroup>
     <ClInclude Include="actor.h" />
     <ClInclude Include="animdraw.h" />
+    <ClInclude Include="boar.h" />
+    <ClInclude Include="charactersprite.h" />
+    <ClInclude Include="chick.h" />
     <ClInclude Include="component.h" />
     <ClInclude Include="error.h" />
     <ClInclude Include="game.h" />
@@ -190,7 +196,6 @@
     <ClInclude Include="pause.h" />
     <ClInclude Include="play.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="playersprite.h" />
     <ClInclude Include="scenemanager.h" />
     <ClInclude Include="soundbox.h" />
     <ClInclude Include="spritecomponent.h" />

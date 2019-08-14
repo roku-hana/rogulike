@@ -8,6 +8,7 @@ class MapData;
 class Player;
 class StageTest;
 class InputManager;
+class Chick;
 
 class GameStage {
 public:
@@ -19,9 +20,12 @@ public:
 	void RemoveActor(class Actor* actor);
 	void AddSprite(class SpriteComponent* sprite);
 	void RemoveSprite(class SpriteComponent* sprite);
+	void AddChick(Chick* chick);
+	void RemoveChick(Chick* chick);
 	void ProcessInput();
 	int NextStage() { return nextStage; }
 	MapData* GetMapData() { return mp; }
+	Player* GetPlayer() { return player; }
 private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
@@ -32,6 +36,7 @@ private:
 	InputManager* input;
 	int animcounter;
 	int nextStage;
+	std::vector<Chick*> mChicks;
 };
 
 #endif

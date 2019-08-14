@@ -182,7 +182,7 @@ MapData::MapData()
 	while (minDestination == -1) {
 		//ダンジョン生成
 		while (rogueLikeMapMake(&dng, maprl));
-		Decide_Start_Goal_Pos();
+		Decide_Pos();
 		//スタートからゴールまでつながっているかチェックして、最短距離を記録しておく
 		minDestination = BreadthFirstSearch();
 	}
@@ -334,7 +334,12 @@ int MapData::BreadthFirstSearch() {
 	return -1;
 }
 
-void MapData::Decide_Start_Goal_Pos() {
+void MapData::Decide_Pos() {
+	//後で、ここの乱数を変える
+	chickNum = GetRand(2) + 1;
+	vector<int> tempchick(chickNum, 0);
+	cx = tempchick;
+	cy = tempchick;
 	while (sx == gx && sy == gy) {
 		int s_divcount = GetRand(dng.mapDivCount - 1);
 		while (dng.count[s_divcount] == 1) s_divcount = GetRand(dng.mapDivCount - 1);
@@ -348,6 +353,15 @@ void MapData::Decide_Start_Goal_Pos() {
 		sy = temp_sy;
 		gx = temp_gx;
 		gy = temp_gy;
+	}
+	for (int i = 0; i < chickNum; i++) {
+		while (sx == cx[i] || gx == cx[i] || sy == cy[i] || gy == cy[i] || cx[i] == 0 || cy[i] == 0) {
+			int c_divcount = GetRand(dng.mapDivCount - 1);
+			int temp_cy = GetRandomNum(dng.mapRoom[c_divcount][2], dng.mapRoom[c_divcount][0]);
+			int temp_cx = GetRandomNum(dng.mapRoom[c_divcount][3], dng.mapRoom[c_divcount][1]);
+			cx[i] = temp_cx;
+			cy[i] = temp_cy;
+		}
 	}
 	maprl[sy][sx] = 2;
 	maprl[gy][gx] = 3;

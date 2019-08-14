@@ -1,19 +1,4 @@
-#ifndef __CHARACTERSPRITE_H__
-#define __CHARACTERSPRITE_H__
-
-#include"spritecomponent.h"
-#include"animdraw.h"
-#include"actor.h"
-
-class CharacterSprite : public SpriteComponent {
-public:
-	CharacterSprite(Actor* owner, int drawOrder);
-	~CharacterSprite();
-	void Draw(int count, Direction dir) override;
-	void SetImage(int* image) override;
-private:
-	AnimDraw* anim;
-};
+#include"charactersprite.h"
 
 CharacterSprite::CharacterSprite(Actor* owner, int drawOrder) : SpriteComponent(owner, drawOrder) { anim = new AnimDraw(); }
 
@@ -44,5 +29,3 @@ void CharacterSprite::SetImage(int* image) {
 		anim->SetGap(apid, 15);
 	}
 }
-
-#endif

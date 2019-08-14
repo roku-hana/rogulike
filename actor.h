@@ -7,6 +7,7 @@
 class GameStage;
 class Component;
 class InputManager;
+enum Direction;
 
 class Actor {
 public:
@@ -31,12 +32,15 @@ public:
 	GameStage* GetGameStage() { return mGameStage; }
 	void AddComponent(Component*);
 	void RemoveComponent(Component*);
+	Direction GetDirection() { return dir; }
 private:
 	State mState;
 	Vector2 mPosition;
 	float mScale;
 	std::vector<Component*> mComponents;
 	GameStage* mGameStage;
+protected:
+	Direction dir;
 };
 
 #endif

@@ -2,12 +2,16 @@
 #include"makedungeon.h"
 #include"spritecomponent.h"
 #include"player.h"
+#include"chick.h"
 
 GameStage::GameStage(InputManager* temp):input(temp) {
 	mp = new MapData();
 	player = new Player(this, mp->GetMap());
 	player->SetScrollX(mp->GetStartX() * CHIPSIZE);
 	player->SetScrollY(mp->GetStartY() * CHIPSIZE);
+	for (int i = 0; i < mp->GetChickNum(); i++) {
+		new Chick(this, mp->GetChickX(i), mp->GetChickY(i), player->GetScrollX(), player->GetScrollY());
+	}
 	nextStage = 0;
 }
 
@@ -18,7 +22,7 @@ GameStage::~GameStage() {
 
 void GameStage::update() {
 	animcounter++;
-	if (player->GetScrollX() / CHIPSIZE == mp->GetGoalX() && player->GetScrollY() / CHIPSIZE == mp->GetGoalY()) nextStage = mp->GetStageNum() + 1;
+	if (*player->GetScrollX() / CHIPSIZE == mp->GetGoalX() && *player->GetScrollY() / CHIPSIZE == mp->GetGoalY()) nextStage = mp->GetStageNum() + 1;
 	else nextStage = 0;
 
 	mUpdatingActors = true;
@@ -50,13 +54,13 @@ void GameStage::update() {
 }
 
 void GameStage::draw() {
-	mp->draw(player->GetScrollX(), player->GetScrollY());
-	mp->DrawTransparentMaze(player->GetScrollX() / CHIPSIZE, player->GetScrollY() / CHIPSIZE);
+	mp->draw(*player->GetScrollX(), *player->GetScrollY());
+	mp->DrawTransparentMaze(*player->GetScrollX() / CHIPSIZE, *player->GetScrollY() / CHIPSIZE);
 	//mp->DrawTempMap();
 
 	for (auto sprite : mSprites)
 	{
-		sprite->Draw(animcounter, player->GetDir());
+		sprite->Draw(animcounter, player->GetDirection());
 	}
 }
 
@@ -119,4 +123,17 @@ void GameStage::ProcessInput() {
 		actor->ProcessInput(input);
 	}
 	mUpdatingActors = false;
+}
+
+void GameStage::AddChick(Chick* chick) {
+	mChicks.emplace_back(chick);
+}
+
+void GameStage::RemoveChick(Chick* chick) {
+	auto iter = std::find(mChicks.begin(),
+		mChicks.end(), chick);
+	if (iter != mChicks.end())
+	{
+		mChicks.erase(iter);
+	}
 }
