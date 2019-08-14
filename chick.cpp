@@ -4,6 +4,7 @@
 #include"charactersprite.h"
 #include"gamestage.h"
 #include"movecomponent.h"
+#include"player.h"
 
 const int CHIPSIZE = 32;
 const int DRAW_CHIPNUM_X = 7;
@@ -38,12 +39,14 @@ void Chick::updateActor() {
 	
 	int cx = indexX - *px / CHIPSIZE;
 	int cy = indexY - *py / CHIPSIZE;
-	if (isDraw(cx, cy)) SetPosition(Vector2(DRAW_PLAYER_X + cx * CHIPSIZE, DRAW_PLAYER_Y + cy * CHIPSIZE));
-	else SetPosition(Vector2(-10, -10));
+	if (!moveflag) {
+		if (isDraw(cx, cy)) SetPosition(Vector2(DRAW_PLAYER_X + cx * CHIPSIZE, DRAW_PLAYER_Y + cy * CHIPSIZE));
+		else SetPosition(Vector2(-20, -20));
+	}
 
-	//DrawFormatString(300, 100, GetColor(0, 0, 255), "px:%d, py:%d", *px, *py);
-	//DrawFormatString(300, 200, GetColor(0, 0, 255), "x:%d, y:%d", x, y);
-	//DrawFormatString(300, 300, GetColor(0, 0, 255), "cx:%d, cy:%d", cx, cy);
+	if (moveflag) {
+		dir = GetGameStage()->GetPlayer()->GetDirection();
+	}
 }
 
 void Chick::ActorInput(InputManager* input) {

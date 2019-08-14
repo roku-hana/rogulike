@@ -9,6 +9,8 @@ public:
 	~Chick();
 	void updateActor() override;
 	void ActorInput(InputManager*) override;
+	int GetIndexX() { return indexX; }
+	int GetIndexY() { return indexY; }
 private:
 	static int gh[24];
 	const int* px;

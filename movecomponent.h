@@ -11,7 +11,6 @@ public:
 private:
 	int moveX, moveY;
 	const int AMOUNT_OF_MOVEMENT = 32;
-	bool isMove();
 };
 
 

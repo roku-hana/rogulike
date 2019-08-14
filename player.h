@@ -35,7 +35,6 @@ private:
 	bool Down_Left_Wall();
 	void Move();
 	bool CanMove();
-	bool ismoving;
 };
 
 #endif

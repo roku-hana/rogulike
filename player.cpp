@@ -14,7 +14,7 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 	SetPosition(Vector2(320, 224));
 	dir = DOWN;
 	count = 0; 
-	ismoving = false;
+	moveflag = false;
 	scrollx = 0;
 	scrolly = 0;
 }
@@ -33,32 +33,32 @@ void Player::ActorInput(InputManager* input) {
 		else if (input->isPushDown(0)) dir = DOWN_RIGHT;
 		else dir = RIGHT;
 		if (count == 0) count = GetNowCount();
-		ismoving = true;
+		moveflag = true;
 	}
 	else if (input->isPushLeft(0)) {
 		if (input->isPushUp(0)) dir = UP_LEFT;
 		else if (input->isPushDown(0)) dir = DOWN_LEFT;
 		else dir = LEFT;
 		if (count == 0) count = GetNowCount();
-		ismoving = true;
+		moveflag = true;
 	}
 	else if (input->isPushUp(0)) {
 		if (input->isPushRight(0)) dir = UP_RIGHT;
 		else if (input->isPushLeft(0)) dir = UP_LEFT;
 		else dir = UP;
 		if (count == 0) count = GetNowCount();
-		ismoving = true;
+		moveflag = true;
 	}
 	else if (input->isPushDown(0)) {
 		if (input->isPushRight(0)) dir = DOWN_RIGHT;
 		else if (input->isPushLeft(0)) dir = DOWN_LEFT;
 		else dir = DOWN;
 		if (count == 0) count = GetNowCount();
-		ismoving = true;
+		moveflag = true;
 	}
 	else {
 		count = 0;
-		ismoving = false;
+		moveflag = false;
 	}
 }
 
@@ -119,7 +119,7 @@ bool Player::Down_Left_Wall() {
 }
 
 void Player::Move() {
-	if (ismoving) {
+	if (moveflag) {
 		if (CanMove()) {
 			switch (dir) {
 			case UP: if (!UpWall()) scrolly -= CHIPSIZE; break;

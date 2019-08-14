@@ -357,6 +357,7 @@ void MapData::Decide_Pos() {
 	for (int i = 0; i < chickNum; i++) {
 		while (sx == cx[i] || gx == cx[i] || sy == cy[i] || gy == cy[i] || cx[i] == 0 || cy[i] == 0) {
 			int c_divcount = GetRand(dng.mapDivCount - 1);
+			while (dng.count[c_divcount] == 1) c_divcount = GetRand(dng.mapDivCount - 1);
 			int temp_cy = GetRandomNum(dng.mapRoom[c_divcount][2], dng.mapRoom[c_divcount][0]);
 			int temp_cx = GetRandomNum(dng.mapRoom[c_divcount][3], dng.mapRoom[c_divcount][1]);
 			cx[i] = temp_cx;

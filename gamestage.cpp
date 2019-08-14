@@ -3,6 +3,7 @@
 #include"spritecomponent.h"
 #include"player.h"
 #include"chick.h"
+#include"collision.h"
 
 GameStage::GameStage(InputManager* temp):input(temp) {
 	mp = new MapData();
@@ -13,11 +14,13 @@ GameStage::GameStage(InputManager* temp):input(temp) {
 		new Chick(this, mp->GetChickX(i), mp->GetChickY(i), player->GetScrollX(), player->GetScrollY());
 	}
 	nextStage = 0;
+	colManager = new Collision(this);
 }
 
 GameStage::~GameStage() {
 	delete player;
 	delete mp;
+	delete colManager;
 }
 
 void GameStage::update() {
@@ -51,6 +54,8 @@ void GameStage::update() {
 	{
 		delete actor;
 	}
+
+	colManager->Player_Chick_Collision();
 }
 
 void GameStage::draw() {

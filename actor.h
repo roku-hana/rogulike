@@ -33,6 +33,8 @@ public:
 	void AddComponent(Component*);
 	void RemoveComponent(Component*);
 	Direction GetDirection() { return dir; }
+	void SetMoveFlag() { moveflag = true; }
+	bool GetMoveFlag() { return moveflag; }
 private:
 	State mState;
 	Vector2 mPosition;
@@ -41,6 +43,7 @@ private:
 	GameStage* mGameStage;
 protected:
 	Direction dir;
+	bool moveflag;
 };
 
 #endif

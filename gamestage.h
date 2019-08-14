@@ -9,6 +9,7 @@ class Player;
 class StageTest;
 class InputManager;
 class Chick;
+class Collision;
 
 class GameStage {
 public:
@@ -26,6 +27,7 @@ public:
 	int NextStage() { return nextStage; }
 	MapData* GetMapData() { return mp; }
 	Player* GetPlayer() { return player; }
+	std::vector<Chick*>& GetChicks() { return mChicks; }
 private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
@@ -37,6 +39,7 @@ private:
 	int animcounter;
 	int nextStage;
 	std::vector<Chick*> mChicks;
+	Collision* colManager;
 };
 
 #endif
