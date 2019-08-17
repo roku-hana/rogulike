@@ -9,7 +9,7 @@ class CharacterSprite : public SpriteComponent {
 public:
 	CharacterSprite(Actor* owner, int drawOrder);
 	~CharacterSprite();
-	void Draw(int count, Direction dir) override;
+	void Draw(int count) override;
 	void SetImage(int* image) override;
 private:
 	AnimDraw* anim;

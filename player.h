@@ -22,12 +22,7 @@ public:
 	void SetScrollY(int sy) { scrolly = sy; }
 	void AddChickNum() { chickNum++; }
 	int GetChickNum() { return chickNum; }
-private:
-	int scrollx, scrolly;
-	int gh[24];
-	int count;
-	static int chickNum;
-	const vector<vector<RogueLikeMap>> mapdata;
+	bool CanMove();
 	bool RightWall();
 	bool LeftWall();
 	bool UpWall();
@@ -36,8 +31,13 @@ private:
 	bool Up_Left_Wall();
 	bool Down_Right_Wall();
 	bool Down_Left_Wall();
+private:
+	int scrollx, scrolly;
+	int gh[24];
+	int count;
+	static int chickNum;
+	const vector<vector<RogueLikeMap>> mapdata;
 	void Move();
-	bool CanMove();
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include"player.h"
 #include"chick.h"
 #include"collision.h"
+#include"boar.h"
 
 GameStage::GameStage(InputManager* temp):input(temp) {
 	mp = new MapData();
@@ -12,6 +13,9 @@ GameStage::GameStage(InputManager* temp):input(temp) {
 	player->SetScrollY(mp->GetStartY() * CHIPSIZE);
 	for (int i = 0; i < mp->GetChickNum(); i++) {
 		new Chick(this, mp->GetChickX(i), mp->GetChickY(i), player->GetScrollX(), player->GetScrollY());
+	}
+	for (int i = 0; i < mp->GetEnemyNum(); i++) {
+		new Boar(this, mp->GetMap(), mp->GetEnemyX(i), mp->GetEnemyY(i), player->GetScrollX(), player->GetScrollY());
 	}
 	nextStage = 0;
 	colManager = new Collision(this);
@@ -65,7 +69,7 @@ void GameStage::draw() {
 
 	for (auto sprite : mSprites)
 	{
-		sprite->Draw(animcounter, player->GetDirection());
+		sprite->Draw(animcounter);
 	}
 }
 
@@ -140,5 +144,16 @@ void GameStage::RemoveChick(Chick* chick) {
 	if (iter != mChicks.end())
 	{
 		mChicks.erase(iter);
+	}
+}
+
+void GameStage::AddEnemy(Actor* enemy) {
+	mEnemies.emplace_back(enemy);
+}
+
+void GameStage::RemoveEnemy(Actor* enemy) {
+	auto iter = std::find(mEnemies.begin(), mEnemies.end(), enemy);
+	if (iter != mEnemies.end()) {
+		mEnemies.erase(iter);
 	}
 }

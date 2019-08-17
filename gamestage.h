@@ -23,6 +23,10 @@ public:
 	void RemoveSprite(class SpriteComponent* sprite);
 	void AddChick(Chick* chick);
 	void RemoveChick(Chick* chick);
+	//ここ後で、Actorをエネミークラスに変える
+	void AddEnemy(Actor* enemy);
+	void RemoveEnemy(Actor* enemy);
+	//
 	void ProcessInput();
 	int NextStage() { return nextStage; }
 	MapData* GetMapData() { return mp; }
@@ -40,6 +44,9 @@ private:
 	int animcounter;
 	int nextStage;
 	std::vector<Chick*> mChicks;
+	//ここ後で、エネミークラスを作ってまとめる
+	std::vector<Actor*> mEnemies;
+	//
 	Collision* colManager;
 	int chickGh;
 };

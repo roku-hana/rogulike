@@ -82,7 +82,10 @@ public:
 	int GetGoalY() { return gy; }
 	int GetChickX(int i) { return cx[i]; }
 	int GetChickY(int i) { return cy[i]; }
+	int GetEnemyX(int i) { return ex[i]; }
+	int GetEnemyY(int i) { return ey[i]; }
 	int GetChickNum() { return chickNum; }
+	int GetEnemyNum() { return enemyNum; }
 	int GetStageNum() { return stageNum; }
 	vector<vector<RogueLikeMap>>& GetMap() { return maprl; }
 private:
@@ -94,8 +97,9 @@ private:
 	int sx, sy;		//スタートの位置
 	int gx, gy;		//ゴールの位置
 	vector<int> cx, cy;		//ひよこの位置
-	int chickNum;	//ひよこの数
-	//int stageNum;
+	int chickNum;			//ひよこの数
+	vector<int> ex, ey;		//敵の位置
+	int enemyNum;			//敵の数
 	static int stageNum;
 	int minDestination;    //startからgoalまでの最短距離
 	int BreadthFirstSearch();

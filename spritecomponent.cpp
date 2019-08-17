@@ -19,7 +19,7 @@ SpriteComponent::~SpriteComponent()
 	mOwner->GetGameStage()->RemoveSprite(this);
 }
 
-void SpriteComponent::Draw(int count, Direction dir)
+void SpriteComponent::Draw(int count)
 {
 	if (mImage)
 	{

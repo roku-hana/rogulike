@@ -25,8 +25,9 @@ void Actor::update()
 {
 	if (mState == ACTIVE)
 	{
-		updateComponents();
+		//updateComponents();
 		updateActor();
+		updateComponents();
 	}
 }
 

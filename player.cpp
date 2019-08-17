@@ -10,7 +10,7 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
 	SpriteComponent* sc = new CharacterSprite(this, 100);
 	sc->SetImage(gh);
-	
+
 	SetPosition(Vector2(320, 224));
 	dir = DOWN;
 	count = 0; 

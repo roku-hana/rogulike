@@ -4,10 +4,10 @@ CharacterSprite::CharacterSprite(Actor* owner, int drawOrder) : SpriteComponent(
 
 CharacterSprite::~CharacterSprite() { delete anim; }
 
-void CharacterSprite::Draw(int count, Direction dir) {
+void CharacterSprite::Draw(int count) {
 	if (mImage) {
 		Vector2 pos = mOwner->GetPosition();
-		switch (dir) {
+		switch (mOwner->GetDirection()) {
 		case DOWN: anim->DrawAnimation(0, pos.x, pos.y, count); break;
 		case LEFT: anim->DrawAnimation(2, pos.x, pos.y, count); break;
 		case UP_LEFT: anim->DrawAnimation(5, pos.x, pos.y, count); break;
@@ -16,6 +16,7 @@ void CharacterSprite::Draw(int count, Direction dir) {
 		case UP_RIGHT: anim->DrawAnimation(7, pos.x, pos.y, count); break;
 		case DOWN_RIGHT: anim->DrawAnimation(3, pos.x, pos.y, count); break;
 		case UP: anim->DrawAnimation(6, pos.x, pos.y, count); break;
+		default: break;
 		}
 	}
 }

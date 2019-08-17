@@ -1,7 +1,5 @@
 #include "movecomponent.h"
 #include "actor.h"
-#include"gamestage.h"
-#include"player.h"
 #include"animdraw.h"
 
 const int DRAW_PLAYER_X = 320;

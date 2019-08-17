@@ -338,8 +338,13 @@ void MapData::Decide_Pos() {
 	//後で、ここの乱数を変える
 	chickNum = GetRand(2) + 1;
 	vector<int> tempchick(chickNum, 0);
-	cx = tempchick;
-	cy = tempchick;
+	cx = cy = tempchick;
+	//cy = tempchick;
+	//後で、ここの乱数を変える(敵はファイルから情報を得る)
+	//enemyNum = GetRand(2) + 1;
+	enemyNum = 1;
+	vector<int> tempenemy(enemyNum, 0);
+	ex = ey = tempenemy;
 	while (sx == gx && sy == gy) {
 		int s_divcount = GetRand(dng.mapDivCount - 1);
 		while (dng.count[s_divcount] == 1) s_divcount = GetRand(dng.mapDivCount - 1);
@@ -363,6 +368,14 @@ void MapData::Decide_Pos() {
 			cx[i] = temp_cx;
 			cy[i] = temp_cy;
 		}
+	}
+	for (int i = 0; i < enemyNum; i++) {
+		int e_divcount = GetRand(dng.mapDivCount - 1);
+		while (dng.count[e_divcount] == 1) e_divcount = GetRand(dng.mapDivCount - 1);
+		int temp_ey = GetRandomNum(dng.mapRoom[e_divcount][2], dng.mapRoom[e_divcount][0]);
+		int temp_ex = GetRandomNum(dng.mapRoom[e_divcount][3], dng.mapRoom[e_divcount][1]);
+		ex[i] = temp_ex;
+		ey[i] = temp_ey;
 	}
 	maprl[sy][sx] = 2;
 	maprl[gy][gx] = 3;

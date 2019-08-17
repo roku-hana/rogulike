@@ -162,6 +162,7 @@
     <ClCompile Include="chick.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="component.cpp" />
+    <ClCompile Include="enemymovecomponent.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamestage.cpp" />
     <ClCompile Include="input.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="chick.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="component.h" />
+    <ClInclude Include="enemymovecomponent.h" />
     <ClInclude Include="error.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gamestage.h" />
