@@ -41,6 +41,7 @@ private:
 	Direction Down_Right_Case();
 	Direction Down_Left_Case();
 	void AllWall();
+	void ConvertDirection();
 	const vector<vector<RogueLikeMap>> mapdata;
 };
 

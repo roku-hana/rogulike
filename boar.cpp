@@ -39,7 +39,7 @@ void Boar::updateActor() {
 	int ey = indexY - *py / CHIPSIZE;
 	Vector2 setpos = { DRAW_PLAYER_X + ex * CHIPSIZE, DRAW_PLAYER_Y + ey * CHIPSIZE };
 	if (isDraw(ex, ey)) {
-		if(!moveflag) SetPosition(setpos);
+		if(moveflag) SetPosition(setpos);
 	}
 	else SetPosition(Vector2(-20, -20));
 
@@ -47,8 +47,10 @@ void Boar::updateActor() {
 	if (GetGameStage()->GetPlayer()->GetMoveFlag()) moveflag = true;
 	else moveflag = false;
 	
-	DefineDirection();
-	AllWall();
+	if (moveflag) {
+		DefineDirection();
+		AllWall();
+	}
 
 	/*	switch (dir) {
 		case UP: DrawString(400, 50, "UP", GetColor(0, 0, 255)); break;
@@ -79,10 +81,9 @@ bool Boar::isDraw(int ex, int ey) {
 }
 
 void Boar::DefineDirection() {
-	//Direction temp;
 	int dx = *px / CHIPSIZE - indexX;
 	int dy = *py / CHIPSIZE - indexY;
-
+	
 	if (dx == 0) {
 		if (dy > 0) temp = DOWN;
 		else temp = UP;
@@ -97,11 +98,11 @@ void Boar::DefineDirection() {
 	else if (dx < 0 && dy > 0) temp = DOWN_LEFT;
 
 	DrawFormatString(300, 0, GetColor(255, 0, 0), "dx:%d, dy:%d", dx, dy);
-	if (moveflag) dir = temp;
+	
+	dir = temp;
 }
 
 void Boar::AllWall() {
-	//Direction temp = NONE;
 	switch (dir) {
 	case UP: temp = UpCase(); break;
 	case DOWN: temp = DownCase(); break;
@@ -113,7 +114,7 @@ void Boar::AllWall() {
 	case DOWN_LEFT: temp = Down_Left_Case(); break;
 	}
 
-	if(moveflag) dir = temp;
+	dir = temp;
 }
 
 bool Boar::UpWall() {

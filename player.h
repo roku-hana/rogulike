@@ -37,7 +37,6 @@ private:
 	int count;
 	static int chickNum;
 	const vector<vector<RogueLikeMap>> mapdata;
-	void Move();
 };
 
 #endif

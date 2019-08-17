@@ -4,12 +4,14 @@
 #include"input.h"
 #include"charactersprite.h"
 #include"makedungeon.h"
-
+#include"playermovecomponent.h"
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
 	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
 	SpriteComponent* sc = new CharacterSprite(this, 100);
 	sc->SetImage(gh);
+
+	PlayerMoveComponent* pmc = new PlayerMoveComponent(this);
 
 	SetPosition(Vector2(320, 224));
 	dir = DOWN;
@@ -25,7 +27,7 @@ Player::~Player() {
 }
 
 void Player::updateActor() {
-	Move();
+
 }
 
 void Player::ActorInput(InputManager* input) {
@@ -117,24 +119,6 @@ bool Player::Down_Left_Wall() {
 	int py = scrolly / CHIPSIZE;
 	if (mapdata[py + 1][px - 1].mapData == 1) return true;
 	return false;
-}
-
-void Player::Move() {
-	if (moveflag) {
-		if (CanMove()) {
-			switch (dir) {
-			case UP: if (!UpWall()) scrolly -= CHIPSIZE; break;
-			case DOWN: if (!DownWall()) scrolly += CHIPSIZE; break;
-			case RIGHT: if (!RightWall()) scrollx += CHIPSIZE; break;
-			case LEFT: if (!LeftWall()) scrollx -= CHIPSIZE; break;
-			case UP_RIGHT: if (!Up_Right_Wall()) { scrollx += CHIPSIZE; scrolly -= CHIPSIZE; } break;
-			case UP_LEFT: if (!Up_Left_Wall()) { scrollx -= CHIPSIZE; scrolly -= CHIPSIZE; } break;
-			case DOWN_RIGHT: if (!Down_Right_Wall()) { scrollx += CHIPSIZE; scrolly += CHIPSIZE; } break;
-			case DOWN_LEFT: if (!Down_Left_Wall()) {scrollx -= CHIPSIZE; scrolly += CHIPSIZE; } break;
-			default: break;
-			}
-		}
-	}
 }
 
 bool Player::CanMove() {
