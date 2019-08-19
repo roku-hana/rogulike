@@ -10,6 +10,8 @@ class StageTest;
 class InputManager;
 class Chick;
 class Collision;
+class Enemy;
+struct EnemyParameter;
 
 class GameStage {
 public:
@@ -23,16 +25,16 @@ public:
 	void RemoveSprite(class SpriteComponent* sprite);
 	void AddChick(Chick* chick);
 	void RemoveChick(Chick* chick);
-	//ここ後で、Actorをエネミークラスに変える
-	void AddEnemy(Actor* enemy);
-	void RemoveEnemy(Actor* enemy);
-	//
+	void AddEnemy(Enemy* enemy);
+	void RemoveEnemy(Enemy* enemy);
 	void ProcessInput();
 	int NextStage() { return nextStage; }
 	MapData* GetMapData() { return mp; }
 	Player* GetPlayer() { return player; }
+	std::vector<Enemy*>* GetEnemies() { return &mEnemies; }
 	std::vector<Chick*>& GetChicks() { return mChicks; }
 	void SetChickGraphic(int gh) { chickGh = gh; }
+	std::string& Get_Message(int i, std::string& pl, std::string& en, int val);
 private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
@@ -44,11 +46,15 @@ private:
 	int animcounter;
 	int nextStage;
 	std::vector<Chick*> mChicks;
-	//ここ後で、エネミークラスを作ってまとめる
-	std::vector<Actor*> mEnemies;
-	//
+	std::vector<Enemy*> mEnemies;
 	Collision* colManager;
 	int chickGh;
+	std::vector<std::string> messages;
+	std::string message;
+	std::vector<EnemyParameter> enemyParam;
+	int enemyNum;
+	void LoadMessage();
+	void LoadEnemyParam(const char* fileName);
 };
 
 #endif

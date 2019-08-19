@@ -1,0 +1,6 @@
+#ifndef __ENEMYMESSAGECOMPONENT_H__
+#define __ENEMYMESSAGECOMPONENT_H__
+
+
+
+#endif

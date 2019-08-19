@@ -35,6 +35,7 @@ public:
 	Direction GetDirection() { return dir; }
 	void SetMoveFlag() { moveflag = true; }
 	bool GetMoveFlag() { return moveflag; }
+	void SetDamageAmount(int damageAmount) { this->damageAmount = damageAmount; }
 private:
 	State mState;
 	Vector2 mPosition;
@@ -44,6 +45,7 @@ private:
 protected:
 	Direction dir;
 	bool moveflag;
+	int damageAmount;
 };
 
 #endif

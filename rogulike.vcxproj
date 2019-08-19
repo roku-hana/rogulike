@@ -162,6 +162,9 @@
     <ClCompile Include="chick.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="component.cpp" />
+    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemyattackcomponent.cpp" />
+    <ClCompile Include="enemymessagecomponent.cpp" />
     <ClCompile Include="enemymovecomponent.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamestage.cpp" />
@@ -174,6 +177,7 @@
     <ClCompile Include="pause.cpp" />
     <ClCompile Include="play.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="playerattackcomponent.cpp" />
     <ClCompile Include="playermovecomponent.cpp" />
     <ClCompile Include="scenemanager.cpp" />
     <ClCompile Include="soundbox.cpp" />
@@ -189,6 +193,9 @@
     <ClInclude Include="chick.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="component.h" />
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemyattackcomponent.h" />
+    <ClInclude Include="enemymessagecomponent.h" />
     <ClInclude Include="enemymovecomponent.h" />
     <ClInclude Include="error.h" />
     <ClInclude Include="game.h" />
@@ -201,6 +208,7 @@
     <ClInclude Include="pause.h" />
     <ClInclude Include="play.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="playerattackcomponent.h" />
     <ClInclude Include="playermovecomponent.h" />
     <ClInclude Include="scenemanager.h" />
     <ClInclude Include="soundbox.h" />

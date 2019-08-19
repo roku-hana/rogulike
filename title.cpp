@@ -18,5 +18,5 @@ void Title::update() {
 
 void Title::draw() {
 	DrawGraph(0, 0, back, TRUE);
-	DrawString(0, 50, "BorXキー:ゲーム画面に移動", GetColor(0, 0, 0));
+	DrawString(0, 50, "StartorXキー:ゲーム画面に移動", GetColor(0, 0, 0));
 }

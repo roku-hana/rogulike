@@ -1,0 +1,6 @@
+#ifndef __ENEMYATTACKCOMPONENT_H__
+#define __ENEMYATTACKCOMPONENT_H__
+
+
+
+#endif

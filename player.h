@@ -3,11 +3,30 @@
 
 #include"Actor.h"
 #include<vector>
+#include<string>
 using namespace std;
 
 class GameStage;
 class InputManager;
 class RogueLikeMap;
+
+enum ActState {
+	KEY_INPUT,
+	ACT_BEGIN,
+	ACT_END,
+	MOVE_BEGIN,
+	MOVE_END
+};
+
+struct PlayerParameter {
+	int nowhp;
+	int maxhp;
+	int attack;
+	int defense;
+	int level;
+	int experience;
+	string name;
+};
 
 class Player : public Actor{
 public:
@@ -31,12 +50,17 @@ public:
 	bool Up_Left_Wall();
 	bool Down_Right_Wall();
 	bool Down_Left_Wall();
+	void SetActState(ActState as) { this->as = as; }
+	ActState GetActState() { return as; }
+	PlayerParameter GetPlayerParam() { return param; }
 private:
 	int scrollx, scrolly;
 	int gh[24];
 	int count;
 	static int chickNum;
 	const vector<vector<RogueLikeMap>> mapdata;
+	ActState as;
+	PlayerParameter param;
 };
 
 #endif

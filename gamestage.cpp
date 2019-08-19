@@ -5,6 +5,7 @@
 #include"chick.h"
 #include"collision.h"
 #include"boar.h"
+#include<fstream>
 
 GameStage::GameStage(InputManager* temp):input(temp) {
 	mp = new MapData();
@@ -14,11 +15,22 @@ GameStage::GameStage(InputManager* temp):input(temp) {
 	for (int i = 0; i < mp->GetChickNum(); i++) {
 		new Chick(this, mp->GetChickX(i), mp->GetChickY(i), player->GetScrollX(), player->GetScrollY());
 	}
+
+	//enemyParam
+	string fileName = "enemydata\\enemydata" + std::to_string(mp->GetStageNum()) + ".csv";
+	LoadEnemyParam(fileName.c_str());
 	for (int i = 0; i < mp->GetEnemyNum(); i++) {
-		new Boar(this, mp->GetMap(), mp->GetEnemyX(i), mp->GetEnemyY(i), player->GetScrollX(), player->GetScrollY());
+		switch (enemyParam[i].id) {
+		case 0: new Boar(this, mp->GetMap(), mp->GetEnemyX(i), mp->GetEnemyY(i), player->GetScrollX(), player->GetScrollY(), enemyParam[i]); break;
+		default: break;
+		}
 	}
+	//
+
 	nextStage = 0;
 	colManager = new Collision(this);
+
+	LoadMessage();
 }
 
 GameStage::~GameStage() {
@@ -147,13 +159,82 @@ void GameStage::RemoveChick(Chick* chick) {
 	}
 }
 
-void GameStage::AddEnemy(Actor* enemy) {
+void GameStage::AddEnemy(Enemy* enemy) {
 	mEnemies.emplace_back(enemy);
 }
 
-void GameStage::RemoveEnemy(Actor* enemy) {
+void GameStage::RemoveEnemy(Enemy* enemy) {
 	auto iter = std::find(mEnemies.begin(), mEnemies.end(), enemy);
 	if (iter != mEnemies.end()) {
 		mEnemies.erase(iter);
 	}
+}
+
+void GameStage::LoadMessage() {
+	std::string temp;
+	ifstream fp("テキストファイル.txt");
+	if (fp.fail()) MSG("ファイル読み込みエラー");
+	while (std::getline(fp, temp)) messages.push_back(temp);
+}
+
+std::string& GameStage::Get_Message(int i, std::string& pl, std::string& en, int val) {
+	//テキストファイルの中のタグを引数の文字列に置換する
+	message = messages[i];
+	auto pos1 = message.find("<pl>");
+	auto len1 = 4;
+	if (pos1 != std::string::npos) message.replace(pos1, len1, pl);
+	auto pos2 = message.find("<en>");
+	auto len2 = 4;
+	if (pos2 != std::string::npos) message.replace(pos2, len2, en);
+	auto pos3 = message.find("<val>");
+	auto len3 = 5;
+	if (pos3 != std::string::npos) message.replace(pos3, len3, std::to_string(val));
+
+	return message;
+}
+
+void GameStage::LoadEnemyParam(const char* fileName) {
+	//ここで、EnemyParamをファイルから格納
+	FILE* fp;
+	char buf[50];
+	int c;
+	int col = 1;
+	EnemyParameter temp;
+
+	memset(buf, 0, sizeof(buf));
+	fopen_s(&fp, fileName, "r");
+	if (fp == NULL) MSG("ファイル読み込みエラー");
+
+	fscanf_s(fp, "%d", &enemyNum);
+	while (fgetc(fp) != '\n');   //改行消す
+	//2行目読み飛ばし
+	while (fgetc(fp) != '\n');
+
+	while (1) {
+		while (1) {
+			c = fgetc(fp);
+			//ファイルの最後まで来たらループを抜ける
+			if (c == EOF) goto out;
+			//カンマか改行でなければ、文字としてつなげる
+			if (c != ',' && c != '\n') strcat_s(buf, sizeof(buf), (const char*)& c);
+			else break;
+		}
+		switch (col) {
+		case 1: temp.id = atoi(buf); break;
+		case 2: temp.nowhp = atoi(buf); break;
+		case 3: temp.maxhp = atoi(buf); break;
+		case 4: temp.attack = atoi(buf); break;
+		case 5: temp.defense = atoi(buf); break;
+		case 6: temp.experiense = atoi(buf); break;
+		default: break;
+		}
+		memset(buf, 0, sizeof(buf));
+		col++;
+		if (c == '\n') {
+			enemyParam.push_back(temp);
+			col = 1;
+		}
+	}
+out:
+	fclose(fp);
 }

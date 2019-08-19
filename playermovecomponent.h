@@ -15,6 +15,7 @@ private:
 	int* py;
 	Player* player;
 	const int CHIPSIZE = 32;
+	void Move();
 };
 
 #endif
