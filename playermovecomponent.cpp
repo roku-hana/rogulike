@@ -1,11 +1,14 @@
 #include"playermovecomponent.h"
 #include"player.h"
 #include"animdraw.h"
+#include"gamestage.h"
+#include"enemy.h"
 
 PlayerMoveComponent::PlayerMoveComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)
 {
 	player = (Player*)owner;
+	enemies = player->GetGameStage()->GetEnemies();
 	px = player->GetScrollX();
 	py = player->GetScrollY();
 }
@@ -14,6 +17,9 @@ void PlayerMoveComponent::update() {
 	if (player->GetActState() == MOVE_BEGIN) {
 		Move();
 		player->SetActState(MOVE_END);
+		for (auto enemy: *enemies) {
+			enemy->SetActState(WAIT);
+		}
 	}
 }
 

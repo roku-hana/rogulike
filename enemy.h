@@ -21,9 +21,12 @@ class Enemy : public Actor {
 public:
 	Enemy(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, int* px, int* py);
 	~Enemy();
+	void updateActor() override;
 	int GetIndexX() { return indexX; }
 	int GetIndexY() { return indexY; }
 	string GetEnemyName(int i) { return names[i]; }
+	void SetActState(ActState as) { this->as = as; }
+	ActState GetActState() { return as; }
 	EnemyParameter GetEnemyParam() { return param; }
 protected:
 	const int* px;
@@ -52,8 +55,10 @@ protected:
 	void AllWall();
 	const vector<vector<RogueLikeMap>> mapdata;
 	static vector<string> names;
+	ActState as;
 private:
 	void LoadName();
+	void move_act();
 };
 
 #endif

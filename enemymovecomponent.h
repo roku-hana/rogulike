@@ -3,6 +3,9 @@
 
 #include"component.h"
 
+class Enemy;
+class Player;
+
 class EnemyMoveComponent : public Component
 {
 public:
@@ -11,6 +14,9 @@ public:
 private:
 	int* ex;
 	int* ey;
+	Enemy* enemy;
+	Player* player;
+	void move();
 };
 
 #endif

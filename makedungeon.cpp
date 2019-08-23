@@ -176,7 +176,9 @@ MapData::MapData()
 	transparentMap(MAPY_RLk, vector<int>(MAPX_RLk, 0)){
 
 	sx = sy = gx = gy = 0;
+	//Œã‚ÅAŸ‚ÌŠK‚ÖˆÚ“®‚µ‚½‚Æ‚«‚¾‚¯‰ÁZ‚·‚é‚æ‚¤‚É‚·‚é
 	stageNum++;
+	//
 
 	minDestination = -1;
 	while (minDestination == -1) {
@@ -244,6 +246,10 @@ void MapData::DrawTransparentMaze(int x, int y) {
 	}
 	DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(255, 255, 0), TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void MapData::DrawEnemyPos(int x, int y) {
+	DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(255, 0, 0), TRUE);
 }
 
 void MapData::DrawTempMap() {

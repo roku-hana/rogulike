@@ -21,7 +21,6 @@ private:
 	void Message();
 	int timerstart;
 	int enemyKnd;
-	static int messagebox;
 };
 
 #endif

@@ -4,6 +4,15 @@
 #include"vector.h"
 #include<vector>
 
+enum ActState {
+	KEY_INPUT,
+	ACT_BEGIN,
+	ACT_END,
+	MOVE_BEGIN,
+	MOVE_END,
+	WAIT
+};
+
 class GameStage;
 class Component;
 class InputManager;
@@ -33,7 +42,7 @@ public:
 	void AddComponent(Component*);
 	void RemoveComponent(Component*);
 	Direction GetDirection() { return dir; }
-	void SetMoveFlag() { moveflag = true; }
+	void SetMoveFlag(bool flag) { moveflag = flag; }
 	bool GetMoveFlag() { return moveflag; }
 	void SetDamageAmount(int damageAmount) { this->damageAmount = damageAmount; }
 private:

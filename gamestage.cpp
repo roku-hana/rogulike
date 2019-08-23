@@ -6,8 +6,11 @@
 #include"collision.h"
 #include"boar.h"
 #include<fstream>
+//メッセージの描画のためだけにDxライブラリを描画するのはどうなんだろう
+#include<DxLib.h>
+//
 
-GameStage::GameStage(InputManager* temp):input(temp) {
+GameStage::GameStage(InputManager* temp):input(temp){
 	mp = new MapData();
 	player = new Player(this, mp->GetMap());
 	player->SetScrollX(mp->GetStartX() * CHIPSIZE);
@@ -26,10 +29,12 @@ GameStage::GameStage(InputManager* temp):input(temp) {
 		}
 	}
 	//
+	player->SetEnemies(mEnemies);
 
 	nextStage = 0;
 	colManager = new Collision(this);
 
+	messagebox = LoadGraph("Images\\messagebox.png");
 	LoadMessage();
 }
 
@@ -77,12 +82,41 @@ void GameStage::update() {
 void GameStage::draw() {
 	mp->draw(*player->GetScrollX(), *player->GetScrollY());
 	mp->DrawTransparentMaze(*player->GetScrollX() / CHIPSIZE, *player->GetScrollY() / CHIPSIZE);
+	//仮
+	for (auto enemy : mEnemies) {
+		mp->DrawEnemyPos(enemy->GetIndexX(), enemy->GetIndexY());
+	}
+	//
 	//mp->DrawTempMap();
 
 	for (auto sprite : mSprites)
 	{
 		sprite->Draw(animcounter);
 	}
+
+	//メッセージの描画(別の場所のほうがいいかも)
+	DrawMessage();
+
+	//テスト
+	switch (player->GetActState()) {
+	case KEY_INPUT: DrawString(300, 0, "p:KEY_INPUT", GetColor(255, 255, 255)); break;
+	case ACT_BEGIN: DrawString(300, 0, "p:ACT_BEGIN", GetColor(255, 255, 255)); break;
+	case ACT_END: DrawString(300, 0, "p:ACT_END", GetColor(255, 255, 255)); break;
+	case MOVE_BEGIN: DrawString(300, 0, "p:MOVE_BEGIN", GetColor(255, 255, 255)); break;
+	case MOVE_END: DrawString(300, 0, "p:MOVE_END", GetColor(255, 255, 255)); break;
+	default: break;
+	}
+	for (auto enemy : mEnemies) {
+		switch (enemy->GetActState()) {
+		case WAIT: DrawString(400, 0, "e:WAIT", GetColor(255, 255, 255)); break;
+		//case ACT_BEGIN: DrawString(400, 0, "e:ACT_BEGIN", GetColor(255, 255, 255)); break;
+		//case ACT_END: DrawString(400, 0, "e:ACT_END", GetColor(255, 255, 255)); break;
+		//case MOVE_BEGIN: DrawString(400, 0, "e:MOVE_BEGIN", GetColor(255, 255, 255)); break;
+		//case MOVE_END: DrawString(400, 0, "e:MOVE_END", GetColor(255, 255, 255)); break;
+		default: break;
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////
 }
 
 void GameStage::AddActor(Actor* actor)
@@ -177,7 +211,7 @@ void GameStage::LoadMessage() {
 	while (std::getline(fp, temp)) messages.push_back(temp);
 }
 
-std::string& GameStage::Get_Message(int i, std::string& pl, std::string& en, int val) {
+/*std::string& GameStage::Get_Message(int i, std::string& pl, std::string& en, int val) {
 	//テキストファイルの中のタグを引数の文字列に置換する
 	message = messages[i];
 	auto pos1 = message.find("<pl>");
@@ -191,6 +225,35 @@ std::string& GameStage::Get_Message(int i, std::string& pl, std::string& en, int
 	if (pos3 != std::string::npos) message.replace(pos3, len3, std::to_string(val));
 
 	return message;
+}*/
+
+void GameStage::SetMessage(int i, std::string& pl, std::string& en, int val) {
+	string temp = messages[i];
+	auto pos1 = temp.find("<pl>");
+	auto len1 = 4;
+	if (pos1 != std::string::npos) temp.replace(pos1, len1, pl);
+	auto pos2 = temp.find("<en>");
+	auto len2 = 4;
+	if (pos2 != std::string::npos) temp.replace(pos2, len2, en);
+	auto pos3 = temp.find("<val>");
+	auto len3 = 5;
+	if (pos3 != std::string::npos) temp.replace(pos3, len3, std::to_string(val));
+
+	if (message.size() > 2) {
+		message.pop();
+	}
+	message.push(temp);
+}
+
+void GameStage::DrawMessage() {
+	if (messageflag) {
+		DrawGraph(120, 390, messagebox, TRUE);
+		DrawString(130, 420, message.front().c_str(), GetColor(255, 255, 255));
+		if (message.size() == 2) DrawString(130, 440, message.back().c_str(), GetColor(255, 255, 255));
+	}
+	else {
+		while (!message.empty()) message.pop();
+	}
 }
 
 void GameStage::LoadEnemyParam(const char* fileName) {

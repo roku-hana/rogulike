@@ -16,7 +16,7 @@ void Collision::Player_Chick_Collision() {
 	
 	for (auto ck : chicks){
 		if (px == ck->GetIndexX() && py == ck->GetIndexY()) {
-			ck->SetMoveFlag();
+			ck->SetMoveFlag(true);
 		}
 	}
 }

@@ -3,6 +3,7 @@
 
 #include<vector>
 #include<string>
+#include<queue>
 
 class MapData;
 class Player;
@@ -34,7 +35,9 @@ public:
 	std::vector<Enemy*>* GetEnemies() { return &mEnemies; }
 	std::vector<Chick*>& GetChicks() { return mChicks; }
 	void SetChickGraphic(int gh) { chickGh = gh; }
-	std::string& Get_Message(int i, std::string& pl, std::string& en, int val);
+	//std::string& Get_Message(int i, std::string& pl, std::string& en, int val);
+	void SetMessage(int i, std::string& pl, std::string& en, int val);
+	void SetMessageFlag(bool flag) { messageflag = flag; }
 private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
@@ -50,10 +53,13 @@ private:
 	Collision* colManager;
 	int chickGh;
 	std::vector<std::string> messages;
-	std::string message;
+	bool messageflag;
+	std::queue<std::string> message;
+	int messagebox;
 	std::vector<EnemyParameter> enemyParam;
 	int enemyNum;
 	void LoadMessage();
+	void DrawMessage();
 	void LoadEnemyParam(const char* fileName);
 };
 

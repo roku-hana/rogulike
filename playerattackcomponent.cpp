@@ -10,15 +10,17 @@ PlayerAttackComponent::PlayerAttackComponent(class Actor* owner, int updateOrder
 {
 	player = (Player*)owner;
 	enemies = player->GetGameStage()->GetEnemies();
-	if (messagebox == 0) messagebox = LoadGraph("Images\\messagebox.png");
 	timerstart = 0;
 	enemyKnd = -1;
 }
 
 void PlayerAttackComponent::update() {
 	if (player->GetActState() == ACT_BEGIN) {
-		if(timerstart == 0) Attack();
+		if (timerstart == 0) Attack();
 		player->SetActState(ACT_END);
+		if (enemyKnd == -1) {
+			for (auto enemy : *enemies) enemy->SetActState(WAIT);
+		}
 	}
 	if (enemyKnd != -1) Message();
 }
@@ -48,16 +50,15 @@ void PlayerAttackComponent::Message() {
 	int id = (*enemies)[enemyKnd]->GetEnemyParam().id;
 	string pl = player->GetPlayerParam().name;;
 	string en = (*enemies)[enemyKnd]->GetEnemyName(id);
-	string message = player->GetGameStage()->Get_Message(0, pl, en, player->GetPlayerParam().attack);
-	if (timerstart == 0) timerstart = GetNowCount();
-	if (GetNowCount() - timerstart <= 5000) {
-		DrawGraph(120, 390, messagebox, TRUE);
-		DrawString(130, 400, message.c_str(), GetColor(255, 255, 255));
+	if (timerstart == 0) { 
+	timerstart = GetNowCount(); 
+	player->GetGameStage()->SetMessage(0, pl, en, player->GetPlayerParam().attack); 
+	player->GetGameStage()->SetMessageFlag(true);
 	}
-	else {
+	if(GetNowCount() - timerstart >= 1000){
+		for (auto enemy : *enemies) enemy->SetActState(WAIT);
 		timerstart = 0;
 		enemyKnd = -1;
+		player->GetGameStage()->SetMessageFlag(false);
 	}
 }
-
-int PlayerAttackComponent::messagebox;

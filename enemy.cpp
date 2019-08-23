@@ -3,6 +3,15 @@
 #include"makedungeon.h"
 #include"charactersprite.h"
 #include<fstream>
+#include"gamestage.h"
+#include"player.h"
+
+//
+//#include<DxLib.h>
+//
+
+const int DRAW_PLAYER_X = 320;
+const int DRAW_PLAYER_Y = 224;
 
 Enemy::Enemy(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, int* px, int* py)
 	:Actor(game), mapdata(map),
@@ -16,6 +25,27 @@ Enemy::Enemy(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, i
 
 Enemy::~Enemy() {
 	GetGameStage()->RemoveEnemy(this);
+}
+
+void Enemy::updateActor() {
+	int ex = indexX - *px / CHIPSIZE;
+	int ey = indexY - *py / CHIPSIZE;
+	Vector2 setpos = { DRAW_PLAYER_X + ex * CHIPSIZE, DRAW_PLAYER_Y + ey * CHIPSIZE };
+	if (isDraw(ex, ey)) {
+		if (moveflag) SetPosition(setpos);
+	}
+	else SetPosition(Vector2(-100, -100));
+
+	moveflag = GetGameStage()->GetPlayer()->GetMoveFlag();
+
+	if (moveflag) {
+		DefineDirection();
+		AllWall();
+	}
+
+	if (as == WAIT) {
+		move_act();
+	}
 }
 
 bool Enemy::isDraw(int ex, int ey) {
@@ -43,8 +73,6 @@ void Enemy::DefineDirection() {
 	else if (dx < 0 && dy < 0) temp = UP_LEFT;
 	else if (dx > 0 && dy < 0) temp = UP_RIGHT;
 	else if (dx < 0 && dy > 0) temp = DOWN_LEFT;
-
-	//DrawFormatString(300, 0, GetColor(255, 0, 0), "dx:%d, dy:%d", dx, dy);
 
 	dir = temp;
 }
@@ -221,6 +249,14 @@ void Enemy::LoadName() {
 	ifstream fp("enemydata\\enemyname.txt");
 	if (fp.fail()) MSG("ファイル読み込みエラー");
 	while (std::getline(fp, temp)) names.push_back(temp);
+}
+
+void Enemy::move_act() {
+	int dx = abs(indexX - *px / CHIPSIZE);
+	int dy = abs(indexY - *py / CHIPSIZE);
+
+	if ((dx == 1 || dy == 1) && dx + dy <= 2) as = ACT_BEGIN;
+	else as = MOVE_BEGIN;
 }
 
 vector<string> Enemy::names;

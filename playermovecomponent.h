@@ -2,8 +2,10 @@
 #define __PLAYERMOVECOMPONENT_H__
 
 #include"component.h"
+#include<vector>
 
 class Player;
+class Enemy;
 
 class PlayerMoveComponent : public Component
 {
@@ -14,6 +16,7 @@ private:
 	int* px;
 	int* py;
 	Player* player;
+	std::vector<Enemy*>* enemies;
 	const int CHIPSIZE = 32;
 	void Move();
 };

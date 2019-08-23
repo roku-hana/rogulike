@@ -75,6 +75,7 @@ public:
 	MapData();
 	void draw(int x, int y);
 	void DrawTransparentMaze(int x, int y);
+	void DrawEnemyPos(int x, int y);
 	void DrawTempMap();
 	int GetStartX() { return sx; }
 	int GetStartY() { return sy; }

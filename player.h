@@ -9,14 +9,15 @@ using namespace std;
 class GameStage;
 class InputManager;
 class RogueLikeMap;
+class Enemy;
 
-enum ActState {
+/*enum ActState {
 	KEY_INPUT,
 	ACT_BEGIN,
 	ACT_END,
 	MOVE_BEGIN,
 	MOVE_END
-};
+};*/
 
 struct PlayerParameter {
 	int nowhp;
@@ -53,12 +54,14 @@ public:
 	void SetActState(ActState as) { this->as = as; }
 	ActState GetActState() { return as; }
 	PlayerParameter GetPlayerParam() { return param; }
+	void SetEnemies(vector<Enemy*> e) { mEnemies = e; }
 private:
 	int scrollx, scrolly;
 	int gh[24];
 	int count;
 	static int chickNum;
 	const vector<vector<RogueLikeMap>> mapdata;
+	vector<Enemy*> mEnemies;
 	ActState as;
 	PlayerParameter param;
 };

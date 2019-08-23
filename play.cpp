@@ -14,6 +14,7 @@ Play::Play(Game* pManager, SceneManager* sManager) :
 
 void Play::update() {
 	SoundBox::playBgm(1);
+	//gamestage->ProcessInput();
 	gamestage->update();
 	gamestage->ProcessInput();
 	if (gamestage->NextStage()) {
