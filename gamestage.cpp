@@ -81,6 +81,7 @@ void GameStage::update() {
 
 void GameStage::draw() {
 	mp->draw(*player->GetScrollX(), *player->GetScrollY());
+	mp->DrawDarkness(*player->GetScrollX() / CHIPSIZE, *player->GetScrollY() / CHIPSIZE);
 	mp->DrawTransparentMaze(*player->GetScrollX() / CHIPSIZE, *player->GetScrollY() / CHIPSIZE);
 	//仮
 	for (auto enemy : mEnemies) {
@@ -97,25 +98,11 @@ void GameStage::draw() {
 	//メッセージの描画(別の場所のほうがいいかも)
 	DrawMessage();
 
+
 	//テスト
-	switch (player->GetActState()) {
-	case KEY_INPUT: DrawString(300, 0, "p:KEY_INPUT", GetColor(255, 255, 255)); break;
-	case ACT_BEGIN: DrawString(300, 0, "p:ACT_BEGIN", GetColor(255, 255, 255)); break;
-	case ACT_END: DrawString(300, 0, "p:ACT_END", GetColor(255, 255, 255)); break;
-	case MOVE_BEGIN: DrawString(300, 0, "p:MOVE_BEGIN", GetColor(255, 255, 255)); break;
-	case MOVE_END: DrawString(300, 0, "p:MOVE_END", GetColor(255, 255, 255)); break;
-	default: break;
-	}
-	for (auto enemy : mEnemies) {
-		switch (enemy->GetActState()) {
-		case WAIT: DrawString(400, 0, "e:WAIT", GetColor(255, 255, 255)); break;
-		//case ACT_BEGIN: DrawString(400, 0, "e:ACT_BEGIN", GetColor(255, 255, 255)); break;
-		//case ACT_END: DrawString(400, 0, "e:ACT_END", GetColor(255, 255, 255)); break;
-		//case MOVE_BEGIN: DrawString(400, 0, "e:MOVE_BEGIN", GetColor(255, 255, 255)); break;
-		//case MOVE_END: DrawString(400, 0, "e:MOVE_END", GetColor(255, 255, 255)); break;
-		default: break;
-		}
-	}
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+	DrawFormatString(400, 10, GetColor(255, 255, 255), "x:%d, y:%d", mouseX, mouseY);
 	///////////////////////////////////////////////////////////////////////////////////////
 }
 

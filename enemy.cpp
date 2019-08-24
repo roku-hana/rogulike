@@ -49,9 +49,18 @@ void Enemy::updateActor() {
 }
 
 bool Enemy::isDraw(int ex, int ey) {
-	if (ex >= -1 * DRAW_CHIPNUM_X && ex <= DRAW_CHIPNUM_X) {
-		if (ey >= -1 * DRAW_CHIPNUM_Y && ey <= DRAW_CHIPNUM_Y) {
-			return true;
+	if(GetGameStage()->GetMapData()->GetLightKnd() == 1){
+		if (ex >= -1 * DRAW_CHIPNUM_X && ex <= DRAW_CHIPNUM_X) {
+			if (ey >= -1 * DRAW_CHIPNUM_Y && ey <= DRAW_CHIPNUM_Y) {
+				return true;
+			}
+		}
+	}
+	if (GetGameStage()->GetMapData()->GetLightKnd() == 2) {
+		if (ex >= -1 && ex <= 1) {
+			if (ey >= -1 && ey <= 1) {
+				return true;
+			}
 		}
 	}
 	return false;

@@ -18,6 +18,8 @@ enum MAP_KIND {
 	GOAL,
 };
 
+const int PLAYER_POS_X = 320;
+const int PLAYER_POS_Y = 224;
 const int CHIPSIZE = 32;
 const int DRAW_STARTPOS_X = 96;
 const int DRAW_STARTPOS_Y = 48;
@@ -77,6 +79,7 @@ public:
 	void DrawTransparentMaze(int x, int y);
 	void DrawEnemyPos(int x, int y);
 	void DrawTempMap();
+	void DrawDarkness(int x, int y);
 	int GetStartX() { return sx; }
 	int GetStartY() { return sy; }
 	int GetGoalX() { return gx; }
@@ -89,7 +92,8 @@ public:
 	int GetEnemyNum() { return enemyNum; }
 	int GetStageNum() { return stageNum; }
 	vector<vector<RogueLikeMap>>& GetMap() { return maprl; }
-private:
+	int GetLightKnd() { return lightknd; }
+	private:
 	/*マップ系データ*/
 	DungeonMap_RL dng; //ダンジョン
 	vector<vector<RogueLikeMap>> maprl;
@@ -105,5 +109,9 @@ private:
 	int minDestination;    //startからgoalまでの最短距離
 	int BreadthFirstSearch();
 	void Decide_Pos();
+	//int darkness;
+	size_t minx, miny, maxx, maxy;
+	size_t addx, addy;
+	int lightknd;
 };
 #endif

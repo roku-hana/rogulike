@@ -195,21 +195,24 @@ MapData::MapData()
 	}
 
 	if (mapchip[0] == 0) LoadDivGraph("Images\\mapchip.png", 3, 3, 1, 32, 32, mapchip);
+	//darkness = LoadGraph("Images\\darkness2.png");
 }
 
 void MapData::draw(int x, int y) {
-	size_t minx = x / CHIPSIZE - DRAW_CHIPNUM_X >= 0 ? x / CHIPSIZE - DRAW_CHIPNUM_X : 0;
-	size_t miny = y / CHIPSIZE - DRAW_CHIPNUM_Y >= 0 ? y / CHIPSIZE - DRAW_CHIPNUM_Y : 0;
-	size_t maxx = (size_t)x / CHIPSIZE + DRAW_CHIPNUM_X < MAPX_RLk ? x / CHIPSIZE + DRAW_CHIPNUM_X : MAPX_RLk - 1;
-	size_t maxy = (size_t)y / CHIPSIZE + DRAW_CHIPNUM_Y < MAPY_RLk ? y / CHIPSIZE + DRAW_CHIPNUM_Y : MAPY_RLk - 1;
-	size_t addx = 0, addy = 0;
+	minx = x / CHIPSIZE - DRAW_CHIPNUM_X >= 0 ? x / CHIPSIZE - DRAW_CHIPNUM_X : 0;
+	miny = y / CHIPSIZE - DRAW_CHIPNUM_Y >= 0 ? y / CHIPSIZE - DRAW_CHIPNUM_Y : 0;
+	maxx = (size_t)x / CHIPSIZE + DRAW_CHIPNUM_X < MAPX_RLk ? x / CHIPSIZE + DRAW_CHIPNUM_X : MAPX_RLk - 1;
+	maxy = (size_t)y / CHIPSIZE + DRAW_CHIPNUM_Y < MAPY_RLk ? y / CHIPSIZE + DRAW_CHIPNUM_Y : MAPY_RLk - 1;
+	addx = 0, addy = 0;
 	if (minx == 0) addx = x / CHIPSIZE - DRAW_CHIPNUM_X;
 	if (miny == 0) addy = y / CHIPSIZE - DRAW_CHIPNUM_Y;
 	if (maxx == MAPX_RLk) addx = -1 * (x / CHIPSIZE - MAPX_RLk + DRAW_CHIPNUM_X);
 	if (maxy == MAPY_RLk) addy = -1 * (y / CHIPSIZE - MAPY_RLk + DRAW_CHIPNUM_Y);
 	for (size_t i = miny; i < maxy; ++i) {
 		for (size_t j = minx; j < maxx; ++j) {
-			size_t kind = maprl[i][j].mapData;
+			size_t kind = 0;
+			if (i == gy && j == gx) kind = GOAL;
+			else kind = maprl[i][j].mapData;
 			int posy = i - miny - addy;
 			int posx = j - minx - addx;
 			//•”‰®‚Ì•`‰æ
@@ -217,19 +220,12 @@ void MapData::draw(int x, int y) {
 			else {
 				switch (kind) {
 				case WALL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[0], TRUE); break;
-				case PATH:
-				case START:
-					DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[1], TRUE); break;
+				case PATH: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[1], TRUE); break;
 				case GOAL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[2], TRUE); break;
 				}
 			}
 		}
 	}
-	//DrawFormatString(200, 100, GetColor(255, 0, 0), "miny:%d, minx:%d", miny, minx);
-	//DrawFormatString(200, 200, GetColor(255, 0, 0), "maxy:%d, maxx:%d", maxy, maxx);
-	//DrawFormatString(200, 10, GetColor(255, 0, 0), "py:%d, px:%d", y / CHIPSIZE, x / CHIPSIZE);
-	//DrawFormatString(500, 10, GetColor(255, 0, 0), "sx:%d, sy:%d", sx, sy);
-	//DrawFormatString(500, 30, GetColor(255, 0, 0), "gy:%d, gx:%d", gy, gx);
 }
 
 void MapData::DrawTransparentMaze(int x, int y) {
@@ -245,6 +241,29 @@ void MapData::DrawTransparentMaze(int x, int y) {
 		}
 	}
 	DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(255, 255, 0), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void MapData::DrawDarkness(int x, int y) {
+	SetDrawBlendMode(DX_BLENDMODE_MUL, 50);
+	DrawBox(96, 48, 544, 432, GetColor(100, 100, 100), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 30);
+	for (size_t i = miny; i < maxy; i++) {
+		for (size_t j = minx; j < maxx; j++) {
+			size_t kind = maprl[i][j].mapData;
+			int posy = i - miny - addy;
+			int posx = j - minx - addx;
+			int tx = DRAW_STARTPOS_X + posx * CHIPSIZE;
+			int ty = DRAW_STARTPOS_Y + posy * CHIPSIZE;
+			if (kind == maprl[y][x].mapData) {
+				if (kind >= 20) { DrawBox(tx, ty, tx + 32, ty + 32, GetColor(200, 200, 200), TRUE); lightknd = 1; }
+				else if (kind == PATH || (kind >= 20 && dng.count[kind - 20] == 1)) lightknd = 2;
+				else lightknd = 0;
+			}
+		}
+	}
+	if(lightknd == 2) DrawCircle(PLAYER_POS_X + 16, PLAYER_POS_Y + 16, CHIPSIZE + 16, GetColor(200, 200, 200), TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -384,7 +403,27 @@ void MapData::Decide_Pos() {
 		ey[i] = temp_ey;
 	}
 	maprl[sy][sx] = 2;
+	for (int i = -3; i < 4; i++) {
+		for (int j = -3; j < 4; j++) {
+			if (maprl[sy][sx].mapData == 2) {
+				if (maprl[sy + i][sx + j].mapData >= 20) maprl[sy][sx].mapData = maprl[sy + i][sx + j].mapData;
+			}
+			else {
+				break;
+			}
+		}
+	}
 	maprl[gy][gx] = 3;
+	for (int i = -3; i < 4; i++) {
+		for (int j = -3; j < 4; j++) {
+			if (maprl[gy][gx].mapData == 3) {
+				if (maprl[gy + i][gx + j].mapData >= 20) maprl[gy][gx].mapData = maprl[gy + i][gx + j].mapData;
+			}
+			else {
+				break;
+			}
+		}
+	}
 }
 
 int MapData::mapchip[3];
