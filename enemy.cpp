@@ -5,10 +5,8 @@
 #include<fstream>
 #include"gamestage.h"
 #include"player.h"
-
-//
-//#include<DxLib.h>
-//
+#include"damageeffect.h"
+#include<DxLib.h>
 
 const int DRAW_PLAYER_X = 320;
 const int DRAW_PLAYER_Y = 224;
@@ -17,6 +15,10 @@ Enemy::Enemy(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, i
 	:Actor(game), mapdata(map),
 	px(px), py(py), indexX(x), indexY(y)
 {
+	if (damageeffect[0] == 0) LoadDivGraph("Images\\damageeffect.png", 2, 2, 1, 32, 32, damageeffect);
+	DamageEffect* de = new DamageEffect(this, 150);
+	de->SetImage(damageeffect);
+
 	game->AddEnemy(this);
 
 	//–¼‘Oˆê——Žæ“¾
@@ -30,7 +32,7 @@ Enemy::~Enemy() {
 void Enemy::updateActor() {
 	int ex = indexX - *px / CHIPSIZE;
 	int ey = indexY - *py / CHIPSIZE;
-	Vector2 setpos = { DRAW_PLAYER_X + ex * CHIPSIZE, DRAW_PLAYER_Y + ey * CHIPSIZE };
+	Vector2 setpos = { (float)DRAW_PLAYER_X + ex * CHIPSIZE, (float)DRAW_PLAYER_Y + ey * CHIPSIZE };
 	if (isDraw(ex, ey)) {
 		if (moveflag) SetPosition(setpos);
 	}
@@ -269,3 +271,4 @@ void Enemy::move_act() {
 }
 
 vector<string> Enemy::names;
+int Enemy::damageeffect[2];

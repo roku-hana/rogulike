@@ -10,7 +10,7 @@ class RogueLikeMap;
 
 class Boar : public Enemy {
 public:
-	Boar(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, int* px, int* py, EnemyParameter ep);
+	Boar(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, int *px, int* py, EnemyParameter ep);
 	~Boar();
 	void updateActor() override;
 	void ActorInput(InputManager*) override;

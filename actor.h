@@ -44,6 +44,8 @@ public:
 	Direction GetDirection() { return dir; }
 	void SetMoveFlag(bool flag) { moveflag = flag; }
 	bool GetMoveFlag() { return moveflag; }
+	void SetDamageFlag(bool flag) { damageflag = flag; }
+	bool GetDamageFlag() { return damageflag; }
 	void SetDamageAmount(int damageAmount) { this->damageAmount = damageAmount; }
 private:
 	State mState;
@@ -51,6 +53,7 @@ private:
 	float mScale;
 	std::vector<Component*> mComponents;
 	GameStage* mGameStage;
+	bool damageflag;
 protected:
 	Direction dir;
 	bool moveflag;

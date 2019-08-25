@@ -1,21 +1,25 @@
 #include"charactersprite.h"
 
-CharacterSprite::CharacterSprite(Actor* owner, int drawOrder) : SpriteComponent(owner, drawOrder) { anim = new AnimDraw(); }
+CharacterSprite::CharacterSprite(Actor* owner, int drawOrder) : SpriteComponent(owner, drawOrder) { 
+	anim = new AnimDraw(); 
+}
 
 CharacterSprite::~CharacterSprite() { delete anim; }
 
 void CharacterSprite::Draw(int count) {
 	if (mImage) {
 		Vector2 pos = mOwner->GetPosition();
+		int posx = (int)pos.x;
+		int posy = (int)pos.y;
 		switch (mOwner->GetDirection()) {
-		case DOWN: anim->DrawAnimation(0, pos.x, pos.y, count); break;
-		case LEFT: anim->DrawAnimation(2, pos.x, pos.y, count); break;
-		case UP_LEFT: anim->DrawAnimation(5, pos.x, pos.y, count); break;
-		case DOWN_LEFT: anim->DrawAnimation(1, pos.x, pos.y, count); break;
-		case RIGHT: anim->DrawAnimation(4, pos.x, pos.y, count); break;
-		case UP_RIGHT: anim->DrawAnimation(7, pos.x, pos.y, count); break;
-		case DOWN_RIGHT: anim->DrawAnimation(3, pos.x, pos.y, count); break;
-		case UP: anim->DrawAnimation(6, pos.x, pos.y, count); break;
+		case DOWN: anim->DrawAnimation(0, posx, posy, count); break;
+		case LEFT: anim->DrawAnimation(2, posx, posy, count); break;
+		case UP_LEFT: anim->DrawAnimation(5, posx, posy, count); break;
+		case DOWN_LEFT: anim->DrawAnimation(1, posx, posy, count); break;
+		case RIGHT: anim->DrawAnimation(4, posx, posy, count); break;
+		case UP_RIGHT: anim->DrawAnimation(7, posx, posy, count); break;
+		case DOWN_RIGHT: anim->DrawAnimation(3, posx, posy, count); break;
+		case UP: anim->DrawAnimation(6, posx, posy, count); break;
 		default: break;
 		}
 	}
