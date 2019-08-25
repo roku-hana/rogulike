@@ -162,6 +162,7 @@
     <ClCompile Include="chick.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="component.cpp" />
+    <ClCompile Include="damageeffect.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemyattackcomponent.cpp" />
     <ClCompile Include="enemymovecomponent.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="chick.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="component.h" />
+    <ClInclude Include="damageeffect.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyattackcomponent.h" />
     <ClInclude Include="enemymovecomponent.h" />

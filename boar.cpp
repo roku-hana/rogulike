@@ -16,7 +16,7 @@ Boar::Boar(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, int
 	sc->SetImage(gh);
 
 	EnemyMoveComponent* emc = new EnemyMoveComponent(this, &indexX, &indexY);
-	EnemyAttackComponent* eac = new EnemyAttackComponent(this);
+	EnemyAttackComponent* eac = new EnemyAttackComponent(this, &indexX, &indexY);
 
 	param = ep;
 	SetPosition(Vector2(-10, -10));

@@ -1,2 +1,4 @@
 Sounds\title.mp3
 Sounds\play.mp3
+Sounds\chick_attack.mp3
+Sounds\boar_attack.mp3

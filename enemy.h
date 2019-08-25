@@ -59,6 +59,7 @@ protected:
 private:
 	void LoadName();
 	void move_act();
+	static int damageeffect[2];
 };
 
 #endif

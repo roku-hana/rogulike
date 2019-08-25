@@ -64,6 +64,7 @@ private:
 	vector<Enemy*> mEnemies;
 	ActState as;
 	PlayerParameter param;
+	static int damageeffect[2];
 };
 
 #endif

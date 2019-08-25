@@ -8,11 +8,15 @@
 #include"playerattackcomponent.h"
 #include"gamestage.h"
 #include"enemy.h"
+#include"damageeffect.h"
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
 	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
 	SpriteComponent* sc = new CharacterSprite(this, 100);
 	sc->SetImage(gh);
+	if (damageeffect[0] == 0) LoadDivGraph("Images\\damageeffect.png", 2, 2, 1, 32, 32, damageeffect);
+	DamageEffect* de = new DamageEffect(this, 150);
+	de->SetImage(damageeffect);
 
 	PlayerMoveComponent* pmc = new PlayerMoveComponent(this);
 	PlayerAttackComponent* pac = new PlayerAttackComponent(this);
@@ -192,3 +196,4 @@ bool Player::CanMove() {
 }
 
 int Player::chickNum;
+int Player::damageeffect[2];

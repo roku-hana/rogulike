@@ -18,9 +18,11 @@ private:
 	Player* player;
 	vector<Enemy*>* enemies;
 	void Attack();
+	void Animation();
 	void Message();
 	int timerstart;
 	int enemyKnd;
+	int count;
 };
 
 #endif
