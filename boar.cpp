@@ -4,6 +4,7 @@
 #include"charactersprite.h"
 #include"enemymovecomponent.h"
 #include"enemyattackcomponent.h"
+#include"gamestage.h"
 
 Boar::Boar(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, int* px, int* py, EnemyParameter ep) :
 	Enemy(game, map, x, y, px, py)
@@ -31,11 +32,6 @@ Boar::~Boar() {
 
 void Boar::updateActor() {
 	Enemy::updateActor();
-
-		//ƒ_ƒ[ƒW = UŒ‚—Í - –hŒä—Í
-	if (damageAmount) param.nowhp -= (damageAmount - param.defense);
-	DrawFormatString(300, 30, GetColor(255, 0, 0), "boar hp:%d", param.nowhp);
-	damageAmount = 0;
 }
 
 void Boar::ActorInput(InputManager* input) {

@@ -18,7 +18,7 @@ EnemyAttackComponent::EnemyAttackComponent(class Actor* owner, int*x, int* y, in
 
 void EnemyAttackComponent::update() {
 	if (enemy->GetActState() == ACT_BEGIN) {
-		if (timerstart == 0) Attack();
+		if (timerstart == 0) { Attack();}
 		enemy->SetActState(ACT_END);
 	}
 	if (messageflag) Message();
@@ -43,7 +43,7 @@ void EnemyAttackComponent::Message() {
 		player->GetGameStage()->SetMessage(1, pl, en, val);
 		player->GetGameStage()->SetMessageFlag(true);
 	}
-	if(GetNowCount() - timerstart >= 1000){
+	if (GetNowCount() - timerstart >= 1000) {
 		timerstart = 0;
 		count = 0;
 		player->SetActState(KEY_INPUT);
@@ -58,14 +58,14 @@ void EnemyAttackComponent::Animation() {
 	count++;
 	Vector2 add;
 	switch (enemy->GetDirection()) {
-	case UP:  add.y -= sin(3.14 * 2 / 30 * count) * 2; break;
-	case DOWN: add.y += sin(3.14 * 2 / 30 * count) * 2; break;
-	case RIGHT: add.x += sin(3.14 * 2 / 30 * count) * 2; break;
-	case LEFT: add.x -= sin(3.14 * 2 / 30 * count) * 2; break;
-	case UP_RIGHT: add.x += sin(3.14 * 2 / 30 * count) * 2; add.y -= sin(3.14 * 2 / 30 * count) * 2; break;
-	case UP_LEFT: add.x -= sin(3.14 * 2 / 30 * count) * 2; add.y -= sin(3.14 * 2 / 30 * count) * 2; break;
-	case DOWN_RIGHT: add.x += sin(3.14 * 2 / 30 * count) * 2; add.y += sin(3.14 * 2 / 30 * count) * 2; break;
-	case DOWN_LEFT: add.x -= sin(3.14 * 2 / 30 * count) * 2; add.y += sin(3.14 * 2 / 30 * count) * 2; break;
+	case UP:  add.y -= (float)sin(3.14 * 2 / 30 * count) * 4; break;
+	case DOWN: add.y += (float)sin(3.14 * 2 / 30 * count) * 4; break;
+	case RIGHT: add.x += (float)sin(3.14 * 2 / 30 * count) * 4; break;
+	case LEFT: add.x -= (float)sin(3.14 * 2 / 30 * count) * 4; break;
+	case UP_RIGHT: add.x += (float)sin(3.14 * 2 / 30 * count) * 4; add.y -= (float)sin(3.14 * 2 / 30 * count) * 4; break;
+	case UP_LEFT: add.x -= (float)sin(3.14 * 2 / 30 * count) * 4; add.y -= (float)sin(3.14 * 2 / 30 * count) * 4; break;
+	case DOWN_RIGHT: add.x += (float)sin(3.14 * 2 / 30 * count) * 4; add.y += (float)sin(3.14 * 2 / 30 * count) * 4; break;
+	case DOWN_LEFT: add.x -= (float)sin(3.14 * 2 / 30 * count) * 4; add.y += (float)sin(3.14 * 2 / 30 * count) * 4; break;
 	default: break;
 	}
 	enemy->SetPosition(Vector2(enemy->GetPosition().x + add.x, enemy->GetPosition().y + add.y));

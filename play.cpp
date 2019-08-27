@@ -26,15 +26,12 @@ void Play::update() {
 			delete this;
 		}
 	}
-	else if (gameManager->input->isPushStart(0) == 1) {
+	else if (gameManager->input->isPushBack(0) == 1) {
 		gameManager->gameScene = new Pause(gameManager, sceneManager);
 		delete this;
 	}
 }
 
 void Play::draw() {
-	//DrawGraph(0, 0, back, TRUE);
-	//DrawString(0, 50, "Start or XƒL[:PAUSE‰æ–Ê‚ÉˆÚ“®", GetColor(255, 255, 255));
 	gamestage->draw();
-	
 }

@@ -83,6 +83,7 @@ void GameStage::draw() {
 	mp->draw(*player->GetScrollX(), *player->GetScrollY());
 	mp->DrawDarkness(*player->GetScrollX() / CHIPSIZE, *player->GetScrollY() / CHIPSIZE);
 	mp->DrawTransparentMaze(*player->GetScrollX() / CHIPSIZE, *player->GetScrollY() / CHIPSIZE);
+
 	//仮
 	for (auto enemy : mEnemies) {
 		mp->DrawEnemyPos(enemy->GetIndexX(), enemy->GetIndexY());
@@ -197,22 +198,6 @@ void GameStage::LoadMessage() {
 	if (fp.fail()) MSG("ファイル読み込みエラー");
 	while (std::getline(fp, temp)) messages.push_back(temp);
 }
-
-/*std::string& GameStage::Get_Message(int i, std::string& pl, std::string& en, int val) {
-	//テキストファイルの中のタグを引数の文字列に置換する
-	message = messages[i];
-	auto pos1 = message.find("<pl>");
-	auto len1 = 4;
-	if (pos1 != std::string::npos) message.replace(pos1, len1, pl);
-	auto pos2 = message.find("<en>");
-	auto len2 = 4;
-	if (pos2 != std::string::npos) message.replace(pos2, len2, en);
-	auto pos3 = message.find("<val>");
-	auto len3 = 5;
-	if (pos3 != std::string::npos) message.replace(pos3, len3, std::to_string(val));
-
-	return message;
-}*/
 
 void GameStage::SetMessage(int i, std::string& pl, std::string& en, int val) {
 	string temp = messages[i];

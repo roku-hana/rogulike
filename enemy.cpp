@@ -30,13 +30,15 @@ Enemy::~Enemy() {
 }
 
 void Enemy::updateActor() {
+	ActState pas = GetGameStage()->GetPlayer()->GetActState();
+
 	int ex = indexX - *px / CHIPSIZE;
 	int ey = indexY - *py / CHIPSIZE;
 	Vector2 setpos = { (float)DRAW_PLAYER_X + ex * CHIPSIZE, (float)DRAW_PLAYER_Y + ey * CHIPSIZE };
 	if (isDraw(ex, ey)) {
 		if (moveflag) SetPosition(setpos);
 	}
-	else SetPosition(Vector2(-100, -100));
+	else SetPosition(Vector2(-100, -100)); 
 
 	moveflag = GetGameStage()->GetPlayer()->GetMoveFlag();
 
@@ -45,9 +47,16 @@ void Enemy::updateActor() {
 		AllWall();
 	}
 
-	if (as == WAIT) {
-		move_act();
+	//É_ÉÅÅ[ÉW = çUåÇóÕ - ñhå‰óÕ
+	if (damageAmount) param.nowhp -= (damageAmount - param.defense);
+	DrawFormatString(300, 30, GetColor(255, 0, 0), "boar hp:%d", param.nowhp);
+	damageAmount = 0;
+
+	if (param.nowhp <= 0) {
+		SetState(DEAD);
+		GetGameStage()->GetPlayer()->SetExperience(param.experiense);
 	}
+	if (as == WAIT && param.nowhp > 0) move_act();
 }
 
 bool Enemy::isDraw(int ex, int ey) {
@@ -266,8 +275,14 @@ void Enemy::move_act() {
 	int dx = abs(indexX - *px / CHIPSIZE);
 	int dy = abs(indexY - *py / CHIPSIZE);
 
-	if ((dx == 1 || dy == 1) && dx + dy <= 2) as = ACT_BEGIN;
-	else as = MOVE_BEGIN;
+	if ((dx == 1 || dy == 1) && dx + dy <= 2) {
+		if (GetGameStage()->GetPlayer()->GetMoveFlag()) as = ACT_BEGIN;
+		else GetGameStage()->GetPlayer()->SetActState(KEY_INPUT);
+	}
+	else {
+		if (GetGameStage()->GetPlayer()->GetMoveFlag()) as = MOVE_BEGIN;
+		else GetGameStage()->GetPlayer()->SetActState(KEY_INPUT);
+	}
 }
 
 vector<string> Enemy::names;

@@ -18,23 +18,22 @@ void EnemyMoveComponent::update() {
 		enemy->SetActState(MOVE_END);
 		move();
 		player->SetActState(KEY_INPUT);
+		player->SetMoveFlag(false);
 	}
 }
 
 void EnemyMoveComponent::move() {
 	if (mOwner->GetMoveFlag()) {
-		if (mOwner->GetGameStage()->GetPlayer()->CanMove()) {
-			switch (mOwner->GetDirection()) {
-			case UP: (*ey) -= 1; break;
-			case UP_RIGHT: (*ey) -= 1; (*ex) += 1; break;
-			case UP_LEFT: (*ey) -= 1; (*ex) -= 1; break;
-			case DOWN: (*ey) += 1; break;
-			case DOWN_RIGHT: (*ey) += 1; (*ex) += 1; break;
-			case DOWN_LEFT: (*ey) += 1; (*ex) -= 1; break;
-			case RIGHT: (*ex) += 1; break;
-			case LEFT: (*ex) -= 1; break;
-			default: break;
-			}
+		switch (mOwner->GetDirection()) {
+		case UP: (*ey) -= 1; break;
+		case UP_RIGHT: (*ey) -= 1; (*ex) += 1; break;
+		case UP_LEFT: (*ey) -= 1; (*ex) -= 1; break;
+		case DOWN: (*ey) += 1; break;
+		case DOWN_RIGHT: (*ey) += 1; (*ex) += 1; break;
+		case DOWN_LEFT: (*ey) += 1; (*ex) -= 1; break;
+		case RIGHT: (*ex) += 1; break;
+		case LEFT: (*ex) -= 1; break;
+		default: break;
 		}
 	}
 }

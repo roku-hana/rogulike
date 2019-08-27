@@ -11,14 +11,6 @@ class InputManager;
 class RogueLikeMap;
 class Enemy;
 
-/*enum ActState {
-	KEY_INPUT,
-	ACT_BEGIN,
-	ACT_END,
-	MOVE_BEGIN,
-	MOVE_END
-};*/
-
 struct PlayerParameter {
 	int nowhp;
 	int maxhp;
@@ -42,7 +34,6 @@ public:
 	void SetScrollY(int sy) { scrolly = sy; }
 	void AddChickNum() { chickNum++; }
 	int GetChickNum() { return chickNum; }
-	bool CanMove();
 	bool RightWall();
 	bool LeftWall();
 	bool UpWall();
@@ -55,10 +46,10 @@ public:
 	ActState GetActState() { return as; }
 	PlayerParameter GetPlayerParam() { return param; }
 	void SetEnemies(vector<Enemy*> e) { mEnemies = e; }
+	void SetExperience(int exp) { param.experience = exp; }
 private:
 	int scrollx, scrolly;
 	int gh[24];
-	int count;
 	static int chickNum;
 	const vector<vector<RogueLikeMap>> mapdata;
 	vector<Enemy*> mEnemies;

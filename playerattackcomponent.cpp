@@ -18,14 +18,39 @@ PlayerAttackComponent::PlayerAttackComponent(class Actor* owner, int updateOrder
 
 void PlayerAttackComponent::update() {
 	if (player->GetActState() == ACT_BEGIN) {
-		//Animation()
-		if (timerstart == 0) Attack();
-		player->SetActState(ACT_END);
+		if (timerstart == 0) {
+			Attack();
+			SoundBox::playSound(2);
+		}
+		if (enemies->size() > 0) player->SetActState(ACT_END);
+		else player->SetActState(KEY_INPUT);
 		if (enemyKnd == -1) {
-			for (auto enemy : *enemies) enemy->SetActState(WAIT);
+			if (timerstart == 0) timerstart = GetNowCount();
 		}
 	}
-	if (enemyKnd != -1) Message();
+	if(enemyKnd != -1) {
+		Message();
+		if (timerstart == 0) { timerstart = GetNowCount(); player->GetGameStage()->SetMessageFlag(true);}
+		if (GetNowCount() - timerstart >= 1000) {
+			for (auto enemy : *enemies) { enemy->SetActState(WAIT); }
+			timerstart = 0;
+			enemyKnd = -1;
+			count = 0;
+			player->GetGameStage()->SetMessageFlag(false);
+			player->SetMoveFlag(true);
+		}
+		if (GetNowCount() - timerstart <= 500) Animation();
+		else for (auto enemy : *enemies) enemy->SetDamageFlag(false);
+	}
+	else if(timerstart != 0){
+		if (GetNowCount() - timerstart <= 500) { Animation(); player->SetActState(ANIMATION); }
+		if (GetNowCount() - timerstart >= 1000) {
+			for (auto enemy : *enemies) { enemy->SetActState(WAIT); }
+			timerstart = 0;
+			count = 0;
+			player->SetMoveFlag(true);
+		}
+	}
 }
 
 void PlayerAttackComponent::Attack() {
@@ -50,39 +75,28 @@ void PlayerAttackComponent::Attack() {
 }
 
 void PlayerAttackComponent::Message() {
-	int id = (*enemies)[enemyKnd]->GetEnemyParam().id;
-	string pl = player->GetPlayerParam().name;;
-	string en = (*enemies)[enemyKnd]->GetEnemyName(id);
-	int val = player->GetPlayerParam().attack - (*enemies)[enemyKnd]->GetEnemyParam().defense;
-	if (timerstart == 0) { 
-		SoundBox::playSound(2);
-	timerstart = GetNowCount(); 
-	player->GetGameStage()->SetMessage(0, pl, en, val);
-	player->GetGameStage()->SetMessageFlag(true);
+	if (enemies->size() > 0) {
+		int id = (*enemies)[enemyKnd]->GetEnemyParam().id;
+		string pl = player->GetPlayerParam().name;;
+		string en = (*enemies)[enemyKnd]->GetEnemyName(id);
+		int val = player->GetPlayerParam().attack - (*enemies)[enemyKnd]->GetEnemyParam().defense;
+		if (timerstart == 0) player->GetGameStage()->SetMessage(0, pl, en, val);
 	}
-	if(GetNowCount() - timerstart >= 1000){
-		for (auto enemy : *enemies) { enemy->SetActState(WAIT); }
-		timerstart = 0;
-		enemyKnd = -1;
-		player->GetGameStage()->SetMessageFlag(false);
-		count = 0;
-	}
-	if (GetNowCount() - timerstart <= 500) Animation();
-	else for (auto enemy : *enemies) enemy->SetDamageFlag(false);
+	else player->SetActState(KEY_INPUT);
 }
 
 void PlayerAttackComponent::Animation() {
 	count++;
 	Vector2 add;
 	switch (player->GetDirection()) {
-	case UP:  add.y -= sin(3.14 * 2 / 30 * count) * 2; break;
-	case DOWN: add.y += sin(3.14 * 2 / 30 * count) * 2; break;
-	case RIGHT: add.x += sin(3.14 * 2 / 30 * count) * 2; break;
-	case LEFT: add.x -= sin(3.14 * 2 / 30 * count) * 2; break;
-	case UP_RIGHT: add.x += sin(3.14 * 2 / 30 * count) * 2; add.y -= sin(3.14 * 2 / 30 * count) * 2; break;
-	case UP_LEFT: add.x -= sin(3.14 * 2 / 30 * count) * 2; add.y -= sin(3.14 * 2 / 30 * count) * 2; break;
-	case DOWN_RIGHT: add.x += sin(3.14 * 2 / 30 * count) * 2; add.y += sin(3.14 * 2 / 30 * count) * 2; break;
-	case DOWN_LEFT: add.x -= sin(3.14 * 2 / 30 * count) * 2; add.y += sin(3.14 * 2 / 30 * count) * 2; break;
+	case UP:  add.y -= (float)sin(3.14 * 2 / 30 * count) * 2; break;
+	case DOWN: add.y += (float)sin(3.14 * 2 / 30 * count) * 2; break;
+	case RIGHT: add.x += (float)sin(3.14 * 2 / 30 * count) * 2; break;
+	case LEFT: add.x -= (float)sin(3.14 * 2 / 30 * count) * 2; break;
+	case UP_RIGHT: add.x += (float)sin(3.14 * 2 / 30 * count) * 2; add.y -= (float)sin(3.14 * 2 / 30 * count) * 2; break;
+	case UP_LEFT: add.x -= (float)sin(3.14 * 2 / 30 * count) * 2; add.y -= (float)sin(3.14 * 2 / 30 * count) * 2; break;
+	case DOWN_RIGHT: add.x += (float)sin(3.14 * 2 / 30 * count) * 2; add.y += (float)sin(3.14 * 2 / 30 * count) * 2; break;
+	case DOWN_LEFT: add.x -= (float)sin(3.14 * 2 / 30 * count) * 2; add.y += (float) sin(3.14 * 2 / 30 * count) * 2; break;
 	default: break;
 	}
 	player->SetPosition(Vector2(player->GetPosition().x + add.x, player->GetPosition().y + add.y));

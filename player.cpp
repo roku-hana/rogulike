@@ -9,6 +9,7 @@
 #include"gamestage.h"
 #include"enemy.h"
 #include"damageeffect.h"
+#include"soundbox.h"
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
 	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
@@ -23,7 +24,7 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 
 	SetPosition(Vector2(320, 224));
 	dir = DOWN;
-	count = 0; 
+	//count = 0; 
 	moveflag = false;
 	scrollx = 0;
 	scrolly = 0;
@@ -47,8 +48,21 @@ Player::~Player() {
 void Player::updateActor() {
 	//ダメージ = 攻撃力 - 防御力
 	if (damageAmount) param.nowhp -= (damageAmount - param.defense);
-	DrawFormatString(400, 30, GetColor(0, 0, 255), "player hp:%d", param.nowhp);
 	damageAmount = 0;
+	if (param.experience >= param.level * 10) {
+		SoundBox::playSound(4);
+		param.level++;
+		//ステータス上昇後で、考える。今のところは仮の計算
+		param.attack += 2;
+		param.defense += 2;
+		param.maxhp += 5;
+		//////////////////////////////////////////////////
+		param.experience = 0;
+	}
+	DrawFormatString(400, 30, GetColor(0, 0, 255), "player hp:%d", param.nowhp);
+	DrawFormatString(150, 30, GetColor(0, 0, 255), "player exp:%d", param.experience);
+	DrawFormatString(50, 10, GetColor(0, 0, 255), "player lev:%d", param.level);
+	if (param.nowhp <= 0) SetState(DEAD);
 }
 
 void Player::ActorInput(InputManager* input) {
@@ -57,40 +71,29 @@ void Player::ActorInput(InputManager* input) {
 			if (input->isPushUp())dir = UP_RIGHT;
 			else if (input->isPushDown()) dir = DOWN_RIGHT;
 			else dir = RIGHT;
-			if (count == 0) count = GetNowCount();
-			moveflag = true;
 			as = MOVE_BEGIN;
 		}
 		else if (input->isPushLeft()) {
 			if (input->isPushUp()) dir = UP_LEFT;
 			else if (input->isPushDown()) dir = DOWN_LEFT;
 			else dir = LEFT;
-			if (count == 0) count = GetNowCount();
-			moveflag = true;
 			as = MOVE_BEGIN;
 		}
 		else if (input->isPushUp()) {
 			if (input->isPushRight()) dir = UP_RIGHT;
 			else if (input->isPushLeft()) dir = UP_LEFT;
 			else dir = UP;
-			if (count == 0) count = GetNowCount();
-			moveflag = true;
 			as = MOVE_BEGIN;
 		}
 		else if (input->isPushDown()) {
 			if (input->isPushRight()) dir = DOWN_RIGHT;
 			else if (input->isPushLeft()) dir = DOWN_LEFT;
 			else dir = DOWN;
-			if (count == 0) count = GetNowCount();
-			moveflag = true;
 			as = MOVE_BEGIN;
 		}
-		else if (input->isPushA(0)) { moveflag = true; as = MOVE_BEGIN; }
-		else {
-			count = 0;
-			moveflag = false;
-		}
+		else if (input->isPushA(0)) as = MOVE_BEGIN;
 		if (input->isPushB()) as = ACT_BEGIN;
+		
 	}
 }
 
@@ -187,11 +190,6 @@ bool Player::Down_Left_Wall() {
 		if (px - 1 == ex && py + 1 == ey) return true;
 	}
 	if (mapdata[py + 1][px - 1].mapData == 1) return true;
-	return false;
-}
-
-bool Player::CanMove() {
-	if (GetNowCount() - count <= 30 || GetNowCount() - count >= 300) return true;
 	return false;
 }
 
