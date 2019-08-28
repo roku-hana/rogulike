@@ -37,10 +37,10 @@ void EnemyAttackComponent::Message() {
 	string pl = player->GetPlayerParam().name;;
 	string en = enemy->GetEnemyName(id);
 	int val = enemy->GetEnemyParam().attack - player->GetPlayerParam().defense;
+	if(timerstart == 0) player->GetGameStage()->SetMessage(1, pl, en, val);
 	if (timerstart == 0) { 
 		SoundBox::playSound(3);
 		timerstart = GetNowCount(); 
-		player->GetGameStage()->SetMessage(1, pl, en, val);
 		player->GetGameStage()->SetMessageFlag(true);
 	}
 	if (GetNowCount() - timerstart >= 1000) {
@@ -51,7 +51,7 @@ void EnemyAttackComponent::Message() {
 		messageflag = false;
 	}
 	if (GetNowCount() - timerstart <= 500) Animation();
-	else player->SetDamageFlag(false);
+	//else player->SetDamageFlag(false);
 }
 
 void EnemyAttackComponent::Animation() {

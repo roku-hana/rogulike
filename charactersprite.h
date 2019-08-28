@@ -13,6 +13,7 @@ public:
 	void SetImage(int* image) override;
 private:
 	AnimDraw* anim;
+	int damagecount;
 };
 
 #endif

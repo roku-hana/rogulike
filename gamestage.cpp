@@ -36,10 +36,10 @@ GameStage::GameStage(InputManager* temp):input(temp){
 
 	messagebox = LoadGraph("Images\\messagebox.png");
 	LoadMessage();
+	gameover = false;
 }
 
 GameStage::~GameStage() {
-	delete player;
 	delete mp;
 	delete colManager;
 }
@@ -48,6 +48,8 @@ void GameStage::update() {
 	animcounter++;
 	if (*player->GetScrollX() / CHIPSIZE == mp->GetGoalX() && *player->GetScrollY() / CHIPSIZE == mp->GetGoalY()) nextStage = mp->GetStageNum() + 1;
 	else nextStage = 0;
+
+	colManager->Player_Chick_Collision();
 
 	mUpdatingActors = true;
 	for (auto actor : mActors)
@@ -75,8 +77,6 @@ void GameStage::update() {
 	{
 		delete actor;
 	}
-
-	colManager->Player_Chick_Collision();
 }
 
 void GameStage::draw() {
@@ -273,3 +273,5 @@ void GameStage::LoadEnemyParam(const char* fileName) {
 out:
 	fclose(fp);
 }
+
+//void GameStage::RemovePlayer(Player* player) { delete player; }

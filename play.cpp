@@ -5,10 +5,10 @@
 #include"soundbox.h"
 #include"gamestage.h"
 #include"nextstage.h"
+#include"gameover.h"
 
 Play::Play(Game* pManager, SceneManager* sManager) :
 	GameScene(pManager, sManager) {
-	//back = LoadGraph("Images\\play.png");
 	gamestage = pManager->getGameStage();
 }
 
@@ -18,7 +18,6 @@ void Play::update() {
 	gamestage->update();
 	gamestage->ProcessInput();
 	if (gamestage->NextStage()) {
-
 		//後で、ここ変更
 		DrawString(150, 300, "Xボタンを押して、次の階へ移動", GetColor(255, 255, 255));
 		if (gameManager->input->isPushX(0) == 1) {
@@ -29,6 +28,9 @@ void Play::update() {
 	else if (gameManager->input->isPushBack(0) == 1) {
 		gameManager->gameScene = new Pause(gameManager, sceneManager);
 		delete this;
+	}
+	else if (gamestage->GetGameOverFlag()) {
+		gameManager->gameScene = new GameOver(gameManager, sceneManager);
 	}
 }
 

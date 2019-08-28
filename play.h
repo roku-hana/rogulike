@@ -13,7 +13,6 @@ public:
 	void draw();
 private:
 	GameStage* gamestage;
-	//int back;
 };
 
 #endif

@@ -62,7 +62,10 @@ void Player::updateActor() {
 	DrawFormatString(400, 30, GetColor(0, 0, 255), "player hp:%d", param.nowhp);
 	DrawFormatString(150, 30, GetColor(0, 0, 255), "player exp:%d", param.experience);
 	DrawFormatString(50, 10, GetColor(0, 0, 255), "player lev:%d", param.level);
-	if (param.nowhp <= 0) SetState(DEAD);
+	if (param.nowhp <= 0) {
+		SetState(DEAD);
+		GetGameStage()->SetGameOverFlag(true);
+	}
 }
 
 void Player::ActorInput(InputManager* input) {

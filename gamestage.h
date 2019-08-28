@@ -35,9 +35,10 @@ public:
 	std::vector<Enemy*>* GetEnemies() { return &mEnemies; }
 	std::vector<Chick*>& GetChicks() { return mChicks; }
 	void SetChickGraphic(int gh) { chickGh = gh; }
-	//std::string& Get_Message(int i, std::string& pl, std::string& en, int val);
 	void SetMessage(int i, std::string& pl, std::string& en, int val);
 	void SetMessageFlag(bool flag) { messageflag = flag; }
+	void SetGameOverFlag(bool flag) { gameover = flag; }
+	bool GetGameOverFlag() { return gameover; }
 private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
@@ -61,6 +62,7 @@ private:
 	void LoadMessage();
 	void DrawMessage();
 	void LoadEnemyParam(const char* fileName);
+	bool gameover;
 };
 
 #endif

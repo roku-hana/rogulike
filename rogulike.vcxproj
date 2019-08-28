@@ -167,6 +167,7 @@
     <ClCompile Include="enemyattackcomponent.cpp" />
     <ClCompile Include="enemymovecomponent.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gameover.cpp" />
     <ClCompile Include="gamestage.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="inputcomponent.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="enemymovecomponent.h" />
     <ClInclude Include="error.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="gameover.h" />
     <ClInclude Include="gamestage.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="inputcomponent.h" />

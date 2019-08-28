@@ -40,7 +40,7 @@ void PlayerAttackComponent::update() {
 			player->SetMoveFlag(true);
 		}
 		if (GetNowCount() - timerstart <= 500) Animation();
-		else for (auto enemy : *enemies) enemy->SetDamageFlag(false);
+		//else for (auto enemy : *enemies) enemy->SetDamageFlag(false);
 	}
 	else if(timerstart != 0){
 		if (GetNowCount() - timerstart <= 500) { Animation(); player->SetActState(ANIMATION); }
