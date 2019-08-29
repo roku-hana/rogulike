@@ -386,8 +386,8 @@ void MapData::Decide_Pos() {
 	cx = cy = tempchick;
 	//cy = tempchick;
 	//後で、ここの乱数を変える(敵はファイルから情報を得る)
-	//enemyNum = GetRand(2) + 1;
-	enemyNum = 1;
+	enemyNum = GetRand(2) + 2;
+	//enemyNum = 1;
 	vector<int> tempenemy(enemyNum, 0);
 	ex = ey = tempenemy;
 	while (sx == gx && sy == gy) {

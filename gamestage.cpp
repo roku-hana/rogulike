@@ -23,8 +23,9 @@ GameStage::GameStage(InputManager* temp):input(temp){
 	string fileName = "enemydata\\enemydata" + std::to_string(mp->GetStageNum()) + ".csv";
 	LoadEnemyParam(fileName.c_str());
 	for (int i = 0; i < mp->GetEnemyNum(); i++) {
-		switch (enemyParam[i].id) {
-		case 0: new Boar(this, mp->GetMap(), mp->GetEnemyX(i), mp->GetEnemyY(i), player->GetScrollX(), player->GetScrollY(), enemyParam[i]); break;
+		int knd = GetRand(enemyParam.size());
+		switch (knd) {
+		case 0: new Boar(this, mp->GetMap(), mp->GetEnemyX(i), mp->GetEnemyY(i), player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
 		default: break;
 		}
 	}
