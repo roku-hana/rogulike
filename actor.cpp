@@ -48,12 +48,14 @@ void Actor::ProcessInput(InputManager* input)
 {
 	if (mState == ACTIVE)
 	{
+		ActorInput(input);
+
 		for (auto comp : mComponents)
 		{
 			comp->ProcessInput(input);
 		}
 
-		ActorInput(input);
+		//ActorInput(input);
 	}
 }
 

@@ -43,6 +43,7 @@ public:
 	void AddComponent(Component*);
 	void RemoveComponent(Component*);
 	Direction GetDirection() { return dir; }
+	void SetDirection(Direction dir) { this->dir = dir; }
 	void SetMoveFlag(bool flag) { moveflag = flag; }
 	bool GetMoveFlag() { return moveflag; }
 	void SetDamageFlag(bool flag) { damageflag = flag; }

@@ -195,10 +195,11 @@ MapData::MapData()
 	}
 
 	if (mapchip[0] == 0) LoadDivGraph("Images\\mapchip.png", 3, 3, 1, 32, 32, mapchip);
-	//darkness = LoadGraph("Images\\darkness2.png");
 }
 
 void MapData::draw(int x, int y) {
+	int px = x / CHIPSIZE;
+	int py = y / CHIPSIZE;
 	minx = x / CHIPSIZE - DRAW_CHIPNUM_X >= 0 ? x / CHIPSIZE - DRAW_CHIPNUM_X : 0;
 	miny = y / CHIPSIZE - DRAW_CHIPNUM_Y >= 0 ? y / CHIPSIZE - DRAW_CHIPNUM_Y : 0;
 	maxx = (size_t)x / CHIPSIZE + DRAW_CHIPNUM_X < MAPX_RLk ? x / CHIPSIZE + DRAW_CHIPNUM_X : MAPX_RLk - 1;
@@ -215,17 +216,36 @@ void MapData::draw(int x, int y) {
 			else kind = maprl[i][j].mapData;
 			int posy = i - miny - addy;
 			int posx = j - minx - addx;
+			int drawx = DRAW_STARTPOS_X + posx * CHIPSIZE;
+			int drawy = DRAW_STARTPOS_Y + posy * CHIPSIZE;
 			//ïîâÆÇÃï`âÊ
-			if (kind >= 20) DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[1], TRUE);
+			if (kind >= 20) DrawGraph(drawx, drawy, mapchip[1], TRUE);
 			else {
 				switch (kind) {
-				case WALL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[0], TRUE); break;
-				case PATH: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[1], TRUE); break;
-				case GOAL: DrawGraph(DRAW_STARTPOS_X + posx * CHIPSIZE, DRAW_STARTPOS_Y + posy * CHIPSIZE, mapchip[2], TRUE); break;
+				case WALL: DrawGraph(drawx, drawy, mapchip[0], TRUE); break;
+				case PATH: DrawGraph(drawx, drawy, mapchip[1], TRUE); break;
+				case GOAL: DrawGraph(drawx, drawy, mapchip[2], TRUE); break;
+				}
+			}
+			if (kind != WALL) {
+				if (dirbox != -1) {
+					DrawBox(drawx, drawy, drawx + CHIPSIZE, drawy + CHIPSIZE, GetColor(255, 255, 255), FALSE);
+				}
+				switch (dirbox) {
+				case 0: /*è„ï˚å¸*/if (px == j && py > i) DrawBox(drawx, drawy, drawx + CHIPSIZE, drawy + CHIPSIZE, GetColor(255, 0, 0), FALSE); break;
+				case 1: /*â∫ï˚å¸*/if (px == j && py < i) DrawBox(drawx, drawy, drawx + CHIPSIZE, drawy + CHIPSIZE, GetColor(255, 0, 0), FALSE); break;
+				case 2: /*âEï˚å¸*/if (px < j && py == i) DrawBox(drawx, drawy, drawx + CHIPSIZE, drawy + CHIPSIZE, GetColor(255, 0, 0), FALSE); break;
+				case 3: /*ç∂ï˚å¸*/if (px > j && py == i) DrawBox(drawx, drawy, drawx + CHIPSIZE, drawy + CHIPSIZE, GetColor(255, 0, 0), FALSE); break;
+				case 4: /*âEè„ï˚å¸*/if (j - px == py - i && j > px) DrawBox(drawx, drawy, drawx + CHIPSIZE, drawy + CHIPSIZE, GetColor(255, 0, 0), FALSE); break;
+				case 5: /*âEâ∫ï˚å¸*/if (j - px == i - py && j > px) DrawBox(drawx, drawy, drawx + CHIPSIZE, drawy + CHIPSIZE, GetColor(255, 0, 0), FALSE); break;
+				case 6: /*ç∂è„ï˚å¸*/if (j - px == i - py && j < px) DrawBox(drawx, drawy, drawx + CHIPSIZE, drawy + CHIPSIZE, GetColor(255, 0, 0), FALSE); break;
+				case 7: /*ç∂â∫ï˚å¸*/if (j - px == py - i && j < px) DrawBox(drawx, drawy, drawx + CHIPSIZE, drawy + CHIPSIZE, GetColor(255, 0, 0), FALSE); break;
+				default: break;
 				}
 			}
 		}
 	}
+	dirbox = -1;
 }
 
 void MapData::DrawTransparentMaze(int x, int y) {

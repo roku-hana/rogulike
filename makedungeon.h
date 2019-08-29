@@ -93,6 +93,7 @@ public:
 	int GetStageNum() { return stageNum; }
 	vector<vector<RogueLikeMap>>& GetMap() { return maprl; }
 	int GetLightKnd() { return lightknd; }
+	int* GetDirBox() { return &dirbox; }
 	private:
 	/*マップ系データ*/
 	DungeonMap_RL dng; //ダンジョン
@@ -113,5 +114,6 @@ public:
 	size_t minx, miny, maxx, maxy;
 	size_t addx, addy;
 	int lightknd;
+	int dirbox;
 };
 #endif

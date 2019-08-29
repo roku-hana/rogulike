@@ -47,6 +47,8 @@ public:
 	PlayerParameter GetPlayerParam() { return param; }
 	void SetEnemies(vector<Enemy*> e) { mEnemies = e; }
 	void SetExperience(int exp) { param.experience = exp; }
+	void SetDirBox(int knd) { *dirbox = knd; }
+	int GetDirBox() { return *dirbox; }
 private:
 	int scrollx, scrolly;
 	int gh[24];
@@ -56,6 +58,7 @@ private:
 	ActState as;
 	PlayerParameter param;
 	static int damageeffect[2];
+	int* dirbox;
 };
 
 #endif

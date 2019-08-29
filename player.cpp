@@ -10,6 +10,7 @@
 #include"enemy.h"
 #include"damageeffect.h"
 #include"soundbox.h"
+#include"changedirectioncomponent.h"
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
 	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
@@ -21,6 +22,7 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 
 	PlayerMoveComponent* pmc = new PlayerMoveComponent(this);
 	PlayerAttackComponent* pac = new PlayerAttackComponent(this);
+	ChangeDirectionComponent* cdc = new ChangeDirectionComponent(this);
 
 	SetPosition(Vector2(320, 224));
 	dir = DOWN;
@@ -39,6 +41,7 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 	param.nowhp = 10;
 	//仮
 	param.name = "にわとり";
+	dirbox = GetGameStage()->GetMapData()->GetDirBox();
 }
 
 Player::~Player() {
@@ -70,7 +73,20 @@ void Player::updateActor() {
 
 void Player::ActorInput(InputManager* input) {
 	if (as == KEY_INPUT) {
-		if (input->isPushRight()) {
+		if (input->isPushX(0)) {
+			switch (dir) {
+			case UP: *dirbox = 0; break;
+			case DOWN: *dirbox = 1; break;
+			case RIGHT: *dirbox = 2; break;
+			case LEFT: *dirbox = 3; break;
+			case UP_RIGHT: *dirbox = 4; break;
+			case DOWN_RIGHT: *dirbox = 5; break;
+			case UP_LEFT: *dirbox = 6; break;
+			case DOWN_LEFT: *dirbox = 7; break;
+			default: *dirbox = -1; break;
+			}
+		}
+		else if (input->isPushRight()) {
 			if (input->isPushUp())dir = UP_RIGHT;
 			else if (input->isPushDown()) dir = DOWN_RIGHT;
 			else dir = RIGHT;
