@@ -264,7 +264,7 @@ void MapData::DrawTransparentMaze(int x, int y) {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void MapData::DrawDarkness(int x, int y) {
+void MapData::DrawDarkness(int px, int py) {
 	SetDrawBlendMode(DX_BLENDMODE_MUL, 50);
 	DrawBox(96, 48, 544, 432, GetColor(100, 100, 100), TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -276,9 +276,12 @@ void MapData::DrawDarkness(int x, int y) {
 			int posx = j - minx - addx;
 			int tx = DRAW_STARTPOS_X + posx * CHIPSIZE;
 			int ty = DRAW_STARTPOS_Y + posy * CHIPSIZE;
-			if (kind == maprl[y][x].mapData) {
-				if (kind >= 20) { DrawBox(tx, ty, tx + 32, ty + 32, GetColor(200, 200, 200), TRUE); lightknd = 1; }
-				else if (kind == PATH || (kind >= 20 && dng.count[kind - 20] == 1)) lightknd = 2;
+			if (kind == maprl[py][px].mapData) {
+				if (kind == PATH || (kind >= 20 && dng.count[kind - 20] == 1)) lightknd = 2;
+				else if (kind >= 20) { 
+					DrawBox(tx, ty, tx + 32, ty + 32, GetColor(200, 200, 200), TRUE); 
+					lightknd = 1;
+				}
 				else lightknd = 0;
 			}
 		}

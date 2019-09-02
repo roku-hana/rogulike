@@ -45,10 +45,13 @@ public:
 	void SetActState(ActState as) { this->as = as; }
 	ActState GetActState() { return as; }
 	PlayerParameter GetPlayerParam() { return param; }
-	void SetEnemies(vector<Enemy*> e) { mEnemies = e; }
+	void AddEnemies(Enemy* enemy);
 	void SetExperience(int exp) { param.experience = exp; }
 	void SetDirBox(int knd) { *dirbox = knd; }
 	int GetDirBox() { return *dirbox; }
+	void SortEnemies();
+	void SetEnemyAddFlag(bool flag) { enemyaddflag = flag; }
+	bool GetEnemyAddFlag() { return enemyaddflag; }
 private:
 	int scrollx, scrolly;
 	int gh[24];
@@ -59,6 +62,9 @@ private:
 	PlayerParameter param;
 	static int damageeffect[2];
 	int* dirbox;
+	int actcount;
+	bool enemyaddflag;
+	static bool PlayerDisComp(const Enemy* a, const Enemy* b);
 };
 
 #endif

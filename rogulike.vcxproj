@@ -170,6 +170,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameover.cpp" />
     <ClCompile Include="gamestage.cpp" />
+    <ClCompile Include="goblin.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="makedungeon.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="gameover.h" />
     <ClInclude Include="gamestage.h" />
+    <ClInclude Include="goblin.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="makedungeon.h" />
     <ClInclude Include="movecomponent.h" />

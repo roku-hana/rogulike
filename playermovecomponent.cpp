@@ -3,6 +3,7 @@
 #include"animdraw.h"
 #include"gamestage.h"
 #include"enemy.h"
+#include<DxLib.h>
 
 PlayerMoveComponent::PlayerMoveComponent(Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)

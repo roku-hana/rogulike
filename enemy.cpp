@@ -20,6 +20,7 @@ Enemy::Enemy(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, i
 	de->SetImage(damageeffect);
 
 	game->AddEnemy(this);
+	mEnemies.push_back(this);
 
 	//–¼‘Oˆê——Žæ“¾
 	if (names.empty()) LoadName();
@@ -32,15 +33,15 @@ Enemy::~Enemy() {
 void Enemy::updateActor() {
 	ActState pas = GetGameStage()->GetPlayer()->GetActState();
 
-	int ex = indexX - *px / CHIPSIZE;
-	int ey = indexY - *py / CHIPSIZE;
-	Vector2 setpos = { (float)DRAW_PLAYER_X + ex * CHIPSIZE, (float)DRAW_PLAYER_Y + ey * CHIPSIZE };
-	if (isDraw(ex, ey)) {
-		if (moveflag) SetPosition(setpos);
-	}
-	else SetPosition(Vector2(-100, -100)); 
-
 	moveflag = GetGameStage()->GetPlayer()->GetMoveFlag();
+
+	epx = indexX - *px / CHIPSIZE;
+	epy = indexY - *py / CHIPSIZE;
+	Vector2 setpos = { (float)DRAW_PLAYER_X + epx * CHIPSIZE, (float)DRAW_PLAYER_Y + epy * CHIPSIZE };
+	if (isDraw(epx, epy)) {
+		if (as == MOVE_END || as == ACT_BEGIN) SetPosition(setpos);
+	}
+	else SetPosition(Vector2(-100, -100));
 
 	if (moveflag) {
 		DefineDirection();
@@ -60,10 +61,12 @@ void Enemy::updateActor() {
 }
 
 bool Enemy::isDraw(int ex, int ey) {
+	int py = *GetGameStage()->GetPlayer()->GetScrollY() / CHIPSIZE;
+	int px = *GetGameStage()->GetPlayer()->GetScrollX() / CHIPSIZE;
 	if(GetGameStage()->GetMapData()->GetLightKnd() == 1){
 		if (ex >= -1 * DRAW_CHIPNUM_X && ex <= DRAW_CHIPNUM_X) {
 			if (ey >= -1 * DRAW_CHIPNUM_Y && ey <= DRAW_CHIPNUM_Y) {
-				return true;
+				if (mapdata[indexY][indexX].mapData == mapdata[py][px].mapData) return true;
 			}
 		}
 	}
@@ -113,41 +116,65 @@ void Enemy::AllWall() {
 }
 
 bool Enemy::UpWall() {
+	for (auto enemy : mEnemies) {
+		if (indexX == enemy->GetIndexX() && indexY - 1 == enemy->GetIndexY()) return true;
+	}
 	if (mapdata[indexY - 1][indexX].mapData == 1) return true;
 	return false;
 }
 
 bool Enemy::DownWall() {
+	for (auto enemy : mEnemies) {
+		if (indexX == enemy->GetIndexX() && indexY + 1 == enemy->GetIndexY()) return true;
+	}
 	if (mapdata[indexY + 1][indexX].mapData == 1) return true;
 	return false;
 }
 
 bool Enemy::RightWall() {
+	for (auto enemy : mEnemies) {
+		if (indexX + 1 == enemy->GetIndexX() && indexY == enemy->GetIndexY()) return true;
+	}
 	if (mapdata[indexY][indexX + 1].mapData == 1) return true;
 	return false;
 }
 
 bool Enemy::LeftWall() {
+	for (auto enemy : mEnemies) {
+		if (indexX - 1 == enemy->GetIndexX() && indexY == enemy->GetIndexY()) return true;
+	}
 	if (mapdata[indexY][indexX - 1].mapData == 1) return true;
 	return false;
 }
 
 bool Enemy::Up_Right_Wall() {
+	for (auto enemy : mEnemies) {
+		if (indexX + 1 == enemy->GetIndexX() && indexY - 1 == enemy->GetIndexY()) return true;
+	}
 	if (mapdata[indexY - 1][indexX + 1].mapData == 1) return true;
 	return false;
 }
 
 bool Enemy::Up_Left_Wall() {
+	for (auto enemy : mEnemies) {
+		if (indexX - 1 == enemy->GetIndexX() && indexY - 1 == enemy->GetIndexY()) return true;
+	}
 	if (mapdata[indexY - 1][indexX - 1].mapData == 1) return true;
 	return false;
 }
 
 bool Enemy::Down_Right_Wall() {
+	for (auto enemy : mEnemies) {
+		if (indexX + 1 == enemy->GetIndexX() && indexY + 1 == enemy->GetIndexY()) return true;
+	}
 	if (mapdata[indexY + 1][indexX + 1].mapData == 1) return true;
 	return false;
 }
 
 bool Enemy::Down_Left_Wall() {
+	for (auto enemy : mEnemies) {
+		if (indexX - 1 == enemy->GetIndexX() && indexY + 1 == enemy->GetIndexY()) return true;
+	}
 	if (mapdata[indexY + 1][indexX - 1].mapData == 1) return true;
 	return false;
 }
@@ -272,18 +299,19 @@ void Enemy::LoadName() {
 }
 
 void Enemy::move_act() {
-	int dx = abs(indexX - *px / CHIPSIZE);
-	int dy = abs(indexY - *py / CHIPSIZE);
+	epx = abs(epx);
+	epy = abs(epy);
 
-	if ((dx == 1 || dy == 1) && dx + dy <= 2) {
-		if (GetGameStage()->GetPlayer()->GetMoveFlag()) as = ACT_BEGIN;
-		else GetGameStage()->GetPlayer()->SetActState(KEY_INPUT);
+	if ((epx == 1 || epy == 1) && epx + epy <= 2) {
+		if (GetGameStage()->GetPlayer()->GetMoveFlag()) as = ACT_BEGIN; 
+		else as = ACT_END;
 	}
 	else {
 		if (GetGameStage()->GetPlayer()->GetMoveFlag()) as = MOVE_BEGIN;
-		else GetGameStage()->GetPlayer()->SetActState(KEY_INPUT);
+		else as = MOVE_END;
 	}
 }
 
 vector<string> Enemy::names;
 int Enemy::damageeffect[2];
+vector<Enemy*> Enemy::mEnemies;

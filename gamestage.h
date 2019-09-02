@@ -59,10 +59,15 @@ private:
 	int messagebox;
 	std::vector<EnemyParameter> enemyParam;
 	int enemyNum;
+	int enemyNum2;
 	void LoadMessage();
 	void DrawMessage();
 	void LoadEnemyParam(const char* fileName);
 	bool gameover;
+	void PlayerKeyInput();
+	void EnemyAddTime();
+	std::vector<int> eposx;
+	std::vector<int> eposy;
 };
 
 #endif

@@ -22,12 +22,16 @@ public:
 	Enemy(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, int* px, int* py);
 	~Enemy();
 	void updateActor() override;
-	int GetIndexX() { return indexX; }
-	int GetIndexY() { return indexY; }
+	int GetIndexX() const { return indexX; }
+	int GetIndexY() const { return indexY; }
 	string GetEnemyName(int i) { return names[i]; }
 	void SetActState(ActState as) { this->as = as; }
 	ActState GetActState() { return as; }
 	EnemyParameter GetEnemyParam() { return param; }
+	void SetWaitTime(int time) { waittime = time; }
+	int GetWaitTime() { return waittime; }
+	int GetEpx() const { return epx; }
+	int GetEpy() const { return epy; }
 protected:
 	const int* px;
 	const int* py;
@@ -60,6 +64,10 @@ private:
 	void LoadName();
 	void move_act();
 	static int damageeffect[2];
+	static vector<Enemy*> mEnemies;
+	int waittime;
+	int timerstart;
+	int epx, epy;
 };
 
 #endif

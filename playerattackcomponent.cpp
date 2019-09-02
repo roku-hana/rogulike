@@ -22,28 +22,27 @@ void PlayerAttackComponent::update() {
 			Attack();
 			SoundBox::playSound(2);
 		}
-		if (enemies->size() > 0) player->SetActState(ACT_END);
-		else player->SetActState(KEY_INPUT);
+		if (enemies->size() <= 0) player->SetActState(KEY_INPUT);
 		if (enemyKnd == -1) {
 			if (timerstart == 0) timerstart = GetNowCount();
+			player->SetActState(ACT_END);
 		}
 	}
 	if(enemyKnd != -1) {
-		Message();
-		if (timerstart == 0) { timerstart = GetNowCount(); player->GetGameStage()->SetMessageFlag(true);}
+		if (timerstart == 0) { Message(); timerstart = GetNowCount(); player->GetGameStage()->SetMessageFlag(true); }
 		if (GetNowCount() - timerstart >= 1000) {
 			for (auto enemy : *enemies) { enemy->SetActState(WAIT); }
 			timerstart = 0;
 			enemyKnd = -1;
 			count = 0;
-			player->GetGameStage()->SetMessageFlag(false);
 			player->SetMoveFlag(true);
+			player->SetActState(ACT_END);
 		}
 		if (GetNowCount() - timerstart <= 500) Animation();
-		//else for (auto enemy : *enemies) enemy->SetDamageFlag(false);
 	}
 	else if(timerstart != 0){
 		if (GetNowCount() - timerstart <= 500) { Animation(); player->SetActState(ANIMATION); }
+		else player->SetActState(ACT_END);
 		if (GetNowCount() - timerstart >= 1000) {
 			for (auto enemy : *enemies) { enemy->SetActState(WAIT); }
 			timerstart = 0;

@@ -18,8 +18,12 @@ EnemyAttackComponent::EnemyAttackComponent(class Actor* owner, int*x, int* y, in
 
 void EnemyAttackComponent::update() {
 	if (enemy->GetActState() == ACT_BEGIN) {
-		if (timerstart == 0) { Attack();}
-		enemy->SetActState(ACT_END);
+		if (timerstart == 0) timerstart = GetNowCount();
+		if (GetNowCount() - timerstart >= enemy->GetWaitTime() * 1000 && !messageflag) {
+			SoundBox::playSound(3);
+			Attack();
+			timerstart = GetNowCount();
+		}
 	}
 	if (messageflag) Message();
 }
@@ -36,22 +40,21 @@ void EnemyAttackComponent::Message() {
 	int id = enemy->GetEnemyParam().id;
 	string pl = player->GetPlayerParam().name;;
 	string en = enemy->GetEnemyName(id);
-	int val = enemy->GetEnemyParam().attack - player->GetPlayerParam().defense;
-	if(timerstart == 0) player->GetGameStage()->SetMessage(1, pl, en, val);
-	if (timerstart == 0) { 
-		SoundBox::playSound(3);
-		timerstart = GetNowCount(); 
+	int val; 
+
+	if (enemy->GetEnemyParam().attack > player->GetPlayerParam().defense) val = enemy->GetEnemyParam().attack - player->GetPlayerParam().defense;
+	else val = 1;
+	if(count == 0) player->GetGameStage()->SetMessage(1, pl, en, val);
+	if (count == 0) {  
 		player->GetGameStage()->SetMessageFlag(true);
 	}
 	if (GetNowCount() - timerstart >= 1000) {
 		timerstart = 0;
 		count = 0;
-		player->SetActState(KEY_INPUT);
-		player->GetGameStage()->SetMessageFlag(false);
+		enemy->SetActState(ACT_END);
 		messageflag = false;
 	}
 	if (GetNowCount() - timerstart <= 500) Animation();
-	//else player->SetDamageFlag(false);
 }
 
 void EnemyAttackComponent::Animation() {

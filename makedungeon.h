@@ -79,7 +79,7 @@ public:
 	void DrawTransparentMaze(int x, int y);
 	void DrawEnemyPos(int x, int y);
 	void DrawTempMap();
-	void DrawDarkness(int x, int y);
+	void DrawDarkness(int px, int py);
 	int GetStartX() { return sx; }
 	int GetStartY() { return sy; }
 	int GetGoalX() { return gx; }

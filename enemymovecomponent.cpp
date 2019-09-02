@@ -17,8 +17,6 @@ void EnemyMoveComponent::update() {
 	if (enemy->GetActState() == MOVE_BEGIN) {
 		enemy->SetActState(MOVE_END);
 		move();
-		player->SetActState(KEY_INPUT);
-		player->SetMoveFlag(false);
 	}
 }
 

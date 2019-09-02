@@ -11,6 +11,7 @@
 #include"damageeffect.h"
 #include"soundbox.h"
 #include"changedirectioncomponent.h"
+#include<algorithm>
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
 	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
@@ -38,10 +39,11 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 	param.experience = 0;
 	param.level = 1;
 	param.maxhp = 10;
-	param.nowhp = 10;
+	param.nowhp = 100;
 	//仮
 	param.name = "にわとり";
 	dirbox = GetGameStage()->GetMapData()->GetDirBox();
+	actcount = 0;
 }
 
 Player::~Player() {
@@ -50,7 +52,10 @@ Player::~Player() {
 
 void Player::updateActor() {
 	//ダメージ = 攻撃力 - 防御力
-	if (damageAmount) param.nowhp -= (damageAmount - param.defense);
+	if (damageAmount) {
+		if (damageAmount > param.defense) param.nowhp -= (damageAmount - param.defense);
+		else param.nowhp -= 1;
+	}
 	damageAmount = 0;
 	if (param.experience >= param.level * 10) {
 		SoundBox::playSound(4);
@@ -91,29 +96,36 @@ void Player::ActorInput(InputManager* input) {
 			else if (input->isPushDown()) dir = DOWN_RIGHT;
 			else dir = RIGHT;
 			as = MOVE_BEGIN;
+			actcount++;
 		}
 		else if (input->isPushLeft()) {
 			if (input->isPushUp()) dir = UP_LEFT;
 			else if (input->isPushDown()) dir = DOWN_LEFT;
 			else dir = LEFT;
 			as = MOVE_BEGIN;
+			actcount++;
 		}
 		else if (input->isPushUp()) {
 			if (input->isPushRight()) dir = UP_RIGHT;
 			else if (input->isPushLeft()) dir = UP_LEFT;
 			else dir = UP;
 			as = MOVE_BEGIN;
+			actcount++;
 		}
 		else if (input->isPushDown()) {
 			if (input->isPushRight()) dir = DOWN_RIGHT;
 			else if (input->isPushLeft()) dir = DOWN_LEFT;
 			else dir = DOWN;
 			as = MOVE_BEGIN;
+			actcount++;
 		}
-		else if (input->isPushA(0)) as = MOVE_BEGIN;
-		if (input->isPushB()) as = ACT_BEGIN;
-		
+		else if (input->isPushA(0)) { as = MOVE_BEGIN; actcount++; }
+		if (input->isPushB()) { as = ACT_BEGIN; actcount++; }
 	}
+	if (as == MOVE_BEGIN || as == ACT_END) {
+		SortEnemies();
+	}
+	if (actcount != 0 && actcount % 500 == 0) enemyaddflag = true;
 }
 
 bool Player::RightWall() {
@@ -210,6 +222,29 @@ bool Player::Down_Left_Wall() {
 	}
 	if (mapdata[py + 1][px - 1].mapData == 1) return true;
 	return false;
+}
+
+bool Player::PlayerDisComp(const Enemy* a, const Enemy* b) {
+	int disax = abs(a->GetEpx());
+	int disay = abs(a->GetEpy());
+	int disbx = abs(b->GetEpx());
+	int disby = abs(b->GetEpy());
+
+	return disax + disay < disbx + disby;
+}
+
+void Player::SortEnemies() {
+	sort(mEnemies.begin(), mEnemies.end(), &PlayerDisComp);
+	for (int i = 0; i < mEnemies.size(); i++) {
+		mEnemies[i]->SetWaitTime(i);
+		if (i == mEnemies.size() - 1) {
+			int test = -1;
+		}
+	}
+}
+
+void Player::AddEnemies(Enemy* enemy) {
+	mEnemies.emplace_back(enemy);
 }
 
 int Player::chickNum;

@@ -5,6 +5,7 @@
 #include"chick.h"
 #include"collision.h"
 #include"boar.h"
+#include"goblin.h"
 #include<fstream>
 //メッセージの描画のためだけにDxライブラリを描画するのはどうなんだろう
 #include<DxLib.h>
@@ -22,15 +23,19 @@ GameStage::GameStage(InputManager* temp):input(temp){
 	//enemyParam
 	string fileName = "enemydata\\enemydata" + std::to_string(mp->GetStageNum()) + ".csv";
 	LoadEnemyParam(fileName.c_str());
-	for (int i = 0; i < mp->GetEnemyNum(); i++) {
-		int knd = GetRand(enemyParam.size());
+	enemyNum2 = mp->GetEnemyNum();
+	for (int i = 0; i < enemyNum2; i++) {
+		int knd = GetRand(enemyParam.size() - 1);
+		knd = enemyParam[knd].id;
+		eposx.push_back(mp->GetEnemyX(i));
+		eposy.push_back(mp->GetEnemyY(i));
 		switch (knd) {
-		case 0: new Boar(this, mp->GetMap(), mp->GetEnemyX(i), mp->GetEnemyY(i), player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
+		case 0: new Boar(this, mp->GetMap(), eposx[i], eposy[i], player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
+		case 1: new Goblin(this, mp->GetMap(), eposx[i], eposy[i], player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
 		default: break;
 		}
+		player->AddEnemies(mEnemies[i]);
 	}
-	//
-	player->SetEnemies(mEnemies);
 
 	nextStage = 0;
 	colManager = new Collision(this);
@@ -49,6 +54,8 @@ void GameStage::update() {
 	animcounter++;
 	if (*player->GetScrollX() / CHIPSIZE == mp->GetGoalX() && *player->GetScrollY() / CHIPSIZE == mp->GetGoalY()) nextStage = mp->GetStageNum() + 1;
 	else nextStage = 0;
+
+	EnemyAddTime();
 
 	colManager->Player_Chick_Collision();
 
@@ -78,6 +85,8 @@ void GameStage::update() {
 	{
 		delete actor;
 	}
+
+	PlayerKeyInput();
 }
 
 void GameStage::draw() {
@@ -102,9 +111,7 @@ void GameStage::draw() {
 
 
 	//テスト
-	int mouseX, mouseY;
-	GetMousePoint(&mouseX, &mouseY);
-	DrawFormatString(400, 10, GetColor(255, 255, 255), "x:%d, y:%d", mouseX, mouseY);
+	DrawFormatString(100, 100, GetColor(255, 255, 255), "enemyNum:%d", enemyNum2);
 	///////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -190,6 +197,7 @@ void GameStage::RemoveEnemy(Enemy* enemy) {
 	auto iter = std::find(mEnemies.begin(), mEnemies.end(), enemy);
 	if (iter != mEnemies.end()) {
 		mEnemies.erase(iter);
+		enemyNum2--;
 	}
 }
 
@@ -223,6 +231,7 @@ void GameStage::DrawMessage() {
 		DrawGraph(120, 390, messagebox, TRUE);
 		DrawString(130, 420, message.front().c_str(), GetColor(255, 255, 255));
 		if (message.size() == 2) DrawString(130, 440, message.back().c_str(), GetColor(255, 255, 255));
+		if (message.size() > 2) message.pop();
 	}
 	else {
 		while (!message.empty()) message.pop();
@@ -275,4 +284,37 @@ out:
 	fclose(fp);
 }
 
-//void GameStage::RemovePlayer(Player* player) { delete player; }
+void GameStage::PlayerKeyInput() {
+	if (player->GetActState() == MOVE_END || player->GetActState() == ACT_END) {
+		bool flag = false;
+		for (auto enemy : mEnemies) {
+			if (enemy->GetActState() == ACT_END || enemy->GetActState() == MOVE_END) flag = true;
+			else { flag = false; break; }
+		}
+		if (flag) {
+			if (!player->GetMoveFlag()) { messageflag = false; player->SetMoveFlag(true); }
+			player->SetActState(KEY_INPUT);
+		}
+		if (mEnemies.size() == 0) player->SetActState(KEY_INPUT);
+	}
+}
+
+void GameStage::EnemyAddTime() {
+	if (enemyNum2 < 15) {
+		if (player->GetEnemyAddFlag()) {
+			int index = GetRand(eposx.size() - 1);
+			int ex = eposx[index];
+			int ey = eposy[index];
+			int knd = GetRand(enemyParam.size() - 1);
+			knd = enemyParam[knd].id;
+			switch (knd) {
+			case 0: new Boar(this, mp->GetMap(), ex, ey, player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
+			case 1: new Goblin(this, mp->GetMap(), ex, ey, player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
+			default: break;
+			}
+			enemyNum2++;
+			player->AddEnemies(mEnemies.back());
+			player->SetEnemyAddFlag(false);
+		}
+	}
+}
