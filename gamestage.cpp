@@ -288,11 +288,12 @@ void GameStage::PlayerKeyInput() {
 	if (player->GetActState() == MOVE_END || player->GetActState() == ACT_END) {
 		bool flag = false;
 		for (auto enemy : mEnemies) {
-			if (enemy->GetActState() == ACT_END || enemy->GetActState() == MOVE_END) flag = true;
+			if (enemy->GetActState() == ACT_END || enemy->GetActState() == MOVE_END) { flag = true;}
 			else { flag = false; break; }
 		}
 		if (flag) {
-			if (!player->GetMoveFlag()) { messageflag = false; player->SetMoveFlag(true); }
+			messageflag = false;
+			if (!player->GetMoveFlag()) { player->SetMoveFlag(true); }
 			player->SetActState(KEY_INPUT);
 		}
 		if (mEnemies.size() == 0) player->SetActState(KEY_INPUT);
