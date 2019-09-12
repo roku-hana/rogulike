@@ -24,6 +24,7 @@ Enemy::Enemy(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, i
 
 	//–¼‘Oˆê——Žæ“¾
 	if (names.empty()) LoadName();
+	count = 0;
 }
 
 Enemy::~Enemy() {
@@ -34,19 +35,64 @@ void Enemy::updateActor() {
 	ActState pas = GetGameStage()->GetPlayer()->GetActState();
 
 	moveflag = GetGameStage()->GetPlayer()->GetMoveFlag();
-
-	epx = indexX - *px / CHIPSIZE;
-	epy = indexY - *py / CHIPSIZE;
-	Vector2 setpos = { (float)DRAW_PLAYER_X + epx * CHIPSIZE, (float)DRAW_PLAYER_Y + epy * CHIPSIZE };
-	if (isDraw(epx, epy)) {
-		if (as == MOVE_END || as == ACT_BEGIN) SetPosition(setpos);
-	}
-	else SetPosition(Vector2(-100, -100));
-
+	//epx = indexX - *px / CHIPSIZE;
+	//epy = indexY - *py / CHIPSIZE;
+	
 	if (moveflag) {
+		if (as == MOVE_END) {
+			epx = indexX - addx - *px / CHIPSIZE;
+			epy = indexY - addy - *py / CHIPSIZE;
+			Vector2 add = {};
+			add.x -= sin(3.14 / 2 / 60 * count) * addx;
+			add.y -= sin(3.14 / 2 / 60 * count) * addy;
+			SetPosition(Vector2((float)DRAW_PLAYER_X + (epx + -1 * add.x) * CHIPSIZE, (float)DRAW_PLAYER_Y + (epy + -1 * add.y) * CHIPSIZE));
+			if (count < 60) count++;
+			else {
+				count = 0;
+				addx = 0;
+				addy = 0;
+				moveflag = false;
+				DefineDirection();
+			}
+		}
+		else {
+			DefineDirection();
+			AllWall();
+			epx = indexX - *px / CHIPSIZE;
+			epy = indexY - *py / CHIPSIZE;
+			Vector2 setpos = { (float)DRAW_PLAYER_X + epx * CHIPSIZE, (float)DRAW_PLAYER_Y + epy * CHIPSIZE };
+			if (isDraw(epx, epy)) {
+				SetPosition(setpos);
+			}
+			else SetPosition(Vector2(-100, -100));
+		}
+	}
+	/*if (moveflag) {
+		Vector2 add = {};
+		add.x += sin(3.14 / 2 / 60 * count) * addx;
+		add.y += sin(3.14 / 2 / 60 * count) * addy;
+		SetPosition(Vector2(DRAW_PLAYER_X + (epx + add.x) * CHIPSIZE, DRAW_PLAYER_Y + (epy + add.y) * CHIPSIZE));
+		if (count < 60) count++;
+		else {
+			indexX += addx;
+			indexY += addy;
+			count = 0;
+			addx = 0;
+			addy = 0;
+		}
+	}
+	else{
+		Vector2 setpos = { (float)DRAW_PLAYER_X + epx * CHIPSIZE, (float)DRAW_PLAYER_Y + epy * CHIPSIZE };
+		if (isDraw(epx, epy)) {
+			if (as == MOVE_END || as == ACT_BEGIN) SetPosition(setpos);
+		}
+		else SetPosition(Vector2(-100, -100));
+	}*/
+
+	/*if (moveflag) {
 		DefineDirection();
 		AllWall();
-	}
+	}*/
 
 	//ƒ_ƒ[ƒW = UŒ‚—Í - –hŒä—Í
 	if (damageAmount) param.nowhp -= (damageAmount - param.defense);

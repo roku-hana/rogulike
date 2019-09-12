@@ -11,7 +11,8 @@ enum ActState {
 	MOVE_BEGIN,
 	MOVE_END,
 	WAIT, 
-	ANIMATION
+	ANIMATION,
+	ITEM_MENU
 };
 
 class GameStage;

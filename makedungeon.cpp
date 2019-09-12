@@ -294,6 +294,10 @@ void MapData::DrawEnemyPos(int x, int y) {
 	DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(255, 0, 0), TRUE);
 }
 
+void MapData::DrawItemPos(int x, int y) {
+	DrawBox(x * 5, y * 5, x * 5 + 5, y * 5 + 5, GetColor(0, 255, 0), TRUE);
+}
+
 void MapData::DrawTempMap() {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 	for (size_t y = 0; y < MAPY_RLk; y++) {
@@ -385,14 +389,19 @@ int MapData::BreadthFirstSearch() {
 void MapData::Decide_Pos() {
 	//後で、ここの乱数を変える
 	chickNum = GetRand(2) + 1;
+	//////////////////////////
 	vector<int> tempchick(chickNum, 0);
 	cx = cy = tempchick;
-	//cy = tempchick;
 	//後で、ここの乱数を変える(敵はファイルから情報を得る)
-	enemyNum = GetRand(2) + 2;
-	//enemyNum = 1;
+	enemyNum = GetRand(1) + 1;
+	/////////////////////////
 	vector<int> tempenemy(enemyNum, 0);
 	ex = ey = tempenemy;
+	//後で、ここの乱数を変える(アイテムの情報は別ファイルから得る)
+	itemNum = GetRand(3) + 3;
+	/////////////////////////
+	vector<int> tempitem(itemNum, 0);
+	ix = iy = tempitem;
 	while (sx == gx && sy == gy) {
 		int s_divcount = GetRand(dng.mapDivCount - 1);
 		while (dng.count[s_divcount] == 1) s_divcount = GetRand(dng.mapDivCount - 1);
@@ -408,14 +417,14 @@ void MapData::Decide_Pos() {
 		gy = temp_gy;
 	}
 	for (int i = 0; i < chickNum; i++) {
-		while (sx == cx[i] || gx == cx[i] || sy == cy[i] || gy == cy[i] || cx[i] == 0 || cy[i] == 0) {
+		//while (sx == cx[i] || gx == cx[i] || sy == cy[i] || gy == cy[i] || cx[i] == 0 || cy[i] == 0) {
 			int c_divcount = GetRand(dng.mapDivCount - 1);
 			while (dng.count[c_divcount] == 1) c_divcount = GetRand(dng.mapDivCount - 1);
 			int temp_cy = GetRandomNum(dng.mapRoom[c_divcount][2], dng.mapRoom[c_divcount][0]);
 			int temp_cx = GetRandomNum(dng.mapRoom[c_divcount][3], dng.mapRoom[c_divcount][1]);
 			cx[i] = temp_cx;
 			cy[i] = temp_cy;
-		}
+		//}
 	}
 	for (int i = 0; i < enemyNum; i++) {
 		int e_divcount = GetRand(dng.mapDivCount - 1);
@@ -424,6 +433,14 @@ void MapData::Decide_Pos() {
 		int temp_ex = GetRandomNum(dng.mapRoom[e_divcount][3], dng.mapRoom[e_divcount][1]);
 		ex[i] = temp_ex;
 		ey[i] = temp_ey;
+	}
+	for (int i = 0; i < itemNum; i++) {
+		int i_divcount = GetRand(dng.mapDivCount - 1);
+		while (dng.count[i_divcount] == 1) i_divcount = GetRand(dng.mapDivCount - 1);
+		int temp_iy = GetRandomNum(dng.mapRoom[i_divcount][2], dng.mapRoom[i_divcount][0]);
+		int temp_ix = GetRandomNum(dng.mapRoom[i_divcount][3], dng.mapRoom[i_divcount][1]);
+		ix[i] = temp_ix;
+		iy[i] = temp_iy;
 	}
 	maprl[sy][sx] = 2;
 	for (int i = -3; i < 4; i++) {

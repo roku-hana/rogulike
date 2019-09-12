@@ -15,7 +15,6 @@ private:
 	int* ex;
 	int* ey;
 	Enemy* enemy;
-	Player* player;
 	void move();
 };
 

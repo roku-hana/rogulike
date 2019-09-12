@@ -172,6 +172,9 @@
     <ClCompile Include="gamestage.cpp" />
     <ClCompile Include="goblin.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="inventorycomponent.cpp" />
+    <ClCompile Include="item.cpp" />
+    <ClCompile Include="iteminventorysprite.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="makedungeon.cpp" />
     <ClCompile Include="movecomponent.cpp" />
@@ -181,11 +184,14 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playerattackcomponent.cpp" />
     <ClCompile Include="playermovecomponent.cpp" />
+    <ClCompile Include="protection.cpp" />
+    <ClCompile Include="recovery.cpp" />
     <ClCompile Include="scenemanager.cpp" />
     <ClCompile Include="soundbox.cpp" />
     <ClCompile Include="spritecomponent.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="vector.cpp" />
+    <ClCompile Include="weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h" />
@@ -206,6 +212,9 @@
     <ClInclude Include="gamestage.h" />
     <ClInclude Include="goblin.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="inventorycomponent.h" />
+    <ClInclude Include="item.h" />
+    <ClInclude Include="iteminventorysprite.h" />
     <ClInclude Include="makedungeon.h" />
     <ClInclude Include="movecomponent.h" />
     <ClInclude Include="nextstage.h" />
@@ -214,11 +223,14 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="playerattackcomponent.h" />
     <ClInclude Include="playermovecomponent.h" />
+    <ClInclude Include="protection.h" />
+    <ClInclude Include="recovery.h" />
     <ClInclude Include="scenemanager.h" />
     <ClInclude Include="soundbox.h" />
     <ClInclude Include="spritecomponent.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="vector.h" />
+    <ClInclude Include="weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

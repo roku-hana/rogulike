@@ -21,6 +21,16 @@ struct PlayerParameter {
 	string name;
 };
 
+// アイテムに関するフラグ
+//const unsigned int BIT_FLAG_0 = (1 << 0); // 0000 0000 0000 0001
+//const unsigned int BIT_FLAG_1 = (1 << 1); // 0000 0000 0000 0010
+//const unsigned int BIT_FLAG_2 = (1 << 2); // 0000 0000 0000 0100
+//const unsigned int BIT_FLAG_3 = (1 << 3); // 0000 0000 0000 1000
+//const unsigned int BIT_FLAG_4 = (1 << 4); // 0000 0000 0001 0000
+//const unsigned int BIT_FLAG_5 = (1 << 5); // 0000 0000 0010 0000
+//const unsigned int BIT_FLAG_6 = (1 << 6); // 0000 0000 0100 0000
+//const unsigned int BIT_FLAG_7 = (1 << 7); // 0000 0000 1000 0000
+
 class Player : public Actor{
 public:
 	Player(GameStage* game, vector<vector<RogueLikeMap>>& map);
@@ -45,26 +55,30 @@ public:
 	void SetActState(ActState as) { this->as = as; }
 	ActState GetActState() { return as; }
 	PlayerParameter GetPlayerParam() { return param; }
-	void AddEnemies(Enemy* enemy);
+	void SetPlayerParam(PlayerParameter& param);
 	void SetExperience(int exp) { param.experience = exp; }
 	void SetDirBox(int knd) { *dirbox = knd; }
 	int GetDirBox() { return *dirbox; }
-	void SortEnemies();
 	void SetEnemyAddFlag(bool flag) { enemyaddflag = flag; }
 	bool GetEnemyAddFlag() { return enemyaddflag; }
+	///////////////////////
+	void SetItemFlag(int flag) { itemflag = flag; }
+	int GetItemFlag() { return itemflag; }
+	//////////////////////
 private:
 	int scrollx, scrolly;
 	int gh[24];
 	static int chickNum;
 	const vector<vector<RogueLikeMap>> mapdata;
-	vector<Enemy*> mEnemies;
 	ActState as;
 	PlayerParameter param;
 	static int damageeffect[2];
 	int* dirbox;
 	int actcount;
 	bool enemyaddflag;
-	static bool PlayerDisComp(const Enemy* a, const Enemy* b);
+	//////////////
+	int itemflag;
+	//////////////
 };
 
 #endif

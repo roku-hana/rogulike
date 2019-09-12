@@ -6,6 +6,9 @@
 #include"collision.h"
 #include"boar.h"
 #include"goblin.h"
+#include"recovery.h"
+#include"weapon.h"
+#include"protection.h"
 #include<fstream>
 //メッセージの描画のためだけにDxライブラリを描画するのはどうなんだろう
 #include<DxLib.h>
@@ -19,24 +22,20 @@ GameStage::GameStage(InputManager* temp):input(temp){
 	for (int i = 0; i < mp->GetChickNum(); i++) {
 		new Chick(this, mp->GetChickX(i), mp->GetChickY(i), player->GetScrollX(), player->GetScrollY());
 	}
-
 	//enemyParam
 	string fileName = "enemydata\\enemydata" + std::to_string(mp->GetStageNum()) + ".csv";
 	LoadEnemyParam(fileName.c_str());
-	enemyNum2 = mp->GetEnemyNum();
-	for (int i = 0; i < enemyNum2; i++) {
-		int knd = GetRand(enemyParam.size() - 1);
-		knd = enemyParam[knd].id;
-		eposx.push_back(mp->GetEnemyX(i));
-		eposy.push_back(mp->GetEnemyY(i));
-		switch (knd) {
-		case 0: new Boar(this, mp->GetMap(), eposx[i], eposy[i], player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
-		case 1: new Goblin(this, mp->GetMap(), eposx[i], eposy[i], player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
-		default: break;
-		}
-		player->AddEnemies(mEnemies[i]);
-	}
-
+	InitializeEnemy();
+	//
+	//itemdata
+	fileName = "itemdata\\protection" + std::to_string(mp->GetStageNum()) + ".csv";
+	LoadProtectionItem(fileName.c_str());
+	fileName = "itemdata\\weapon" + std::to_string(mp->GetStageNum()) + ".csv";	
+	LoadWeaponItem(fileName.c_str());
+	fileName = "itemdata\\recovery" + std::to_string(mp->GetStageNum()) + ".csv";
+	LoadRecoveryItem(fileName.c_str());
+	InitializeItem();
+	//
 	nextStage = 0;
 	colManager = new Collision(this);
 
@@ -87,6 +86,7 @@ void GameStage::update() {
 	}
 
 	PlayerKeyInput();
+	colManager->Player_Item_Collision();
 }
 
 void GameStage::draw() {
@@ -98,8 +98,10 @@ void GameStage::draw() {
 	for (auto enemy : mEnemies) {
 		mp->DrawEnemyPos(enemy->GetIndexX(), enemy->GetIndexY());
 	}
+	for (auto item : mItems) {
+		if(!item->GetDamageFlag())mp->DrawItemPos(item->GetPosX(), item->GetPosY());
+	}
 	//
-	//mp->DrawTempMap();
 
 	for (auto sprite : mSprites)
 	{
@@ -111,7 +113,13 @@ void GameStage::draw() {
 
 
 	//テスト
-	DrawFormatString(100, 100, GetColor(255, 255, 255), "enemyNum:%d", enemyNum2);
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+	DrawFormatString(300, 300, GetColor(255, 255, 255), "mouseX:%d", mouseX);
+	DrawFormatString(400, 300, GetColor(255, 255, 255), "mouseY:%d", mouseY);
+	//DrawFormatString(100, 100, GetColor(255, 255, 255), "enemyNum:%d", enemyNum2);
+	//DrawFormatString(100, 150, GetColor(255, 255, 255), "size:%d", mEnemies.size());
+	//DrawFormatString(100, 200, GetColor(255, 255, 255), "capacity:%d", mEnemies.capacity());
 	///////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -197,7 +205,20 @@ void GameStage::RemoveEnemy(Enemy* enemy) {
 	auto iter = std::find(mEnemies.begin(), mEnemies.end(), enemy);
 	if (iter != mEnemies.end()) {
 		mEnemies.erase(iter);
+		mEnemies.shrink_to_fit();
 		enemyNum2--;
+	}
+}
+
+void GameStage::AddItem(Item* item) {
+	mItems.emplace_back(item);
+}
+
+void GameStage::RemoveItem(Item* item) {
+	auto iter = std::find(mItems.begin(), mItems.end(), item);
+	if (iter != mItems.end()) {
+		mItems.erase(iter);
+		mItems.shrink_to_fit();
 	}
 }
 
@@ -241,12 +262,11 @@ void GameStage::DrawMessage() {
 void GameStage::LoadEnemyParam(const char* fileName) {
 	//ここで、EnemyParamをファイルから格納
 	FILE* fp;
-	char buf[50];
+	char buf[50] = {};
 	int c;
 	int col = 1;
 	EnemyParameter temp;
 
-	memset(buf, 0, sizeof(buf));
 	fopen_s(&fp, fileName, "r");
 	if (fp == NULL) MSG("ファイル読み込みエラー");
 
@@ -280,8 +300,23 @@ void GameStage::LoadEnemyParam(const char* fileName) {
 			col = 1;
 		}
 	}
-out:
+	out:
 	fclose(fp);
+}
+
+void GameStage::InitializeEnemy() {
+	enemyNum2 = mp->GetEnemyNum();
+	for (int i = 0; i < enemyNum2; i++) {
+		int knd = GetRand(enemyNum - 1);
+		knd = enemyParam[knd].id;
+		eposx.push_back(mp->GetEnemyX(i));
+		eposy.push_back(mp->GetEnemyY(i));
+		switch (knd) {
+		case 0: new Boar(this, mp->GetMap(), eposx[i], eposy[i], player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
+		case 1: new Goblin(this, mp->GetMap(), eposx[i], eposy[i], player->GetScrollX(), player->GetScrollY(), enemyParam[knd]); break;
+		default: break;
+		}
+	}
 }
 
 void GameStage::PlayerKeyInput() {
@@ -295,6 +330,8 @@ void GameStage::PlayerKeyInput() {
 			messageflag = false;
 			if (!player->GetMoveFlag()) { player->SetMoveFlag(true); }
 			player->SetActState(KEY_INPUT);
+			sort(mEnemies.begin(), mEnemies.end(), &PlayerEnemyDisComp);
+			for (int i = 0; i < mEnemies.size(); i++) mEnemies[i]->SetWaitTime(i);
 		}
 		if (mEnemies.size() == 0) player->SetActState(KEY_INPUT);
 	}
@@ -314,8 +351,173 @@ void GameStage::EnemyAddTime() {
 			default: break;
 			}
 			enemyNum2++;
-			player->AddEnemies(mEnemies.back());
 			player->SetEnemyAddFlag(false);
 		}
 	}
+}
+
+void GameStage::LoadProtectionItem(const char* fileName) {
+	FILE* fp;
+	char buf[50] = {};
+	int c;
+	int col = 1;
+	ItemData temp;
+
+	fopen_s(&fp, fileName, "r");
+	if (fp == NULL) MSG("ファイル読み込みエラー");
+
+	fscanf_s(fp, "%d", &pNum);
+	while (fgetc(fp) != '\n');   //改行消す
+	//2行目読み飛ばし
+	while (fgetc(fp) != '\n');
+
+	while (1) {
+		while (1) {
+			c = fgetc(fp);
+			//ファイルの最後まで来たらループを抜ける
+			if (c == EOF) goto out;
+			//カンマか改行でなければ、文字としてつなげる
+			if (c != ',' && c != '\n') strcat_s(buf, sizeof(buf), (const char*)& c);
+			else break;
+		}
+		switch (col) {
+		case 1: temp.id = atoi(buf); break;
+		case 2: temp.name = buf; break;
+		case 3: temp.category = atoi(buf); break;
+		case 4: temp.val = atoi(buf); break;
+		case 5: temp.explanation = buf; break;
+		case 6: temp.probability = atoi(buf); break;
+		default: break;
+		}
+		memset(buf, 0, sizeof(buf));
+		col++;
+		if (c == '\n') {
+			protectiondata.push_back(temp);
+			col = 1;
+		}
+	}
+out:
+	fclose(fp);
+}
+
+void GameStage::LoadWeaponItem(const char* fileName) {
+	FILE* fp;
+	char buf[50] = {};
+	int c;
+	int col = 1;
+	ItemData temp;
+
+	fopen_s(&fp, fileName, "r");
+	if (fp == NULL) MSG("ファイル読み込みエラー");
+
+	fscanf_s(fp, "%d", &wNum);
+	while (fgetc(fp) != '\n');   //改行消す
+	//2行目読み飛ばし
+	while (fgetc(fp) != '\n');
+
+	while (1) {
+		while (1) {
+			c = fgetc(fp);
+			//ファイルの最後まで来たらループを抜ける
+			if (c == EOF) goto out;
+			//カンマか改行でなければ、文字としてつなげる
+			if (c != ',' && c != '\n') strcat_s(buf, sizeof(buf), (const char*)& c);
+			else break;
+		}
+		switch (col) {
+		case 1: temp.id = atoi(buf); break;
+		case 2: temp.name = buf; break;
+		case 3: temp.category = atoi(buf); break;
+		case 4: temp.val = atoi(buf); break;
+		case 5: temp.explanation = buf; break;
+		case 6: temp.probability = atoi(buf); break;
+		default: break;
+		}
+		memset(buf, 0, sizeof(buf));
+		col++;
+		if (c == '\n') {
+			weapondata.push_back(temp);
+			col = 1;
+		}
+	}
+out:
+	fclose(fp);
+}
+
+void GameStage::LoadRecoveryItem(const char* fileName) {
+	FILE* fp;
+	char buf[50] = {};
+	int c;
+	int col = 1;
+	ItemData temp;
+
+	fopen_s(&fp, fileName, "r");
+	if (fp == NULL) MSG("ファイル読み込みエラー");
+
+	fscanf_s(fp, "%d", &rNum);
+	while (fgetc(fp) != '\n');   //改行消す
+	//2行目読み飛ばし
+	while (fgetc(fp) != '\n');
+
+	while (1) {
+		while (1) {
+			c = fgetc(fp);
+			//ファイルの最後まで来たらループを抜ける
+			if (c == EOF) goto out;
+			//カンマか改行でなければ、文字としてつなげる
+			if (c != ',' && c != '\n') strcat_s(buf, sizeof(buf), (const char*)& c);
+			else break;
+		}
+		switch (col) {
+		case 1: temp.id = atoi(buf); break;
+		case 2: temp.name = buf; break;
+		case 3: temp.category = atoi(buf); break;
+		case 4: temp.val = atoi(buf); break;
+		case 5: temp.explanation = buf; break;
+		case 6: temp.probability = atoi(buf); break;
+		default: break;
+		}
+		memset(buf, 0, sizeof(buf));
+		col++;
+		if (c == '\n') {
+			recoverydata.push_back(temp);
+			col = 1;
+		}
+	}
+out:
+	fclose(fp);
+}
+
+void GameStage::InitializeItem() {
+	for (int i = 0; i < mp->GetItemNum(); i++) {
+		ITEM_KND knd = (ITEM_KND)GetRand(2);
+		switch (knd) {
+			int knd2;
+			//後で、確率を実装する
+			int prob;
+			/////////////////////
+		case RECOVERY: 
+			knd2 = GetRand(rNum - 1);
+			new Recovery(this, mp->GetMap(), mp->GetItemX(i), mp->GetItemY(i), &recoverydata[knd2]);
+			break;
+		case WEAPON: 
+			knd2 = GetRand(wNum - 1);
+			new Weapon(this, mp->GetMap(), mp->GetItemX(i), mp->GetItemY(i), &weapondata[knd2]);
+			break;
+		case PROTECTION: 
+			knd2 = GetRand(pNum - 1);
+			new Protection(this, mp->GetMap(), mp->GetItemX(i), mp->GetItemY(i), &protectiondata[knd2]);
+			break;
+		default: break;
+		}
+	}
+}
+
+bool GameStage::PlayerEnemyDisComp(const Enemy* a, const Enemy* b) {
+	int disax = abs(a->GetEpx());
+	int disay = abs(a->GetEpy());
+	int disbx = abs(b->GetEpx());
+	int disby = abs(b->GetEpy());
+
+	return disax + disay < disbx + disby;
 }

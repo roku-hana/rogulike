@@ -32,6 +32,8 @@ public:
 	int GetWaitTime() { return waittime; }
 	int GetEpx() const { return epx; }
 	int GetEpy() const { return epy; }
+	void SetAddX(int x) { addx = x; }
+	void SetAddY(int y) { addy = y; }
 protected:
 	const int* px;
 	const int* py;
@@ -68,6 +70,8 @@ private:
 	int waittime;
 	int timerstart;
 	int epx, epy;
+	int count;
+	int addx, addy;
 };
 
 #endif

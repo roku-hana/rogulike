@@ -5,17 +5,15 @@
 using namespace std;
 
 class GameStage;
-class Player;
-class Chick;
 
 class Collision {
 public:
 	Collision(GameStage* gs);
 	~Collision();
 	void Player_Chick_Collision();
+	void Player_Item_Collision();
 private:
-	Player* player;
-	vector<Chick*> chicks;
+	GameStage* gs;
 };
 
 #endif

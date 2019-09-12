@@ -11,7 +11,7 @@ public:
 	virtual ~Component();
 	virtual void update();
 	int getUpdateOrder() const {return mUpdateOrder; }
-	virtual void ProcessInput(InputManager* temp) {}
+	virtual void ProcessInput(InputManager* input) {}
 protected:
 	Actor* mOwner;
 	int mUpdateOrder;

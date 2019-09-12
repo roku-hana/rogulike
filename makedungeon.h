@@ -78,6 +78,7 @@ public:
 	void draw(int x, int y);
 	void DrawTransparentMaze(int x, int y);
 	void DrawEnemyPos(int x, int y);
+	void DrawItemPos(int x, int y);
 	void DrawTempMap();
 	void DrawDarkness(int px, int py);
 	int GetStartX() { return sx; }
@@ -88,8 +89,11 @@ public:
 	int GetChickY(int i) { return cy[i]; }
 	int GetEnemyX(int i) { return ex[i]; }
 	int GetEnemyY(int i) { return ey[i]; }
+	int GetItemX(int i) { return ix[i]; }
+	int GetItemY(int i) { return iy[i]; }
 	int GetChickNum() { return chickNum; }
 	int GetEnemyNum() { return enemyNum; }
+	int GetItemNum() { return itemNum; }
 	int GetStageNum() { return stageNum; }
 	vector<vector<RogueLikeMap>>& GetMap() { return maprl; }
 	int GetLightKnd() { return lightknd; }
@@ -106,11 +110,12 @@ public:
 	int chickNum;			//ひよこの数
 	vector<int> ex, ey;		//敵の位置
 	int enemyNum;			//敵の数
+	vector<int> ix, iy;		//アイテムの位置
+	int itemNum;			//アイテムの数
 	static int stageNum;
 	int minDestination;    //startからgoalまでの最短距離
 	int BreadthFirstSearch();
 	void Decide_Pos();
-	//int darkness;
 	size_t minx, miny, maxx, maxy;
 	size_t addx, addy;
 	int lightknd;

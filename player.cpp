@@ -12,6 +12,7 @@
 #include"soundbox.h"
 #include"changedirectioncomponent.h"
 #include<algorithm>
+#include"inventorycomponent.h"
 
 Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game), mapdata(map){
 	if (-1 == LoadDivGraph("Images\\Chicken_black.png", 24, 6, 4, 32, 32, gh)) MSG("プレイヤー画像読み込みエラー");
@@ -24,6 +25,7 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 	PlayerMoveComponent* pmc = new PlayerMoveComponent(this);
 	PlayerAttackComponent* pac = new PlayerAttackComponent(this);
 	ChangeDirectionComponent* cdc = new ChangeDirectionComponent(this);
+	InventoryComponent* ic = new InventoryComponent(this);
 
 	SetPosition(Vector2(320, 224));
 	dir = DOWN;
@@ -67,9 +69,13 @@ void Player::updateActor() {
 		//////////////////////////////////////////////////
 		param.experience = 0;
 	}
+	//////////
 	DrawFormatString(400, 30, GetColor(0, 0, 255), "player hp:%d", param.nowhp);
 	DrawFormatString(150, 30, GetColor(0, 0, 255), "player exp:%d", param.experience);
 	DrawFormatString(50, 10, GetColor(0, 0, 255), "player lev:%d", param.level);
+	DrawFormatString(0, 50, GetColor(255, 255, 255), "attack:%d", param.attack);
+	DrawFormatString(0, 100, GetColor(255, 255, 255), "defense:%d", param.defense);
+	//////////////
 	if (param.nowhp <= 0) {
 		SetState(DEAD);
 		GetGameStage()->SetGameOverFlag(true);
@@ -119,11 +125,41 @@ void Player::ActorInput(InputManager* input) {
 			as = MOVE_BEGIN;
 			actcount++;
 		}
-		else if (input->isPushA(0)) { as = MOVE_BEGIN; actcount++; }
+		if (input->isPushA(0)) {
+			if (input->isPushRight(0)) {
+				if (input->isPushUp())dir = UP_RIGHT;
+				else if (input->isPushDown()) dir = DOWN_RIGHT;
+				else dir = RIGHT;
+				as = MOVE_BEGIN;
+				actcount++;
+			}
+			else if (input->isPushLeft(0)) {
+				if (input->isPushUp()) dir = UP_LEFT;
+				else if (input->isPushDown()) dir = DOWN_LEFT;
+				else dir = LEFT;
+				as = MOVE_BEGIN;
+				actcount++;
+			}
+			else if (input->isPushUp(0)) {
+				if (input->isPushRight()) dir = UP_RIGHT;
+				else if (input->isPushLeft()) dir = UP_LEFT;
+				else dir = UP;
+				as = MOVE_BEGIN;
+				actcount++;
+			}
+			else if (input->isPushDown(0)) {
+				if (input->isPushRight()) dir = DOWN_RIGHT;
+				else if (input->isPushLeft()) dir = DOWN_LEFT;
+				else dir = DOWN;
+				as = MOVE_BEGIN;
+				actcount++;
+			}
+		}
+		//else if (input->isPushA(0)) { as = MOVE_BEGIN; actcount++; }
 		if (input->isPushB()) { as = ACT_BEGIN; actcount++; }
-	}
-	if (as == MOVE_BEGIN || as == ACT_END) {
-		SortEnemies();
+		//本当はStartボタンを押したらにしたい
+		if (input->isPushY(0)) as = ITEM_MENU;
+		//
 	}
 	if (actcount != 0 && actcount % 500 == 0) enemyaddflag = true;
 }
@@ -131,7 +167,7 @@ void Player::ActorInput(InputManager* input) {
 bool Player::RightWall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
-	for (auto enemy : mEnemies) {
+	for (auto enemy : *GetGameStage()->GetEnemies()) {
 		int ex = enemy->GetIndexX(); 
 		int ey = enemy->GetIndexY();
 		if (px + 1 == ex && py == ey) return true;
@@ -143,7 +179,7 @@ bool Player::RightWall() {
 bool Player::LeftWall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
-	for (auto enemy : mEnemies) {
+	for (auto enemy : *GetGameStage()->GetEnemies()) {
 		int ex = enemy->GetIndexX(); 
 		int ey = enemy->GetIndexY();
 		if (px - 1 == ex && py == ey) return true;
@@ -155,7 +191,7 @@ bool Player::LeftWall() {
 bool Player::UpWall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
-	for (auto enemy : mEnemies) {
+	for (auto enemy : *GetGameStage()->GetEnemies()) {
 		int ex = enemy->GetIndexX();
 		int ey = enemy->GetIndexY();
 		if (px == ex && py - 1 == ey) return true;
@@ -167,7 +203,7 @@ bool Player::UpWall() {
 bool Player::DownWall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
-	for (auto enemy : mEnemies) {
+	for (auto enemy : *GetGameStage()->GetEnemies()) {
 		int ex = enemy->GetIndexX();
 		int ey = enemy->GetIndexY();
 		if (px == ex && py + 1 == ey) return true;
@@ -179,7 +215,7 @@ bool Player::DownWall() {
 bool Player::Up_Right_Wall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
-	for (auto enemy : mEnemies) {
+	for (auto enemy : *GetGameStage()->GetEnemies()) {
 		int ex = enemy->GetIndexX();
 		int ey = enemy->GetIndexY();
 		if (px + 1 == ex && py - 1 == ey) return true;
@@ -191,7 +227,7 @@ bool Player::Up_Right_Wall() {
 bool Player::Up_Left_Wall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
-	for (auto enemy : mEnemies) {
+	for (auto enemy : *GetGameStage()->GetEnemies()) {
 		int ex = enemy->GetIndexX();
 		int ey = enemy->GetIndexY();
 		if (px - 1 == ex && py - 1 == ey) return true;
@@ -203,7 +239,7 @@ bool Player::Up_Left_Wall() {
 bool Player::Down_Right_Wall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
-	for (auto enemy : mEnemies) {
+	for (auto enemy : *GetGameStage()->GetEnemies()) {
 		int ex = enemy->GetIndexX();
 		int ey = enemy->GetIndexY();
 		if (px + 1 == ex && py + 1 == ey) return true;
@@ -215,7 +251,7 @@ bool Player::Down_Right_Wall() {
 bool Player::Down_Left_Wall() {
 	int px = scrollx / CHIPSIZE;
 	int py = scrolly / CHIPSIZE;
-	for (auto enemy : mEnemies) {
+	for (auto enemy : *GetGameStage()->GetEnemies()) {
 		int ex = enemy->GetIndexX();
 		int ey = enemy->GetIndexY();
 		if (px - 1 == ex && py + 1 == ey) return true;
@@ -224,27 +260,13 @@ bool Player::Down_Left_Wall() {
 	return false;
 }
 
-bool Player::PlayerDisComp(const Enemy* a, const Enemy* b) {
-	int disax = abs(a->GetEpx());
-	int disay = abs(a->GetEpy());
-	int disbx = abs(b->GetEpx());
-	int disby = abs(b->GetEpy());
-
-	return disax + disay < disbx + disby;
-}
-
-void Player::SortEnemies() {
-	sort(mEnemies.begin(), mEnemies.end(), &PlayerDisComp);
-	for (int i = 0; i < mEnemies.size(); i++) {
-		mEnemies[i]->SetWaitTime(i);
-		if (i == mEnemies.size() - 1) {
-			int test = -1;
-		}
-	}
-}
-
-void Player::AddEnemies(Enemy* enemy) {
-	mEnemies.emplace_back(enemy);
+void Player::SetPlayerParam(PlayerParameter& param) {
+	this->param.attack += param.attack;
+	this->param.defense += param.defense;
+	this->param.experience += param.experience;
+	this->param.level += param.level;
+	this->param.maxhp += param.maxhp;
+	this->param.nowhp += param.nowhp;
 }
 
 int Player::chickNum;

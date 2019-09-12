@@ -24,7 +24,6 @@ void SpriteComponent::Draw(int count)
 	if (mImage)
 	{
 		Vector2 pos = mOwner->GetPosition();
-		//あとでアニメーションの描画ができるようにする
 		DrawGraph(pos.x, pos.y, mImage[0], TRUE);
 	}
 }
