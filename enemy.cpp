@@ -24,7 +24,8 @@ Enemy::Enemy(GameStage* game, vector<vector<RogueLikeMap>>& map, int x, int y, i
 
 	//–¼‘Oˆê——Žæ“¾
 	if (names.empty()) LoadName();
-	count = 0;
+	//count = 0;
+	//animflag = false;
 }
 
 Enemy::~Enemy() {
@@ -37,66 +38,59 @@ void Enemy::updateActor() {
 	moveflag = GetGameStage()->GetPlayer()->GetMoveFlag();
 	//epx = indexX - *px / CHIPSIZE;
 	//epy = indexY - *py / CHIPSIZE;
-	
-	if (moveflag) {
-		if (as == MOVE_END) {
+	//if (moveflag) {
+		/*if (pas == MOVE_END || pas == ACT_END) { count = 60; animflag = false; }
+		if(pas == KEY_INPUT && as == MOVE_END){
+			if (!animflag) count = 0;
+			animflag = true;
 			epx = indexX - addx - *px / CHIPSIZE;
 			epy = indexY - addy - *py / CHIPSIZE;
 			Vector2 add = {};
 			add.x -= sin(3.14 / 2 / 60 * count) * addx;
 			add.y -= sin(3.14 / 2 / 60 * count) * addy;
-			SetPosition(Vector2((float)DRAW_PLAYER_X + (epx + -1 * add.x) * CHIPSIZE, (float)DRAW_PLAYER_Y + (epy + -1 * add.y) * CHIPSIZE));
+			if (isDraw(epx, epx)) SetPosition(Vector2((float)DRAW_PLAYER_X + (epx + -1 * add.x) * CHIPSIZE, (float)DRAW_PLAYER_Y + (epy + -1 * add.y) * CHIPSIZE));
 			if (count < 60) count++;
 			else {
-				count = 0;
 				addx = 0;
 				addy = 0;
-				moveflag = false;
 				DefineDirection();
 			}
 		}
-		else {
-			DefineDirection();
+		else if(count >= 60){*/
+			/*DefineDirection();
 			AllWall();
 			epx = indexX - *px / CHIPSIZE;
 			epy = indexY - *py / CHIPSIZE;
 			Vector2 setpos = { (float)DRAW_PLAYER_X + epx * CHIPSIZE, (float)DRAW_PLAYER_Y + epy * CHIPSIZE };
 			if (isDraw(epx, epy)) {
-				SetPosition(setpos);
+				if (as == MOVE_END || as == ACT_BEGIN) SetPosition(setpos);
 			}
-			else SetPosition(Vector2(-100, -100));
-		}
-	}
-	/*if (moveflag) {
-		Vector2 add = {};
-		add.x += sin(3.14 / 2 / 60 * count) * addx;
-		add.y += sin(3.14 / 2 / 60 * count) * addy;
-		SetPosition(Vector2(DRAW_PLAYER_X + (epx + add.x) * CHIPSIZE, DRAW_PLAYER_Y + (epy + add.y) * CHIPSIZE));
-		if (count < 60) count++;
-		else {
-			indexX += addx;
-			indexY += addy;
-			count = 0;
-			addx = 0;
-			addy = 0;
-		}
-	}
-	else{
-		Vector2 setpos = { (float)DRAW_PLAYER_X + epx * CHIPSIZE, (float)DRAW_PLAYER_Y + epy * CHIPSIZE };
-		if (isDraw(epx, epy)) {
-			if (as == MOVE_END || as == ACT_BEGIN) SetPosition(setpos);
-		}
-		else SetPosition(Vector2(-100, -100));
-	}*/
+			else SetPosition(Vector2(-100, -100));*/
+		//}
+	//}
 
-	/*if (moveflag) {
-		DefineDirection();
-		AllWall();
-	}*/
+	epx = indexX - *px / CHIPSIZE;
+	epy = indexY - *py / CHIPSIZE;
+	Vector2 setpos = { (float)DRAW_PLAYER_X + epx * CHIPSIZE, (float)DRAW_PLAYER_Y + epy * CHIPSIZE };
+	if (isDraw(epx, epy)) {
+ 		//if (as == MOVE_END || as == ACT_BEGIN) SetPosition(setpos);
+		if(moveflag) SetPosition(setpos);
+	}
+	else SetPosition(Vector2(-100, -100));
+	
+
+	if (moveflag) {
+ 		DefineDirection();
+	 	AllWall();
+	}
+
 
 	//ƒ_ƒ[ƒW = UŒ‚—Í - –hŒä—Í
 	if (damageAmount) param.nowhp -= (damageAmount - param.defense);
-	DrawFormatString(300, 30, GetColor(255, 0, 0), "boar hp:%d", param.nowhp);
+	//DrawFormatString(300, 30, GetColor(255, 0, 0), "boar hp:%d", param.nowhp);
+	//DrawFormatString(0, 300, GetColor(255, 0, 0), "count:%d", count); 
+	//DrawFormatString(0, 350, GetColor(255, 0, 0), "addx:%d", addx);
+	//DrawFormatString(0, 400, GetColor(255, 0, 0), "addy:%d", addy);
 	damageAmount = 0;
 
 	if (param.nowhp <= 0) {

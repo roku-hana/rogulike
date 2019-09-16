@@ -32,8 +32,12 @@ public:
 	int GetWaitTime() { return waittime; }
 	int GetEpx() const { return epx; }
 	int GetEpy() const { return epy; }
-	void SetAddX(int x) { addx = x; }
-	void SetAddY(int y) { addy = y; }
+	//void SetAddX(int x) { addx = x; }
+	//void SetAddY(int y) { addy = y; }
+	//int GetAddX() { return addx; }
+	//int GetAddY() { return addy; }
+	//int GetCount() { return count; }
+	void DefineDirection();
 protected:
 	const int* px;
 	const int* py;
@@ -41,7 +45,6 @@ protected:
 	Direction temp;
 	EnemyParameter param;
 	bool isDraw(int cx, int cy);
-	void DefineDirection();
 	bool RightWall();
 	bool LeftWall();
 	bool UpWall();
@@ -70,8 +73,9 @@ private:
 	int waittime;
 	int timerstart;
 	int epx, epy;
-	int count;
-	int addx, addy;
+	//int count;
+	//int addx, addy;
+	//bool animflag;
 };
 
 #endif

@@ -31,6 +31,9 @@ void EnemyAttackComponent::update() {
 void EnemyAttackComponent::Attack() {
 	int ea = enemy->GetEnemyParam().attack;
 
+	if (player->GetPlayerParam().nowhp < (ea - player->GetPlayerParam().defense) || player->GetPlayerParam().nowhp <= 1) {
+		GameStage::ri.enname = enemy->GetEnemyName(enemy->GetEnemyParam().id);
+	}
 	player->SetDamageAmount(ea);
 	player->SetDamageFlag(true);
 	messageflag = true;

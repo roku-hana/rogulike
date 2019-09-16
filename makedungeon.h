@@ -94,7 +94,6 @@ public:
 	int GetChickNum() { return chickNum; }
 	int GetEnemyNum() { return enemyNum; }
 	int GetItemNum() { return itemNum; }
-	int GetStageNum() { return stageNum; }
 	vector<vector<RogueLikeMap>>& GetMap() { return maprl; }
 	int GetLightKnd() { return lightknd; }
 	int* GetDirBox() { return &dirbox; }
@@ -112,7 +111,6 @@ public:
 	int enemyNum;			//敵の数
 	vector<int> ix, iy;		//アイテムの位置
 	int itemNum;			//アイテムの数
-	static int stageNum;
 	int minDestination;    //startからgoalまでの最短距離
 	int BreadthFirstSearch();
 	void Decide_Pos();

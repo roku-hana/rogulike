@@ -79,6 +79,7 @@ private:
 	//////////////
 	int itemflag;
 	//////////////
+	int mcount;
 };
 
 #endif

@@ -1,5 +1,5 @@
-3,,,,
-id,name,category,val,explanation
-50,“º‚Ì‚©‚¬’Ü,2,5,UŒ‚—Í‚ª­‚µã¸‚·‚é
-51,‹â‚Ì‚©‚¬’Ü,2,10,UŒ‚—Í‚ªã¸‚·‚é
-52,‹à‚Ì‚©‚¬’Ü,2,15,UŒ‚—Í‚ª‘å‚«‚­ã¸‚·‚é
+3,,,,,
+id,name,category,val,explanation,probability
+50,“º‚Ì‚©‚¬’Ü,2,5,UŒ‚—Í‚ª­‚µã¸‚·‚é,0.7
+51,‹â‚Ì‚©‚¬’Ü,2,10,UŒ‚—Í‚ªã¸‚·‚é,0.2
+52,‹à‚Ì‚©‚¬’Ü,2,15,UŒ‚—Í‚ª‘å‚«‚­ã¸‚·‚é,0.1

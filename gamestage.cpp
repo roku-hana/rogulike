@@ -14,6 +14,10 @@
 #include<DxLib.h>
 //
 
+float frand() {
+	return (float)GetRand(RAND_MAX) / RAND_MAX;
+}
+
 GameStage::GameStage(InputManager* temp):input(temp){
 	mp = new MapData();
 	player = new Player(this, mp->GetMap());
@@ -22,17 +26,18 @@ GameStage::GameStage(InputManager* temp):input(temp){
 	for (int i = 0; i < mp->GetChickNum(); i++) {
 		new Chick(this, mp->GetChickX(i), mp->GetChickY(i), player->GetScrollX(), player->GetScrollY());
 	}
+	if(stageNum == 0) stageNum = 1;
 	//enemyParam
-	string fileName = "enemydata\\enemydata" + std::to_string(mp->GetStageNum()) + ".csv";
+	string fileName = "enemydata\\enemydata" + std::to_string(stageNum) + ".csv";
 	LoadEnemyParam(fileName.c_str());
 	InitializeEnemy();
 	//
 	//itemdata
-	fileName = "itemdata\\protection" + std::to_string(mp->GetStageNum()) + ".csv";
+	fileName = "itemdata\\protection" + std::to_string(stageNum) + ".csv";
 	LoadProtectionItem(fileName.c_str());
-	fileName = "itemdata\\weapon" + std::to_string(mp->GetStageNum()) + ".csv";	
+	fileName = "itemdata\\weapon" + std::to_string(stageNum) + ".csv";	
 	LoadWeaponItem(fileName.c_str());
-	fileName = "itemdata\\recovery" + std::to_string(mp->GetStageNum()) + ".csv";
+	fileName = "itemdata\\recovery" + std::to_string(stageNum) + ".csv";
 	LoadRecoveryItem(fileName.c_str());
 	InitializeItem();
 	//
@@ -51,7 +56,10 @@ GameStage::~GameStage() {
 
 void GameStage::update() {
 	animcounter++;
-	if (*player->GetScrollX() / CHIPSIZE == mp->GetGoalX() && *player->GetScrollY() / CHIPSIZE == mp->GetGoalY()) nextStage = mp->GetStageNum() + 1;
+	if (*player->GetScrollX() / CHIPSIZE == mp->GetGoalX() && *player->GetScrollY() / CHIPSIZE == mp->GetGoalY()) {
+		if (nextStage == 0) player->SetActState(WAIT);
+		nextStage = stageNum + 1;
+	}
 	else nextStage = 0;
 
 	EnemyAddTime();
@@ -95,22 +103,17 @@ void GameStage::draw() {
 	mp->DrawTransparentMaze(*player->GetScrollX() / CHIPSIZE, *player->GetScrollY() / CHIPSIZE);
 
 	//仮
-	for (auto enemy : mEnemies) {
-		mp->DrawEnemyPos(enemy->GetIndexX(), enemy->GetIndexY());
-	}
-	for (auto item : mItems) {
-		if(!item->GetDamageFlag())mp->DrawItemPos(item->GetPosX(), item->GetPosY());
-	}
+	for (auto enemy : mEnemies) mp->DrawEnemyPos(enemy->GetIndexX(), enemy->GetIndexY());
+
+	for (auto item : mItems) if(!item->GetDamageFlag())mp->DrawItemPos(item->GetPosX(), item->GetPosY());
 	//
 
-	for (auto sprite : mSprites)
-	{
-		sprite->Draw(animcounter);
-	}
+	for (auto sprite : mSprites) sprite->Draw(animcounter);
 
 	//メッセージの描画(別の場所のほうがいいかも)
 	DrawMessage();
 
+	DrawStateUp();
 
 	//テスト
 	int mouseX, mouseY;
@@ -323,13 +326,15 @@ void GameStage::PlayerKeyInput() {
 	if (player->GetActState() == MOVE_END || player->GetActState() == ACT_END) {
 		bool flag = false;
 		for (auto enemy : mEnemies) {
-			if (enemy->GetActState() == ACT_END || enemy->GetActState() == MOVE_END) { flag = true;}
+			if (enemy->GetActState() == ACT_END || enemy->GetActState() == MOVE_END) flag = true;
 			else { flag = false; break; }
 		}
 		if (flag) {
 			messageflag = false;
 			if (!player->GetMoveFlag()) { player->SetMoveFlag(true); }
 			player->SetActState(KEY_INPUT);
+			//for (auto enemy : mEnemies) if(enemy->GetCount() >= 60) enemy->SetCount60();
+			//for (auto enemy : mEnemies) enemy->SetCount0();
 			sort(mEnemies.begin(), mEnemies.end(), &PlayerEnemyDisComp);
 			for (int i = 0; i < mEnemies.size(); i++) mEnemies[i]->SetWaitTime(i);
 		}
@@ -386,7 +391,7 @@ void GameStage::LoadProtectionItem(const char* fileName) {
 		case 3: temp.category = atoi(buf); break;
 		case 4: temp.val = atoi(buf); break;
 		case 5: temp.explanation = buf; break;
-		case 6: temp.probability = atoi(buf); break;
+		case 6: temp.probability = atof(buf); break;
 		default: break;
 		}
 		memset(buf, 0, sizeof(buf));
@@ -430,7 +435,7 @@ void GameStage::LoadWeaponItem(const char* fileName) {
 		case 3: temp.category = atoi(buf); break;
 		case 4: temp.val = atoi(buf); break;
 		case 5: temp.explanation = buf; break;
-		case 6: temp.probability = atoi(buf); break;
+		case 6: temp.probability = atof(buf); break;
 		default: break;
 		}
 		memset(buf, 0, sizeof(buf));
@@ -474,7 +479,7 @@ void GameStage::LoadRecoveryItem(const char* fileName) {
 		case 3: temp.category = atoi(buf); break;
 		case 4: temp.val = atoi(buf); break;
 		case 5: temp.explanation = buf; break;
-		case 6: temp.probability = atoi(buf); break;
+		case 6: temp.probability = atof(buf); break;
 		default: break;
 		}
 		memset(buf, 0, sizeof(buf));
@@ -492,24 +497,56 @@ void GameStage::InitializeItem() {
 	for (int i = 0; i < mp->GetItemNum(); i++) {
 		ITEM_KND knd = (ITEM_KND)GetRand(2);
 		switch (knd) {
-			int knd2;
-			//後で、確率を実装する
-			int prob;
-			/////////////////////
 		case RECOVERY: 
-			knd2 = GetRand(rNum - 1);
-			new Recovery(this, mp->GetMap(), mp->GetItemX(i), mp->GetItemY(i), &recoverydata[knd2]);
+			new Recovery(this, mp->GetMap(), mp->GetItemX(i), mp->GetItemY(i), &RandomRecoveryPick());
 			break;
 		case WEAPON: 
-			knd2 = GetRand(wNum - 1);
-			new Weapon(this, mp->GetMap(), mp->GetItemX(i), mp->GetItemY(i), &weapondata[knd2]);
+			new Weapon(this, mp->GetMap(), mp->GetItemX(i), mp->GetItemY(i), &RandomWeaponPick());
 			break;
 		case PROTECTION: 
-			knd2 = GetRand(pNum - 1);
-			new Protection(this, mp->GetMap(), mp->GetItemX(i), mp->GetItemY(i), &protectiondata[knd2]);
+			new Protection(this, mp->GetMap(), mp->GetItemX(i), mp->GetItemY(i), &RandomProtectionPick());
 			break;
 		default: break;
 		}
+	}
+}
+
+ItemData GameStage::RandomProtectionPick() {
+	float totalProbability = 0.0f;
+	for (auto protection : protectiondata) {
+		totalProbability += protection.probability;
+	}
+	float probability = totalProbability * frand();
+	float cumulativeProbability = 0.0f;
+	for (auto protection : protectiondata) {
+		cumulativeProbability += protection.probability;
+		if (probability < cumulativeProbability) return protection;
+	}
+}
+
+ItemData GameStage::RandomWeaponPick() {
+	float totalProbability = 0.0f;
+	for (auto weapon : weapondata) {
+		totalProbability += weapon.probability;
+	}
+	float probability = totalProbability * frand();
+	float cumulativeProbability = 0.0f;
+	for (auto weapon : weapondata) {
+		cumulativeProbability += weapon.probability;
+		if (probability < cumulativeProbability) return weapon;
+	}
+}
+
+ItemData GameStage::RandomRecoveryPick() {
+	float totalProbability = 0.0f;
+	for (auto recovery : recoverydata) {
+		totalProbability += recovery.probability;
+	}
+	float probability = totalProbability * frand();
+	float cumulativeProbability = 0.0f;
+	for (auto recovery : recoverydata) {
+		cumulativeProbability += recovery.probability;
+		if (probability < cumulativeProbability) return recovery;
 	}
 }
 
@@ -521,3 +558,19 @@ bool GameStage::PlayerEnemyDisComp(const Enemy* a, const Enemy* b) {
 
 	return disax + disay < disbx + disby;
 }
+
+void GameStage::DrawStateUp() {
+	DrawFormatString(190, 0, GetColor(255, 255, 255), "%d", stageNum);
+	DrawString(200, 0, "F", GetColor(128, 255, 255));
+	DrawString(230, 0, "HP    /", GetColor(126, 255, 255));
+	DrawFormatString(260, 0, GetColor(255, 255, 255), "%d", player->GetPlayerParam().nowhp);
+	DrawFormatString(300, 0, GetColor(255, 255, 255), "%d", player->GetPlayerParam().maxhp);
+	DrawString(350, 0, "Lv", GetColor(128, 255, 255));
+	DrawFormatString(380, 0, GetColor(255, 255, 255), "%d", player->GetPlayerParam().level);
+	DrawGraph(400, 0, chickGh, TRUE);
+	DrawFormatString(420, 0, GetColor(255, 255, 255), "×%d", player->GetChickNum());
+
+}
+
+ResultInfo GameStage::ri;
+int GameStage::stageNum;

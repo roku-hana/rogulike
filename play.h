@@ -5,6 +5,12 @@
 
 class GameStage;
 
+struct Cursole {
+	int pos;
+	int x, y;
+	int r;
+};
+
 class Play : public GameScene {
 public:
 	Play(Game* pManager, SceneManager* sManager);
@@ -13,6 +19,7 @@ public:
 	void draw();
 private:
 	GameStage* gamestage;
+	Cursole cur;
 };
 
 #endif

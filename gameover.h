@@ -14,6 +14,7 @@ public:
 private:
 	int count;
 	int BigFont;
+	void DrawResult();
 };
 
 #endif

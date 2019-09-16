@@ -29,7 +29,6 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 
 	SetPosition(Vector2(320, 224));
 	dir = DOWN;
-	//count = 0; 
 	moveflag = false;
 	scrollx = 0;
 	scrolly = 0;
@@ -40,12 +39,13 @@ Player::Player(GameStage* game, vector<vector<RogueLikeMap>>& map) :Actor(game),
 	param.defense = 3;
 	param.experience = 0;
 	param.level = 1;
-	param.maxhp = 10;
-	param.nowhp = 100;
+	param.maxhp = 15;
+	param.nowhp = 15;
 	//仮
 	param.name = "にわとり";
 	dirbox = GetGameStage()->GetMapData()->GetDirBox();
 	actcount = 0;
+	mcount = 0;
 }
 
 Player::~Player() {
@@ -53,6 +53,7 @@ Player::~Player() {
 }
 
 void Player::updateActor() {
+	mcount++;
 	//ダメージ = 攻撃力 - 防御力
 	if (damageAmount) {
 		if (damageAmount > param.defense) param.nowhp -= (damageAmount - param.defense);
@@ -69,16 +70,14 @@ void Player::updateActor() {
 		//////////////////////////////////////////////////
 		param.experience = 0;
 	}
-	//////////
-	DrawFormatString(400, 30, GetColor(0, 0, 255), "player hp:%d", param.nowhp);
-	DrawFormatString(150, 30, GetColor(0, 0, 255), "player exp:%d", param.experience);
-	DrawFormatString(50, 10, GetColor(0, 0, 255), "player lev:%d", param.level);
-	DrawFormatString(0, 50, GetColor(255, 255, 255), "attack:%d", param.attack);
-	DrawFormatString(0, 100, GetColor(255, 255, 255), "defense:%d", param.defense);
-	//////////////
 	if (param.nowhp <= 0) {
 		SetState(DEAD);
 		GetGameStage()->SetGameOverFlag(true);
+		GameStage::ri.experience = param.experience;
+		GameStage::ri.chickNum = chickNum;
+		GameStage::ri.hp = param.maxhp;
+		GameStage::ri.level = param.level;
+		GameStage::ri.plname = param.name;
 	}
 }
 
@@ -97,69 +96,66 @@ void Player::ActorInput(InputManager* input) {
 			default: *dirbox = -1; break;
 			}
 		}
-		else if (input->isPushRight()) {
-			if (input->isPushUp())dir = UP_RIGHT;
-			else if (input->isPushDown()) dir = DOWN_RIGHT;
+		else if (input->isPushRight(0) && mcount % 5 == 0) {
+			if (input->isPushUp(0) && mcount % 5 == 0)dir = UP_RIGHT;
+			else if (input->isPushDown(0) && mcount % 5 == 0) dir = DOWN_RIGHT;
 			else dir = RIGHT;
 			as = MOVE_BEGIN;
 			actcount++;
 		}
-		else if (input->isPushLeft()) {
-			if (input->isPushUp()) dir = UP_LEFT;
-			else if (input->isPushDown()) dir = DOWN_LEFT;
+		else if (input->isPushLeft(0) && mcount % 5 == 0) {
+			if (input->isPushUp(0) && mcount % 5 == 0) dir = UP_LEFT;
+			else if (input->isPushDown(0) && mcount % 5 == 0) dir = DOWN_LEFT;
 			else dir = LEFT;
 			as = MOVE_BEGIN;
 			actcount++;
 		}
-		else if (input->isPushUp()) {
-			if (input->isPushRight()) dir = UP_RIGHT;
-			else if (input->isPushLeft()) dir = UP_LEFT;
+		else if (input->isPushUp(0) && mcount % 5 == 0) {
+			if (input->isPushRight(0) && mcount % 5 == 0) dir = UP_RIGHT;
+			else if (input->isPushLeft(0) && mcount % 5 == 0) dir = UP_LEFT;
 			else dir = UP;
 			as = MOVE_BEGIN;
 			actcount++;
 		}
-		else if (input->isPushDown()) {
-			if (input->isPushRight()) dir = DOWN_RIGHT;
-			else if (input->isPushLeft()) dir = DOWN_LEFT;
+		else if (input->isPushDown(0) && mcount % 5 == 0) {
+			if (input->isPushRight(0) && mcount % 5 == 0) dir = DOWN_RIGHT;
+			else if (input->isPushLeft(0) && mcount % 5 == 0) dir = DOWN_LEFT;
 			else dir = DOWN;
 			as = MOVE_BEGIN;
 			actcount++;
 		}
 		if (input->isPushA(0)) {
 			if (input->isPushRight(0)) {
-				if (input->isPushUp())dir = UP_RIGHT;
-				else if (input->isPushDown()) dir = DOWN_RIGHT;
+				if (input->isPushUp(0))dir = UP_RIGHT;
+				else if (input->isPushDown(0)) dir = DOWN_RIGHT;
 				else dir = RIGHT;
 				as = MOVE_BEGIN;
 				actcount++;
 			}
 			else if (input->isPushLeft(0)) {
-				if (input->isPushUp()) dir = UP_LEFT;
-				else if (input->isPushDown()) dir = DOWN_LEFT;
+				if (input->isPushUp(0)) dir = UP_LEFT;
+				else if (input->isPushDown(0)) dir = DOWN_LEFT;
 				else dir = LEFT;
 				as = MOVE_BEGIN;
 				actcount++;
 			}
 			else if (input->isPushUp(0)) {
-				if (input->isPushRight()) dir = UP_RIGHT;
-				else if (input->isPushLeft()) dir = UP_LEFT;
+				if (input->isPushRight(0)) dir = UP_RIGHT;
+				else if (input->isPushLeft(0)) dir = UP_LEFT;
 				else dir = UP;
 				as = MOVE_BEGIN;
 				actcount++;
 			}
 			else if (input->isPushDown(0)) {
-				if (input->isPushRight()) dir = DOWN_RIGHT;
-				else if (input->isPushLeft()) dir = DOWN_LEFT;
+				if (input->isPushRight(0)) dir = DOWN_RIGHT;
+				else if (input->isPushLeft(0)) dir = DOWN_LEFT;
 				else dir = DOWN;
 				as = MOVE_BEGIN;
 				actcount++;
 			}
 		}
-		//else if (input->isPushA(0)) { as = MOVE_BEGIN; actcount++; }
 		if (input->isPushB()) { as = ACT_BEGIN; actcount++; }
-		//本当はStartボタンを押したらにしたい
 		if (input->isPushY(0)) as = ITEM_MENU;
-		//
 	}
 	if (actcount != 0 && actcount % 500 == 0) enemyaddflag = true;
 }

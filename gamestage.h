@@ -21,7 +21,18 @@ struct ItemData {
 	std::string explanation;
 	int category;
 	int val;
-	int probability;
+	float probability;
+};
+
+struct ResultInfo {
+	std::string plname;
+	std::string enname;
+	int level;
+	int hp;
+	int chickNum;
+	std::string weapon;
+	std::string protection;
+	int experience;
 };
 
 class GameStage {
@@ -52,6 +63,8 @@ public:
 	void SetMessageFlag(bool flag) { messageflag = flag; }
 	void SetGameOverFlag(bool flag) { gameover = flag; }
 	bool GetGameOverFlag() { return gameover; }
+	static ResultInfo ri;
+	static int stageNum;
 private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
@@ -92,6 +105,10 @@ private:
 	static bool PlayerEnemyDisComp(const Enemy* a, const Enemy* b);
 	void InitializeEnemy();
 	void InitializeItem();
+	ItemData RandomWeaponPick();
+	ItemData RandomProtectionPick();
+	ItemData RandomRecoveryPick();
+	void DrawStateUp();
 };
 
 #endif

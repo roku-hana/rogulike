@@ -25,6 +25,16 @@ InventoryComponent::InventoryComponent(Actor* owner, int updateOrder)
 }
 
 void InventoryComponent::update() {
+	if (player->GetActState() == Actor::DEAD) {
+		for (auto item : items) {
+			if (item->GetCategory() == 2) {
+				if (item->GetEquip()) GameStage::ri.weapon = item->GetName();
+			}
+			else if (item->GetCategory() == 3) {
+				if (item->GetEquip()) GameStage::ri.protection = item->GetName();
+			}
+		}
+	}
 	for (auto item : player->GetGameStage()->GetItems()) {
 		if(item->GetMoveFlag() && !item->GetDamageFlag()){
 			items.push_back(item);

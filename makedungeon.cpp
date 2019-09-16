@@ -176,9 +176,6 @@ MapData::MapData()
 	transparentMap(MAPY_RLk, vector<int>(MAPX_RLk, 0)){
 
 	sx = sy = gx = gy = 0;
-	//後で、次の階へ移動したときだけ加算するようにする
-	stageNum++;
-	//
 
 	minDestination = -1;
 	while (minDestination == -1) {
@@ -393,7 +390,7 @@ void MapData::Decide_Pos() {
 	vector<int> tempchick(chickNum, 0);
 	cx = cy = tempchick;
 	//後で、ここの乱数を変える(敵はファイルから情報を得る)
-	enemyNum = GetRand(1) + 1;
+	enemyNum = GetRand(1) + 3;
 	/////////////////////////
 	vector<int> tempenemy(enemyNum, 0);
 	ex = ey = tempenemy;
@@ -467,4 +464,4 @@ void MapData::Decide_Pos() {
 }
 
 int MapData::mapchip[3];
-int MapData::stageNum;
+//int MapData::stageNum;

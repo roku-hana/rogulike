@@ -15,8 +15,9 @@ const int DRAW_PLAYER_Y = 224;
 Chick::Chick(GameStage* game, int x, int y, int* px, int* py) : Actor(game), px(px), py(py){
 	if (gh[0] == 0) {
 		if (-1 == LoadDivGraph("Images\\Chick1.png", 24, 6, 4, 24, 20, gh)) MSG("プレイヤー画像読み込みエラー");
+		game->SetChickGraphic(gh[0]);
 	}
-	game->SetChickGraphic(gh[0]);
+	//game->SetChickGraphic(gh[0]);
 
 	SpriteComponent* sc = new CharacterSprite(this, 50);
 	sc->SetImage(gh);
@@ -38,10 +39,6 @@ Chick::~Chick() {
 };
 
 void Chick::updateActor() {
-	//プレイヤーが獲得したひよこの数描画
-	DrawGraph(0, 5, gh[0], TRUE);
-	DrawFormatString(20, 5, GetColor(255, 255, 255), "×%d", GetGameStage()->GetPlayer()->GetChickNum());
-
 	int cx = indexX - *px / CHIPSIZE;
 	int cy = indexY - *py / CHIPSIZE;
 	if (!moveflag) {

@@ -1,5 +1,5 @@
-3,,,,
-id,name,category,val,explanation
-1,¬‰ñ•œ–ò,1,10,‘Ì—Í‚ª­‚µ‰ñ•œ‚·‚é
-2,’†‰ñ•œ–ò,1,20,‘Ì—Í‚ª‰ñ•œ‚·‚é
-3,‘å‰ñ•œ–ò,1,30,‘Ì—Í‚ª‚©‚È‚è‰ñ•œ‚·‚é
+3,,,,,
+id,name,category,val,explanation,probability
+1,¬‰ñ•œ–ò,1,10,‘Ì—Í‚ª­‚µ‰ñ•œ‚·‚é,0.7
+2,’†‰ñ•œ–ò,1,20,‘Ì—Í‚ª‰ñ•œ‚·‚é,0.2
+3,‘å‰ñ•œ–ò,1,30,‘Ì—Í‚ª‚©‚È‚è‰ñ•œ‚·‚é,0.1
